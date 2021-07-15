@@ -1,0 +1,98 @@
+.app {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  padding-top: 50px;
+}
+
+.app-header {
+  background-color: #282c34;
+  min-height: 10vh;
+  font-size: 45px;
+  color: white;
+  margin-right: 200px;
+}
+
+.protokoll{
+  max-height: 50vh;
+  overflow-y: auto;
+  text-align: left;
+  width: 65vw;
+  height: 50vh;
+}
+
+.protokoll-card {
+  color: #282c34;
+  margin-top: 30px;
+}
+
+input {
+  border-radius: 5px;
+  background-color: white;
+  color: #282c34;
+}
+
+.container {
+  display: flex; 
+  margin: 5px;
+}
+
+/************ Dropzone ************/
+.dropzone-text {
+  color: #bdbdbd;
+  border-color: white;
+}
+
+.dropzone-text-file{
+  color: #282c34;
+  font-weight: 600;
+  border-color: white;
+}
+
+.dropzone-text-error{
+  color:#ff1744;
+  border-color: #ff1744;
+}
+
+
+/************ Buttons & Icons ************/
+.btn{
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.invisible-check-button{
+  visibility: hidden;
+}
+
+.download-icon {
+  color:black;
+  font-size: 30px;
+  margin-left: 10px;
+}
+
+.run-icon {
+  margin-left: 10px;
+}
+
+.remove-icon{
+  color:#ff1744;
+}
+
+/************ Check status ************/
+
+.valid {
+  color:#198754;
+}
+
+.warnings {
+  color:#FFA500;
+}
+
+.errors{
+  color:#ff1744;
+}
