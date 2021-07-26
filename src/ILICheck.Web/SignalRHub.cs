@@ -25,23 +25,12 @@ namespace SignalR.Hubs
             await Clients.Client(connectionId).SendAsync("confirmConnection", "A connection with ID '" + connectionId + "' has been established.");
         }
 
-        public async Task StartValidation(string connectionId, string uploadedFileName)
+        public async Task StartUpload(string connectionId, string uploadedFileName)
         {
             sessionLogger = GetLogger(uploadedFileName);
-            applicationLogger.LogInformation($"Validation started for file: {uploadedFileName}");
-            sessionLogger.Information($"Validation started for file: {uploadedFileName}");
-            await Clients.Client(connectionId).SendAsync("validationStarted", $"Validation started for file {uploadedFileName}");
-
-            // Simulate validation process
-            await Task.Delay(TimeSpan.FromSeconds(2));
-            await Clients.Client(connectionId).SendAsync("firstValidationPass", "First validation passed");
-            sessionLogger.Information($"First validation passed");
-            await Task.Delay(TimeSpan.FromSeconds(5));
-            await Clients.Client(connectionId).SendAsync("secondValidationPass", "Second validation passed");
-            sessionLogger.Information($"Second validation passed");
-            await Task.Delay(TimeSpan.FromSeconds(3));
-            await Clients.Client(connectionId).SendAsync("validationDone", "Validation done");
-            sessionLogger.Information($"Validation done");
+            applicationLogger.LogInformation($"Start uploading: {uploadedFileName}");
+            sessionLogger.Information($"Start uploading: {uploadedFileName}");
+            await Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload started for file {uploadedFileName}");
         }
 
         private Serilog.ILogger GetLogger(string uploadedFileName)

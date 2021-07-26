@@ -5,10 +5,10 @@ import Home from './Home';
 
 function App() {
   const [connection, setConnection] = useState(null); 
-  const [logMessage, setLogMessage] = useState(null);
+  const [log, setLog] = useState([]);
   
-  const updateLog=(message)=>{
-    setLogMessage(message);
+  const updateLog = (message) => {
+    setLog(log => [...log, message]);
     console.log('SignalR Message:', message);
   }
 
@@ -21,21 +21,12 @@ function App() {
         console.log('SignalR Message:', message);
       });
 
-      connection.on('validationStarted', (message) => {
+      connection.on('uploadStarted', (message) => {
         updateLog(message)
       });
 
-      connection.on('secondValidationPass', (message) => {
+      connection.on('fileUploading', (message) => {
         updateLog(message)
-      });
-
-      connection.on('firstValidationPass', (message) => {
-        updateLog(message)
-      });
-
-      connection.on('validationDone', (message) => {
-        updateLog(message)
-
       });
 
     connection.start().then(a => {
@@ -49,7 +40,7 @@ function App() {
 
   return (
     <div>
-      <Home connection={connection} logMessage={logMessage} />
+      <Home connection={connection} logMessages={log} />
     </div>
   );
 }

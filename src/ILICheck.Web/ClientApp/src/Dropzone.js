@@ -51,7 +51,7 @@ export const FileDropzone = ({ setFileToCheck }) => {
                 setDropZoneText("Fehler: Es kann nur eine Datei aufs mal geprüft werden.");
                 break;
             case "file-too-large":
-                setDropZoneText("Fehler: Die ausgewählte Datei ist über 5MB gross. Bitte wählen Sie eine kleinere Datei.");
+                setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wählen Sie eine kleinere Datei.");
                 break;
             default:
                 setDropZoneText("Fehler: Bitte wählen Sie eine Datei des Typs .xtf oder .xml mit maximal 5MB aus.");
@@ -68,7 +68,7 @@ export const FileDropzone = ({ setFileToCheck }) => {
         setDropZoneTextClass("dropzone-text");
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 5000000, accept: ".xtf, .xml" })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml" })
 
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
