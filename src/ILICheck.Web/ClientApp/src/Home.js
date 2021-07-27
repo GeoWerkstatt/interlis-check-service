@@ -63,8 +63,17 @@ export const Home = props => {
       body: formData,
     })
       .then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           setLog(log => [...log, `${file.name} successfully uploaded!`])
+          setFileCheckStatusClass("valid")
+          setFileCheckStatus("Datei enthält keine Fehler!")
+        }
+        else {
+          setFileCheckStatusClass("errors")
+          setFileCheckStatus("Datei enthält Fehler!")
+          res.text().then(text => {
+            setLog(log => [...log, text])
+          });
         }
       })
       .catch(err => console.error(err));
