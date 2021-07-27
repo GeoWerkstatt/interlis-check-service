@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Serilog;
 using SignalR.Hubs;
 using System;
 using System.IO;
@@ -16,12 +19,15 @@ namespace ILICheck.Web.Controllers
     {
         private readonly IHubContext<SignalRHub> hubContext;
         private readonly ILogger<UploadController> applicationLogger;
+        private readonly IConfiguration configuration;
+        private Serilog.ILogger sessionLogger;
 
         public string SaveToPath { get; set; }
-        public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger)
+        public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration)
         {
             this.hubContext = hubcontext;
             this.applicationLogger = applicationLogger;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -34,19 +40,17 @@ namespace ILICheck.Web.Controllers
         {
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
-            CancellationTokenSource uploadCts = new();
-            Task<IActionResult> uploadTask = UploadToDirectory(request);
-            await Task.WhenAny(uploadTask, SendPeriodicUploadFeedback(connectionId, "File is uploading...", uploadCts.Token));
-            uploadCts.Cancel();
-            uploadCts.Dispose();
+            var fileName = request.Query["fileName"][0];
+
+            StartSessionLog(fileName);
+            applicationLogger.LogInformation($"Start uploading: {fileName}");
+            await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload started for file {fileName}");
+
+            Task<IActionResult> uploadTask = await UploadAndSendUpdatesAsync(request, connectionId);
 
             if (SaveToPath != null)
             {
-                CancellationTokenSource parseCts = new();
-                Task<bool> parseTask = IsValidXmlAsync(SaveToPath);
-                await Task.WhenAny(parseTask, SendPeriodicUploadFeedback(connectionId, "File is parsing...", parseCts.Token));
-                parseCts.Cancel();
-                parseCts.Dispose();
+                Task<bool> parseTask = await ParseAndSendUpdatesAsync(connectionId);
                 if (await parseTask == true)
                 {
                     return await uploadTask;
@@ -62,7 +66,31 @@ namespace ILICheck.Web.Controllers
             }
         }
 
-        private async Task<IActionResult> UploadToDirectory(Microsoft.AspNetCore.Http.HttpRequest request)
+        private async Task<Task<bool>> ParseAndSendUpdatesAsync(string connectionId)
+        {
+            CancellationTokenSource cts = new ();
+            Task<bool> parseTask = IsValidXmlAsync(SaveToPath);
+            sessionLogger.Information("Parsing file");
+            applicationLogger.LogInformation("Parsing file");
+            await Task.WhenAny(parseTask, SendPeriodicUploadFeedback(connectionId, "File is parsing...", cts.Token));
+            cts.Cancel();
+            cts.Dispose();
+            return parseTask;
+        }
+
+        private async Task<Task<IActionResult>> UploadAndSendUpdatesAsync(HttpRequest request, string connectionId)
+        {
+            CancellationTokenSource cts = new ();
+            Task<IActionResult> uploadTask = UploadToDirectory(request);
+            sessionLogger.Information("Uploading file");
+            applicationLogger.LogInformation("Uploading file");
+            await Task.WhenAny(uploadTask, SendPeriodicUploadFeedback(connectionId, "File is uploading...", cts.Token));
+            cts.Cancel();
+            cts.Dispose();
+            return uploadTask;
+        }
+
+        private async Task<IActionResult> UploadToDirectory(HttpRequest request)
         {
             if (!request.HasFormContentType ||
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
@@ -113,29 +141,46 @@ namespace ILICheck.Web.Controllers
 
         private async Task<bool> IsValidXmlAsync(string filePath)
         {
-            XmlReaderSettings settings = new XmlReaderSettings();
+            XmlReaderSettings settings = new ();
             settings.IgnoreWhitespace = true;
             settings.Async = true;
 
             using (var fileStream = System.IO.File.OpenText(filePath))
             {
-                using (XmlReader reader = XmlReader.Create(fileStream, settings))
+                using XmlReader reader = XmlReader.Create(fileStream, settings);
+                try
                 {
-                    try
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
-                        {
-                        }
                     }
-                    catch (Exception e)
-                    {
-                        applicationLogger.LogInformation($"Could not parse XTF File: {e.Message}");
-                        return false;
-                    }
+                }
+                catch (Exception e)
+                {
+                    sessionLogger.Information($"Could not parse XTF File: {e.Message}");
+                    applicationLogger.LogInformation($"Could not parse XTF File: {e.Message}");
+                    return false;
                 }
             }
 
             return true;
+        }
+
+        private void StartSessionLog(string uploadedFileName)
+        {
+            sessionLogger = GetLogger(uploadedFileName);
+            sessionLogger.Information($"Start uploading: {uploadedFileName}");
+        }
+
+        private Serilog.ILogger GetLogger(string uploadedFileName)
+        {
+            var sessionPathFormat = configuration.GetSection("Logging")["PathFormatSession"];
+            var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
+            var sessionId = $"{timestamp}_{uploadedFileName}";
+            var logFileName = sessionPathFormat.Replace("{SessionId}", sessionId);
+
+            return new LoggerConfiguration()
+                .WriteTo.File(logFileName)
+                .CreateLogger();
         }
     }
 }

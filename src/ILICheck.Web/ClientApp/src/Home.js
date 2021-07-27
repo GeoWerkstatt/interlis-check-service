@@ -23,7 +23,6 @@ export const Home = props => {
   const checkFile = () => {
     setTestRunning(true);
     setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "" })
-    connection.invoke("StartUpload", connection.connectionId, fileToCheck.name);
     uploadFile(fileToCheck);
   }
 
@@ -31,7 +30,7 @@ export const Home = props => {
     const formData = new FormData();
     formData.append(file.name, file);
 
-    fetch(`api/upload?connectionId=${connection.connectionId}`, {
+    fetch(`api/upload?connectionId=${connection.connectionId}&fileName=${file.name}`, {
       method: 'POST',
       body: formData,
     })
