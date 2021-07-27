@@ -11,11 +11,8 @@ export const Home = props => {
   const { connection, log, setLog } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
-  const [testRunTime, setTestRunTime] = useState(null);
   const [pdf, updatePdf] = usePDF({ document: ProtokollPdf });
-  const [protokollName, setProtokollName] = useState("");
-  const [fileCheckStatusClass, setFileCheckStatusClass] = useState("");
-  const [fileCheckStatus, setFileCheckStatus] = useState("");
+  const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, protokollName: "" });
 
   // Reset log on file change
   useEffect(() => {
@@ -25,14 +22,9 @@ export const Home = props => {
 
   const checkFile = () => {
     setTestRunning(true);
-    setFileCheckStatus("")
-    setFileCheckStatusClass("")
+    setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "" })
     connection.invoke("StartUpload", connection.connectionId, fileToCheck.name);
     uploadFile(fileToCheck);
-
-    setTestRunTime(new Date().toLocaleString());
-    setProtokollName("Check_result_" + fileToCheck.name + "-" + testRunTime);
-    setTestRunning(false);
   }
 
   const uploadFile = (file) => {
@@ -44,14 +36,23 @@ export const Home = props => {
       body: formData,
     })
       .then(res => {
+        setTestRunning(false);
         if (res.status === 200) {
           setLog(log => [...log, `${file.name} successfully uploaded!`])
-          setFileCheckStatusClass("valid")
-          setFileCheckStatus("Datei enthält keine Fehler!")
+          setFileCheckStatus({
+            text: "Datei enthält keine Fehler!",
+            class: "valid",
+            testRunTime: new Date().toLocaleString(),
+            fileName: fileToCheck.name,
+          })
         }
         else {
-          setFileCheckStatusClass("errors")
-          setFileCheckStatus("Datei enthält Fehler!")
+          setFileCheckStatus({
+            text: "Datei enthält Fehler!",
+            class: "errors",
+            testRunTime: new Date().toLocaleString(),
+            fileName: fileToCheck.name,
+          })
           res.text().then(text => {
             setLog(log => [...log, text])
           });
@@ -65,17 +66,17 @@ export const Home = props => {
       <header className="app-header">
         <p>
           INTERLIS Web-Check-Service
-          </p>
+        </p>
       </header>
       <Container>
         <FileDropzone setFileToCheck={setFileToCheck} />
         <Button variant="success" className={fileToCheck ? "" : "invisible-check-button"} onClick={checkFile}>Check
-            <span className="run-icon">
+          <span className="run-icon">
             {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
           </span>
         </Button>
       </Container>
-      <Protokoll log={log} fileCheckStatus={fileCheckStatus} fileCheckStatusClass={fileCheckStatusClass} testRunTime={testRunTime} protokollName={protokollName} pdf={pdf} />
+      <Protokoll log={log} fileCheckStatus={fileCheckStatus} pdf={pdf} />
     </div>
   );
 }

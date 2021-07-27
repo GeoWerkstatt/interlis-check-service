@@ -34,7 +34,7 @@ namespace ILICheck.Web.Controllers
         {
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
-            CancellationTokenSource uploadCts = new ();
+            CancellationTokenSource uploadCts = new();
             Task<IActionResult> uploadTask = UploadToDirectory(request);
             await Task.WhenAny(uploadTask, SendPeriodicUploadFeedback(connectionId, "File is uploading...", uploadCts.Token));
             uploadCts.Cancel();
@@ -42,7 +42,7 @@ namespace ILICheck.Web.Controllers
 
             if (SaveToPath != null)
             {
-                CancellationTokenSource parseCts = new ();
+                CancellationTokenSource parseCts = new();
                 Task<bool> parseTask = IsValidXmlAsync(SaveToPath);
                 await Task.WhenAny(parseTask, SendPeriodicUploadFeedback(connectionId, "File is parsing...", parseCts.Token));
                 parseCts.Cancel();

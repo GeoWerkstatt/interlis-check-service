@@ -4,9 +4,9 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import Home from './Home';
 
 function App() {
-  const [connection, setConnection] = useState(null); 
+  const [connection, setConnection] = useState(null);
   const [log, setLog] = useState([]);
-  
+
   const updateLog = (message) => {
     setLog(log => [...log, message]);
     console.log('SignalR Message:', message);
@@ -16,18 +16,18 @@ function App() {
     const connection = new HubConnectionBuilder()
       .withUrl("/hub")
       .build();
-    
-      connection.on('confirmConnection', (message) => {
-        console.log('SignalR Message:', message);
-      });
 
-      connection.on('uploadStarted', (message) => {
-        updateLog(message)
-      });
+    connection.on('confirmConnection', (message) => {
+      console.log('SignalR Message:', message);
+    });
 
-      connection.on('fileUploading', (message) => {
-        updateLog(message)
-      });
+    connection.on('uploadStarted', (message) => {
+      updateLog(message)
+    });
+
+    connection.on('fileUploading', (message) => {
+      updateLog(message)
+    });
 
     connection.start().then(a => {
       if (connection.connectionId) {

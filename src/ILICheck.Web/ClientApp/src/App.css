@@ -17,7 +17,7 @@
   margin-right: 200px;
 }
 
-.protokoll{
+.protokoll {
   max-height: 50vh;
   overflow-y: auto;
   text-align: left;
@@ -37,7 +37,7 @@ input {
 }
 
 .container {
-  display: flex; 
+  display: flex;
   margin: 5px;
 }
 
@@ -47,30 +47,29 @@ input {
   border-color: white;
 }
 
-.dropzone-text-file{
+.dropzone-text-file {
   color: #282c34;
   font-weight: 600;
   border-color: white;
 }
 
-.dropzone-text-error{
-  color:#ff1744;
+.dropzone-text-error {
+  color: #ff1744;
   border-color: #ff1744;
 }
 
-
 /************ Buttons & Icons ************/
-.btn{
+.btn {
   margin-left: 10px;
   font-size: 20px;
 }
 
-.invisible-check-button{
+.invisible-check-button {
   visibility: hidden;
 }
 
 .download-icon {
-  color:black;
+  color: black;
   font-size: 30px;
   margin-left: 10px;
 }
@@ -79,16 +78,16 @@ input {
   margin-left: 10px;
 }
 
-.remove-icon{
-  color:#ff1744;
+.remove-icon {
+  color: #ff1744;
 }
 
 /************ Check status ************/
 
 .valid {
-  color:#198754;
+  color: #198754;
 }
 
-.errors{
-  color:#ff1744;
+.errors {
+  color: #ff1744;
 }
