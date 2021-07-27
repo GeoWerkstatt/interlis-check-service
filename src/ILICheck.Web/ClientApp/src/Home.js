@@ -8,7 +8,7 @@ import { ProtokollPdf } from './ProtokollPdf';
 import Protokoll from './Protokoll';
 
 export const Home = props => {
-  const { connection, logMessages } = props;
+  const { connection, log, setLog } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [testRunTime, setTestRunTime] = useState(null);
@@ -16,41 +16,22 @@ export const Home = props => {
   const [protokollName, setProtokollName] = useState("");
   const [fileCheckStatusClass, setFileCheckStatusClass] = useState("");
   const [fileCheckStatus, setFileCheckStatus] = useState("");
-  const [checkRun, setCheckRun] = useState(1); // used to simulate status styling
-  const [log, setLog] = useState([])
-
 
   // Reset log on file change
   useEffect(() => {
     setLog([]);
-  }, [fileToCheck])
+  }, [fileToCheck, setLog])
 
-  useEffect(() => {
-    if (logMessages) {
-      setLog(log => [...log, logMessages[logMessages.length - 1]]);
-    }
-  }, [logMessages])
 
   const checkFile = () => {
     setTestRunning(true);
+    setFileCheckStatus("")
+    setFileCheckStatusClass("")
     connection.invoke("StartUpload", connection.connectionId, fileToCheck.name);
     uploadFile(fileToCheck);
 
     setTestRunTime(new Date().toLocaleString());
     setProtokollName("Check_result_" + fileToCheck.name + "-" + testRunTime);
-    setCheckRun(checkRun + 1);// used to simulate status styling
-    if (checkRun === 1) {
-      setFileCheckStatusClass("valid")// used to simulate status styling
-      setFileCheckStatus("Datei enthält keine Fehler!")
-    }
-    if (checkRun === 2) {
-      setFileCheckStatusClass("warnings")// used to simulate status styling
-      setFileCheckStatus("Datei enthält Warnungen!")
-    }
-    if (checkRun === 3) {
-      setFileCheckStatusClass("errors")// used to simulate status styling
-      setFileCheckStatus("Datei enthält Fehler!")
-    }
     setTestRunning(false);
   }
 
@@ -94,7 +75,7 @@ export const Home = props => {
           </span>
         </Button>
       </Container>
-      <Protokoll fileCheckStatus={fileCheckStatus} fileCheckStatusClass={fileCheckStatusClass} log={log} testRunTime={testRunTime} protokollName={protokollName} pdf={pdf} />
+      <Protokoll log={log} fileCheckStatus={fileCheckStatus} fileCheckStatusClass={fileCheckStatusClass} testRunTime={testRunTime} protokollName={protokollName} pdf={pdf} />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { Card, Container } from 'react-bootstrap';
 import { AiOutlineFileText, AiOutlineFilePdf } from 'react-icons/ai';
 
 export const Protokoll = props => {
-  const { log , fileCheckStatus, fileCheckStatusClass, testRunTime, protokollName, pdf } = props;
+  const { log, fileCheckStatus, fileCheckStatusClass, testRunTime, protokollName, pdf } = props;
 
   const downloadTxtFile = () => {
     const element = document.createElement("a");

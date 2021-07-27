@@ -40,7 +40,7 @@ function App() {
 
   return (
     <div>
-      <Home connection={connection} logMessages={log} />
+      <Home connection={connection} log={log} setLog={setLog} />
     </div>
   );
 }
