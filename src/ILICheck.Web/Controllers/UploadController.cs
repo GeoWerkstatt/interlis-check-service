@@ -8,7 +8,6 @@ using Microsoft.Net.Http.Headers;
 using Serilog;
 using SignalR.Hubs;
 using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -144,21 +143,20 @@ namespace ILICheck.Web.Controllers
             settings.IgnoreWhitespace = true;
             settings.Async = true;
 
-            using (var fileStream = System.IO.File.OpenText(filePath))
+            try
             {
+                using var fileStream = System.IO.File.OpenText(filePath);
                 using XmlReader reader = XmlReader.Create(fileStream, settings);
-                try
+                while (await reader.ReadAsync())
                 {
-                    while (await reader.ReadAsync())
-                    {
-                    }
                 }
-                catch (Exception e)
-                {
-                    sessionLogger.Information($"Could not parse XTF File: {e.Message}");
-                    applicationLogger.LogInformation($"Could not parse XTF File: {e.Message}");
-                    return false;
-                }
+            }
+            catch (Exception e)
+            {
+                sessionLogger.Information($"Could not parse XTF File: {e.Message}");
+                applicationLogger.LogInformation($"Could not parse XTF File: {e.Message}");
+                System.IO.File.Delete(SaveToPath);
+                return false;
             }
 
             return true;
