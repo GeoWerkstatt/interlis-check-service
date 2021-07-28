@@ -110,11 +110,10 @@ namespace ILICheck.Web.Controllers
                 if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
                     !string.IsNullOrEmpty(contentDisposition.FileName.Value))
                 {
-                    var path = Directory.GetCurrentDirectory();
-
-                    // TODO: read upload path from config
-                    var uploadPath = $"{path}\\Upload\\";
-                    SaveToPath = Path.Combine(uploadPath, contentDisposition.FileName.Value);
+                    var uploadPathFormat = configuration.GetSection("Upload")["PathFormat"];
+                    var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
+                    var uploadFileName = $"{timestamp}_{contentDisposition.FileName.Value}";
+                    SaveToPath = uploadPathFormat.Replace("{FileName}", uploadFileName);
 
                     using (var targetStream = System.IO.File.Create(SaveToPath))
                     {
