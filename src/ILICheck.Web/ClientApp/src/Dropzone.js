@@ -27,7 +27,7 @@ const Container = styled.div`
 
 export const FileDropzone = ({ setFileToCheck }) => {
     const [fileAvailable, setFileAvailable] = useState(false);
-    const [dropZoneText, setDropZoneText] = useState(".xtf oder .xml file hier ablegen, oder klicken um auf dem Filesystem auszuwählen.");
+    const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip file hier ablegen, oder klicken um auf dem Filesystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
 
     const onDropAccepted = useCallback(acceptedFiles => {
@@ -54,7 +54,7 @@ export const FileDropzone = ({ setFileToCheck }) => {
                 setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wählen Sie eine kleinere Datei.");
                 break;
             default:
-                setDropZoneText("Fehler: Bitte wählen Sie eine Datei des Typs .xtf oder .xml mit maximal 5MB aus.");
+                setDropZoneText("Fehler: Bitte wählen Sie eine Datei des Typs .xtf oder .xml oder .zip mit maximal 5MB aus.");
         }
         setFileToCheck(null)
         setFileAvailable(false);
@@ -64,11 +64,11 @@ export const FileDropzone = ({ setFileToCheck }) => {
         event.stopPropagation();
         setFileToCheck(null);
         setFileAvailable(false);
-        setDropZoneText(".xtf oder .xml file hier ablegen, oder klicken um auf dem Filesystem auszuwählen.");
+      setDropZoneText(".xtf, .xml oder .zip file hier ablegen, oder klicken um auf dem Filesystem auszuwählen.");
         setDropZoneTextClass("dropzone-text");
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml" })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml, .zip" })
 
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>

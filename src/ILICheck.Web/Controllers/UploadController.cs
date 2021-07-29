@@ -8,6 +8,9 @@ using Microsoft.Net.Http.Headers;
 using Serilog;
 using SignalR.Hubs;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -49,6 +52,11 @@ namespace ILICheck.Web.Controllers
 
             if (SaveToPath != null)
             {
+                if (Path.GetExtension(SaveToPath) == ".zip")
+                {
+                    await UnzipAndSendUpdatesAsync(connectionId);
+                }
+
                 Task<bool> parseTask = await ParseAndSendUpdatesAsync(connectionId);
                 if (await parseTask == true)
                 {
@@ -63,6 +71,14 @@ namespace ILICheck.Web.Controllers
             {
                 return BadRequest("Could not get file path.");
             }
+        }
+
+        private async Task UnzipAndSendUpdatesAsync(string connectionId)
+        {
+            CancellationTokenSource cts = new ();
+            await Task.WhenAny(Task.Run(() => UnzipFile(SaveToPath)), SendPeriodicUploadFeedback(connectionId, "File is being unzipped...", cts.Token));
+            cts.Cancel();
+            cts.Dispose();
         }
 
         private async Task<Task<bool>> ParseAndSendUpdatesAsync(string connectionId)
@@ -134,6 +150,46 @@ namespace ILICheck.Web.Controllers
             {
                 await hubContext.Clients.Client(connectionId).SendAsync("fileUploading", feedbackMessage, cancellationToken: cancellationToken);
                 await Task.Delay(20000, cancellationToken);
+            }
+        }
+
+        private void UnzipFile(string zipFilePath)
+        {
+            string extractPath = @".\Upload";
+            extractPath = Path.GetFullPath(extractPath);
+
+            // Ensures that the last character on the extraction path
+            // is the directory separator char.
+            // Without this, a malicious zip file could try to traverse outside of the expected
+            // extraction path.
+            if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+            {
+                extractPath += Path.DirectorySeparatorChar;
+            }
+
+            string unzippedFilePath = "";
+            using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
+            {
+                if (archive.Entries.Count == 1)
+                {
+                    var extention = Path.GetExtension(archive.Entries[0].FullName);
+                    var supportedExtension = new List<string>() { ".xtf", ".xml" };
+                    if (supportedExtension.Contains(extention))
+                    {
+                        unzippedFilePath = Path.GetFullPath(Path.ChangeExtension(zipFilePath, Path.GetExtension(archive.Entries[0].FullName)));
+                        if (unzippedFilePath.StartsWith(extractPath, StringComparison.Ordinal))
+                        {
+                            // Overwrite file if it exists.
+                            archive.Entries[0].ExtractToFile(unzippedFilePath, true);
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(unzippedFilePath))
+            {
+                System.IO.File.Delete(zipFilePath);
+                SaveToPath = unzippedFilePath;
             }
         }
 
