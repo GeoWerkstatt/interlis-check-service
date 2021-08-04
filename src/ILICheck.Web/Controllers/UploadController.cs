@@ -25,6 +25,9 @@ namespace ILICheck.Web.Controllers
         private Serilog.ILogger sessionLogger;
 
         public string SaveToPath { get; set; }
+
+        public IActionResult UploadResult { get; set; }
+
         public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration)
         {
             this.hubContext = hubcontext;
@@ -44,74 +47,63 @@ namespace ILICheck.Web.Controllers
             var connectionId = request.Query["connectionId"][0];
             var fileName = request.Query["fileName"][0];
 
-            StartSessionLog(fileName);
-            applicationLogger.LogInformation($"Start uploading: {fileName}");
+            sessionLogger = GetLogger(fileName);
+            LogInfo($"Start uploading: {fileName}");
             await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload started for file {fileName}");
 
-            Task<IActionResult> uploadTask = await UploadAndSendUpdatesAsync(request, connectionId);
-
-            if (SaveToPath != null)
+            using var cts = new CancellationTokenSource();
+            try
             {
+                await Task.Run(() => DoTaskWhileSendingUpdates(UploadToDirectoryAsync(request, cts), connectionId, "File is uploading..."), cts.Token);
                 if (Path.GetExtension(SaveToPath) == ".zip")
                 {
-                    await UnzipAndSendUpdatesAsync(connectionId);
+                    await Task.Run(() => DoTaskWhileSendingUpdates(UnzipFileAsync(SaveToPath, cts), connectionId, "File is being unzipped..."), cts.Token);
                 }
 
-                Task<bool> parseTask = await ParseAndSendUpdatesAsync(connectionId);
-                if (await parseTask == true)
-                {
-                    return await uploadTask;
-                }
-                else
-                {
-                    return BadRequest("Could not parse XTF file.");
-                }
+                await Task.Run(() => DoTaskWhileSendingUpdates(ParseXmlAsync(SaveToPath, cts), connectionId, "File is parsinig..."), cts.Token);
+                await Task.Run(() => DoTaskWhileSendingUpdates(ValidateFileAsync(cts), connectionId, "File is being validated..."), cts.Token);
             }
-            else
+            catch (OperationCanceledException)
             {
-                return BadRequest("Could not get file path.");
+                Console.WriteLine($"\n{nameof(OperationCanceledException)} thrown\n");
+            }
+
+            if (UploadResult.GetType() != typeof(OkResult))
+            {
+                System.IO.File.Delete(SaveToPath);
+            }
+
+            return UploadResult;
+        }
+
+        private async Task DoTaskWhileSendingUpdates(Task task, string connectionId, string updateMessage)
+        {
+            using var cts = new CancellationTokenSource();
+            await Task.WhenAny(task, SendPeriodicUploadFeedback(connectionId, updateMessage, cts.Token));
+            cts.Cancel();
+            return;
+        }
+
+        private async Task SendPeriodicUploadFeedback(string connectionId, string feedbackMessage, CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                await hubContext.Clients.Client(connectionId).SendAsync("fileUploading", feedbackMessage, cancellationToken: cancellationToken);
+                await Task.Delay(2000, cancellationToken);
             }
         }
 
-        private async Task UnzipAndSendUpdatesAsync(string connectionId)
+        private async Task UploadToDirectoryAsync(HttpRequest request, CancellationTokenSource mainCts)
         {
-            CancellationTokenSource cts = new ();
-            await Task.WhenAny(Task.Run(() => UnzipFile(SaveToPath)), SendPeriodicUploadFeedback(connectionId, "File is being unzipped...", cts.Token));
-            cts.Cancel();
-            cts.Dispose();
-        }
-
-        private async Task<Task<bool>> ParseAndSendUpdatesAsync(string connectionId)
-        {
-            CancellationTokenSource cts = new ();
-            Task<bool> parseTask = IsValidXmlAsync(SaveToPath);
-            sessionLogger.Information("Parsing file");
-            applicationLogger.LogInformation("Parsing file");
-            await Task.WhenAny(parseTask, SendPeriodicUploadFeedback(connectionId, "File is parsing...", cts.Token));
-            cts.Cancel();
-            cts.Dispose();
-            return parseTask;
-        }
-
-        private async Task<Task<IActionResult>> UploadAndSendUpdatesAsync(HttpRequest request, string connectionId)
-        {
-            CancellationTokenSource cts = new ();
-            Task<IActionResult> uploadTask = UploadToDirectory(request);
-            sessionLogger.Information("Uploading file");
-            applicationLogger.LogInformation("Uploading file");
-            await Task.WhenAny(uploadTask, SendPeriodicUploadFeedback(connectionId, "File is uploading...", cts.Token));
-            cts.Cancel();
-            cts.Dispose();
-            return uploadTask;
-        }
-
-        private async Task<IActionResult> UploadToDirectory(HttpRequest request)
-        {
+            LogInfo("Uploading file");
             if (!request.HasFormContentType ||
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                return new UnsupportedMediaTypeResult();
+                UploadResult = new UnsupportedMediaTypeResult();
+                LogInfo("Upload aborted, unsupported media type.");
+                mainCts.Cancel();
+                return;
             }
 
             var reader = new MultipartReader(mediaTypeHeader.Boundary.Value, request.Body);
@@ -135,67 +127,96 @@ namespace ILICheck.Web.Controllers
                         await section.Body.CopyToAsync(targetStream);
                     }
 
-                    return Ok();
+                    UploadResult = Ok();
+                    return;
                 }
 
                 section = await reader.ReadNextSectionAsync();
             }
 
-            return BadRequest("No files data in the request.");
+            UploadResult = BadRequest("No files data in the request.");
+            LogInfo("Upload aborted, no files data in the request.");
+            mainCts.Cancel();
+            return;
         }
 
-        private async Task SendPeriodicUploadFeedback(string connectionId, string feedbackMessage, CancellationToken cancellationToken)
+        private async Task UnzipFileAsync(string zipFilePath, CancellationTokenSource mainCts)
         {
-            while (true)
+            await Task.Run(() =>
             {
-                await hubContext.Clients.Client(connectionId).SendAsync("fileUploading", feedbackMessage, cancellationToken: cancellationToken);
-                await Task.Delay(20000, cancellationToken);
-            }
-        }
+                LogInfo("Unzipping file");
+                string extractPath = @".\Upload";
+                extractPath = Path.GetFullPath(extractPath);
 
-        private void UnzipFile(string zipFilePath)
-        {
-            string extractPath = @".\Upload";
-            extractPath = Path.GetFullPath(extractPath);
-
-            // Ensures that the last character on the extraction path
-            // is the directory separator char.
-            // Without this, a malicious zip file could try to traverse outside of the expected
-            // extraction path.
-            if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
-            {
-                extractPath += Path.DirectorySeparatorChar;
-            }
-
-            string unzippedFilePath = "";
-            using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
-            {
-                if (archive.Entries.Count == 1)
+                // Ensures that the last character on the extraction path
+                // is the directory separator char.
+                // Without this, a malicious zip file could try to traverse outside of the expected
+                // extraction path.
+                if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
                 {
-                    var extention = Path.GetExtension(archive.Entries[0].FullName);
-                    var supportedExtension = new List<string>() { ".xtf", ".xml" };
-                    if (supportedExtension.Contains(extention))
+                    extractPath += Path.DirectorySeparatorChar;
+                }
+
+                string unzippedFilePath = "";
+                using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
+                {
+                    if (archive.Entries.Count != 1)
                     {
-                        unzippedFilePath = Path.GetFullPath(Path.ChangeExtension(zipFilePath, Path.GetExtension(archive.Entries[0].FullName)));
-                        if (unzippedFilePath.StartsWith(extractPath, StringComparison.Ordinal))
+                        UploadResult = BadRequest("Only zip archives containing exactly one file are supported.");
+                        LogInfo("Upload aborted, only zip archives containing exactly one file are supported.");
+                        mainCts.Cancel();
+                        return;
+                    }
+                    else
+                    {
+                        var extention = Path.GetExtension(archive.Entries[0].FullName);
+                        var supportedExtension = new List<string>() { ".xtf", ".xml" };
+                        if (supportedExtension.Contains(extention))
                         {
-                            // Overwrite file if it exists.
-                            archive.Entries[0].ExtractToFile(unzippedFilePath, true);
+                            unzippedFilePath = Path.GetFullPath(Path.ChangeExtension(zipFilePath, Path.GetExtension(archive.Entries[0].FullName)));
+                            if (unzippedFilePath.StartsWith(extractPath, StringComparison.Ordinal))
+                            {
+                                // Overwrite file if it exists.
+                                archive.Entries[0].ExtractToFile(unzippedFilePath, true);
+                            }
+                            else
+                            {
+                                UploadResult = BadRequest("Cannot get extraction path.");
+                                LogInfo("Upload aborted, cannot get extraction path.");
+                                mainCts.Cancel();
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            UploadResult = BadRequest("Zipped file has unsupported extension.");
+                            LogInfo("Upload aborted, zipped file has unsupported extension.");
+                            mainCts.Cancel();
+                            return;
                         }
                     }
                 }
-            }
 
-            if (!string.IsNullOrEmpty(unzippedFilePath))
-            {
-                System.IO.File.Delete(zipFilePath);
-                SaveToPath = unzippedFilePath;
-            }
+                if (!string.IsNullOrEmpty(unzippedFilePath))
+                {
+                    System.IO.File.Delete(zipFilePath);
+                    SaveToPath = unzippedFilePath;
+                    return;
+                }
+                else
+                {
+                    UploadResult = BadRequest("Unknown error.");
+                    LogInfo("Upload aborted, unknown error.");
+                    mainCts.Cancel();
+                    return;
+                }
+            });
         }
 
-        private async Task<bool> IsValidXmlAsync(string filePath)
+        private async Task ParseXmlAsync(string filePath, CancellationTokenSource mainCts)
         {
-            XmlReaderSettings settings = new ();
+            LogInfo("Parsing file");
+            var settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = true;
             settings.Async = true;
 
@@ -209,19 +230,25 @@ namespace ILICheck.Web.Controllers
             }
             catch (Exception e)
             {
-                sessionLogger.Information($"Could not parse XTF File: {e.Message}");
-                applicationLogger.LogInformation($"Could not parse XTF File: {e.Message}");
-                System.IO.File.Delete(SaveToPath);
-                return false;
+                UploadResult = BadRequest("Could not parse XTF File");
+                LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
+                mainCts.Cancel();
+                return;
             }
 
-            return true;
+            return;
         }
 
-        private void StartSessionLog(string uploadedFileName)
+        private async Task ValidateFileAsync(CancellationTokenSource cts)
         {
-            sessionLogger = GetLogger(uploadedFileName);
-            sessionLogger.Information($"Start uploading: {uploadedFileName}");
+            await Task.Delay(5000, cts.Token);
+            return;
+        }
+
+        private void LogInfo(string logMessage)
+        {
+            sessionLogger.Information(logMessage);
+            applicationLogger.LogInformation(logMessage);
         }
 
         private Serilog.ILogger GetLogger(string uploadedFileName)
