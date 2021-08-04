@@ -1,17 +1,14 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import { usePDF } from '@react-pdf/renderer';
 import { Button, Container } from 'react-bootstrap';
 import { AiOutlinePlayCircle } from 'react-icons/ai';
 import { FileDropzone } from './Dropzone';
-import { ProtokollPdf } from './ProtokollPdf';
 import Protokoll from './Protokoll';
 
 export const Home = props => {
   const { connection, log, setLog } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
-  const [pdf, updatePdf] = usePDF({ document: ProtokollPdf });
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, protokollName: "" });
 
   // Reset log on file change
@@ -75,7 +72,7 @@ export const Home = props => {
           </span>
         </Button>
       </Container>
-      <Protokoll log={log} fileCheckStatus={fileCheckStatus} pdf={pdf} />
+      <Protokoll log={log} fileCheckStatus={fileCheckStatus} connection={connection} />
     </div>
   );
 }
