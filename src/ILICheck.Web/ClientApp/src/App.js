@@ -6,6 +6,7 @@ import Home from './Home';
 function App() {
   const [connection, setConnection] = useState(null);
   const [log, setLog] = useState([]);
+  const [closedConnectionId, setClosedConnectionId] = useState("");
 
   const updateLog = (message) => {
     setLog(log => [...log, message]);
@@ -29,6 +30,12 @@ function App() {
       updateLog(message)
     });
 
+    connection.on('stopConnection', () => {
+      console.log('SignalR Message: Stop connection')
+      setClosedConnectionId(connection.connectionId)
+      connection.stop();
+    });
+
     connection.start().then(a => {
       if (connection.connectionId) {
         connection.invoke("SendConnectionId", connection.connectionId);
@@ -36,11 +43,11 @@ function App() {
     }).catch((e) => console.log("Error SignalR: ", e));
 
     setConnection(connection)
-  }, [])
+  }, [closedConnectionId])
 
   return (
     <div>
-      <Home connection={connection} log={log} setLog={setLog} />
+      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} setLog={setLog} />
     </div>
   );
 }

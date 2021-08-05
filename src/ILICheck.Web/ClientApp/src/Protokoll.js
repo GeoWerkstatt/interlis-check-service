@@ -4,11 +4,11 @@ import { Card, Container } from 'react-bootstrap';
 import { AiOutlineDownload } from 'react-icons/ai';
 
 export const Protokoll = props => {
-  const { log, fileCheckStatus, connection } = props;
+  const { log, fileCheckStatus, connection, closedConnectionId } = props;
   const protokollName = "Check_result_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
   let downloadUrl;
   if (connection && fileCheckStatus.class === "valid") {
-    downloadUrl = `api/download?connectionId=${connection.connectionId}`
+    downloadUrl = `api/download?connectionId=${closedConnectionId}`
   }
 
   return (

@@ -6,7 +6,7 @@ import { FileDropzone } from './Dropzone';
 import Protokoll from './Protokoll';
 
 export const Home = props => {
-  const { connection, log, setLog } = props;
+  const { connection, closedConnectionId, log, setLog } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, protokollName: "" });
@@ -72,7 +72,7 @@ export const Home = props => {
           </span>
         </Button>
       </Container>
-      <Protokoll log={log} fileCheckStatus={fileCheckStatus} connection={connection} />
+      <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />
     </div>
   );
 }

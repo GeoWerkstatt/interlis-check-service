@@ -12,14 +12,24 @@ namespace ILICheck.Web.Controllers
         /// <summary>
         /// Action to download log file from a directory.
         /// </summary>
-        /// <returns>A <see cref="PhysicalFileResult"/>.</returns>
+        /// <returns>A <see cref="PhysicalFileResult"/> if successful, a <see cref="NotFoundResult"/> otherwise.</returns>
         [HttpGet]
         [Route("api/[controller]")]
-        public PhysicalFileResult Download()
+        public IActionResult Download()
         {
-            string path = @".\Download";
-            path = Path.Combine(Path.GetFullPath(path), "Mock_ilivalidator_log.xtf");
-            return PhysicalFile(path, "text/plain");
+            var request = HttpContext.Request;
+            var connectionId = request.Query["connectionId"][0];
+            string directoryPath = Path.Combine(@".\Upload", connectionId);
+            try
+            {
+                var logFiles = Directory.EnumerateFiles(directoryPath, "Ilivalidator_*", SearchOption.TopDirectoryOnly);
+                var logFile = logFiles.Single();
+                return PhysicalFile(Path.GetFullPath(logFile), "text/plain");
+            }
+            catch (Exception)
+            {
+                return NotFound("Requested logfile could not be found.");
+            }
         }
     }
 }

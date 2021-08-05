@@ -24,7 +24,8 @@ namespace ILICheck.Web.Controllers
         private readonly IConfiguration configuration;
         private Serilog.ILogger sessionLogger;
 
-        public string SaveToPath { get; set; }
+        public string UploadFolderPath { get; set; }
+        public string UploadFilePath { get; set; }
 
         public IActionResult UploadResult { get; set; }
 
@@ -47,6 +48,8 @@ namespace ILICheck.Web.Controllers
             var connectionId = request.Query["connectionId"][0];
             var fileName = request.Query["fileName"][0];
 
+            MakeUploadFolder(connectionId);
+
             sessionLogger = GetLogger(fileName);
             LogInfo($"Start uploading: {fileName}");
             await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload started for file {fileName}");
@@ -55,13 +58,13 @@ namespace ILICheck.Web.Controllers
             try
             {
                 await Task.Run(() => DoTaskWhileSendingUpdates(UploadToDirectoryAsync(request, cts), connectionId, "File is uploading..."), cts.Token);
-                if (Path.GetExtension(SaveToPath) == ".zip")
+                if (Path.GetExtension(UploadFilePath) == ".zip")
                 {
-                    await Task.Run(() => DoTaskWhileSendingUpdates(UnzipFileAsync(SaveToPath, cts), connectionId, "File is being unzipped..."), cts.Token);
+                    await Task.Run(() => DoTaskWhileSendingUpdates(UnzipFileAsync(UploadFilePath, cts), connectionId, "File is being unzipped..."), cts.Token);
                 }
 
-                await Task.Run(() => DoTaskWhileSendingUpdates(ParseXmlAsync(SaveToPath, cts), connectionId, "File is parsinig..."), cts.Token);
-                await Task.Run(() => DoTaskWhileSendingUpdates(ValidateFileAsync(cts), connectionId, "File is being validated..."), cts.Token);
+                await Task.Run(() => DoTaskWhileSendingUpdates(ParseXmlAsync(UploadFilePath, cts), connectionId, "File is parsinig..."), cts.Token);
+                await Task.Run(() => DoTaskWhileSendingUpdates(ValidateFileAsync(fileName, cts), connectionId, "File is being validated..."), cts.Token);
             }
             catch (OperationCanceledException)
             {
@@ -70,10 +73,20 @@ namespace ILICheck.Web.Controllers
 
             if (UploadResult.GetType() != typeof(OkResult))
             {
-                System.IO.File.Delete(SaveToPath);
+                System.IO.File.Delete(UploadFilePath);
             }
 
+            // Close connection after file upload attempt, to make a new connection for next file.
+            await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
             return UploadResult;
+        }
+
+        private void MakeUploadFolder(string connectionId)
+        {
+            var uploadPathFormat = configuration.GetSection("Upload")["PathFormat"];
+            var folderName = connectionId;
+            UploadFolderPath = uploadPathFormat.Replace("{Name}", folderName);
+            Directory.CreateDirectory(UploadFolderPath);
         }
 
         private async Task DoTaskWhileSendingUpdates(Task task, string connectionId, string updateMessage)
@@ -117,12 +130,11 @@ namespace ILICheck.Web.Controllers
                 if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
                     !string.IsNullOrEmpty(contentDisposition.FileName.Value))
                 {
-                    var uploadPathFormat = configuration.GetSection("Upload")["PathFormat"];
                     var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
                     var uploadFileName = $"{timestamp}_{contentDisposition.FileName.Value}";
-                    SaveToPath = uploadPathFormat.Replace("{FileName}", uploadFileName);
+                    UploadFilePath = Path.Combine(UploadFolderPath, uploadFileName);
 
-                    using (var targetStream = System.IO.File.Create(SaveToPath))
+                    using (var targetStream = System.IO.File.Create(UploadFilePath))
                     {
                         await section.Body.CopyToAsync(targetStream);
                     }
@@ -200,7 +212,7 @@ namespace ILICheck.Web.Controllers
                 if (!string.IsNullOrEmpty(unzippedFilePath))
                 {
                     System.IO.File.Delete(zipFilePath);
-                    SaveToPath = unzippedFilePath;
+                    UploadFilePath = unzippedFilePath;
                     return;
                 }
                 else
@@ -239,10 +251,21 @@ namespace ILICheck.Web.Controllers
             return;
         }
 
-        private async Task ValidateFileAsync(CancellationTokenSource cts)
+        private async Task ValidateFileAsync(string fileName, CancellationTokenSource cts)
         {
+            MakeMockIlivalidatorLog(fileName);
             await Task.Delay(5000, cts.Token);
             return;
+        }
+
+        private void MakeMockIlivalidatorLog(string fileName)
+        {
+            var ilivalidatorLog = $"Ilivalidator_{fileName}.xtf";
+            var logFilePath = Path.Combine(UploadFolderPath, ilivalidatorLog);
+            using (StreamWriter outputFile = new StreamWriter(logFilePath))
+            {
+                outputFile.WriteLine("The Ilivalidator output: ... ");
+            }
         }
 
         private void LogInfo(string logMessage)
@@ -253,13 +276,12 @@ namespace ILICheck.Web.Controllers
 
         private Serilog.ILogger GetLogger(string uploadedFileName)
         {
-            var sessionPathFormat = configuration.GetSection("Logging")["PathFormatSession"];
             var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
-            var sessionId = $"{timestamp}_{uploadedFileName}";
-            var logFileName = sessionPathFormat.Replace("{SessionId}", sessionId);
+            var logFileName = $"Session_{timestamp}_{uploadedFileName}.log";
+            var logFilePath = Path.Combine(UploadFolderPath, logFileName);
 
             return new LoggerConfiguration()
-                .WriteTo.File(logFileName)
+                .WriteTo.File(logFilePath)
                 .CreateLogger();
         }
     }
