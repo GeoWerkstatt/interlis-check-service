@@ -54,21 +54,30 @@ namespace ILICheck.Web.Controllers
             LogInfo($"Start uploading: {fileName}");
             await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload started for file {fileName}");
 
-            using var cts = new CancellationTokenSource();
-            try
+            using var internalTokenSource = new CancellationTokenSource();
+            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
             {
-                await Task.Run(() => DoTaskWhileSendingUpdates(UploadToDirectoryAsync(request, cts), connectionId, "File is uploading..."), cts.Token);
-                if (Path.GetExtension(UploadFilePath) == ".zip")
+                try
                 {
-                    await Task.Run(() => DoTaskWhileSendingUpdates(UnzipFileAsync(UploadFilePath, cts), connectionId, "File is being unzipped..."), cts.Token);
-                }
+                    await Task.Run(() => DoTaskWhileSendingUpdates(UploadToDirectoryAsync(request, cts), connectionId, "File is uploading..."), cts.Token);
+                    if (Path.GetExtension(UploadFilePath) == ".zip")
+                    {
+                        await Task.Run(() => DoTaskWhileSendingUpdates(UnzipFileAsync(UploadFilePath, cts), connectionId, "File is being unzipped..."), cts.Token);
+                    }
 
-                await Task.Run(() => DoTaskWhileSendingUpdates(ParseXmlAsync(UploadFilePath, cts), connectionId, "File is parsinig..."), cts.Token);
-                await Task.Run(() => DoTaskWhileSendingUpdates(ValidateFileAsync(fileName, cts), connectionId, "File is being validated..."), cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine($"\n{nameof(OperationCanceledException)} thrown\n");
+                    await Task.Run(() => DoTaskWhileSendingUpdates(ParseXmlAsync(UploadFilePath, cts), connectionId, "File is parsinig..."), cts.Token);
+                    await Task.Run(() => DoTaskWhileSendingUpdates(ValidateFileAsync(fileName, cts), connectionId, "File is being validated..."), cts.Token);
+                }
+            catch (OperationCanceledException e)
+                {
+                    LogInfo($"Upload was aborted: {e.Message}");
+                    {
+                        if (UploadResult == null)
+                        {
+                            UploadResult = BadRequest($"Upload was aborted:{e.Message}");
+                        }
+                    }
+                }
             }
 
             if (UploadResult.GetType() != typeof(OkResult))

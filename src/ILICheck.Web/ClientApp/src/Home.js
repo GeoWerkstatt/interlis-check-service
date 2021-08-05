@@ -10,10 +10,13 @@ export const Home = props => {
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, protokollName: "" });
+  const [abortController, setAbortController] = useState(null)
 
-  // Reset log on file change
+  // Reset log and abort upload on file change
   useEffect(() => {
     setLog([]);
+    setTestRunning(false);
+    abortController && abortController.abort();
   }, [fileToCheck, setLog])
 
 
@@ -27,8 +30,12 @@ export const Home = props => {
     const formData = new FormData();
     formData.append(file.name, file);
 
+    const controller = new AbortController()
+    const signal = controller.signal
+    setAbortController(controller);
     fetch(`api/upload?connectionId=${connection.connectionId}&fileName=${file.name}`, {
       method: 'POST',
+      signal: signal,
       body: formData,
     })
       .then(res => {
@@ -65,7 +72,7 @@ export const Home = props => {
         </p>
       </header>
       <Container>
-        <FileDropzone setFileToCheck={setFileToCheck} />
+        <FileDropzone setFileToCheck={setFileToCheck} abortController={abortController}/>
         <Button variant="success" className={fileToCheck ? "" : "invisible-check-button"} onClick={checkFile}>Check
           <span className="run-icon">
             {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
