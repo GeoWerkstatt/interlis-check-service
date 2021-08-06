@@ -22,11 +22,11 @@ export const Protokoll = props => {
               </span>
             }
           </Card.Title>
-          <Card.Text className="protokoll">
+          <div className="protokoll">
             {log.map((logEntry, index) => (
               <div key={index}>{logEntry}</div>
             ))}
-          </Card.Text>
+          </div>
         </Card.Body>
       </Card>}
     </Container>
