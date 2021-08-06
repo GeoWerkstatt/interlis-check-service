@@ -21,6 +21,7 @@ export const Home = props => {
 
 
   const checkFile = () => {
+    setLog([]);
     setTestRunning(true);
     setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "" })
     uploadFile(fileToCheck);
