@@ -17,6 +17,7 @@ export const Home = props => {
     setLog([]);
     setTestRunning(false);
     abortController && abortController.abort();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, setLog])
 
 
