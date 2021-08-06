@@ -23,8 +23,8 @@ export const Protokoll = props => {
             }
           </Card.Title>
           <Card.Text className="protokoll">
-            {log.map(logEntry => (
-              <p key={log.indexOf(logEntry)} >{logEntry}</p>
+            {log.map((logEntry, index) => (
+              <div key={index}>{logEntry}</div>
             ))}
           </Card.Text>
         </Card.Body>
