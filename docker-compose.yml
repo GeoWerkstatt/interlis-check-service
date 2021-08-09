@@ -1,14 +1,3 @@
-# INTERLIS Check-Service (ILICHECK)
-
-Webbasierter Checkservice für INTERLIS Datenabgaben
-
-## Quick Start
-
-Mit Docker-Compose kann der INTERLIS Check-Service in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
-
-### docker-compose.yml
-
-```yaml
 version: '3'
 services:
   web:
@@ -25,7 +14,11 @@ services:
     #     Reflects the last commit of an active branch
     #     May contain breaking changes and incompatibilities
     #     NOT RECOMMENDED!
-    image: ghcr.io/geowerkstatt/interlis-check-service:latest
+    #image: ghcr.io/geowerkstatt/interlis-check-service:edge
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
     # Docker container restart behavior
     restart: unless-stopped
     # Mount paths as volumes
@@ -35,7 +28,7 @@ services:
     #     Application and error logs
     #
     #   - /path/to/uploads:/uploads
-    #     XTF transfer files and session logs
+    #     XTF transfer files, ilivalidator and session logs
     #
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
@@ -92,19 +85,3 @@ services:
     #     INTERLIS Web-Check-Service web app runs on port 80 inside the container
     ports:
       - 3080:80
-```
-
-## Einrichten der Entwicklungsumgebung
-
-Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
-
-* Git
-* Visual Studio 2019
-* Node.js 14 LTS
-
-1. Git Repository klonen:  
-   Öffne Git Shell und navigiere in den lokalen Projekt Root  
-   `git clone https://github.com/GeoWerkstatt/interlis-check-service.git`
-
-1. Web-App (React Client und .NET Core Backend) starten:  
-   `IIS Express` Launch-Profil im Visual Studio mit F5 starten
