@@ -59,23 +59,43 @@ namespace ILICheck.Web.Controllers
             {
                 try
                 {
-                    await Task.Run(() => DoTaskWhileSendingUpdates(UploadToDirectoryAsync(request, cts), connectionId, "File is uploading..."), cts.Token);
+                    await Task.Run(async () =>
+                    {
+                        var taskToExecute = UploadToDirectoryAsync(request, cts);
+                        await DoTaskWhileSendingUpdatesAsync(taskToExecute, connectionId, "Datei wird hochgeladen...");
+                        if (taskToExecute.IsFaulted) throw taskToExecute.Exception;
+                    }, cts.Token);
+
                     if (Path.GetExtension(UploadFilePath) == ".zip")
                     {
-                        await Task.Run(() => DoTaskWhileSendingUpdates(UnzipFileAsync(UploadFilePath, cts), connectionId, "File is being unzipped..."), cts.Token);
+                        await Task.Run(async () =>
+                        {
+                            var taskToExecute1 = UnzipFileAsync(UploadFilePath, cts);
+                            await DoTaskWhileSendingUpdatesAsync(taskToExecute1, connectionId, "Datei wird entzipped...");
+                            if (taskToExecute1.IsFaulted) throw taskToExecute1.Exception;
+                        }, cts.Token);
                     }
 
-                    await Task.Run(() => DoTaskWhileSendingUpdates(ParseXmlAsync(UploadFilePath, cts), connectionId, "File is parsinig..."), cts.Token);
-                    await Task.Run(() => DoTaskWhileSendingUpdates(ValidateFileAsync(fileName, cts), connectionId, "File is being validated..."), cts.Token);
-                }
-            catch (OperationCanceledException e)
-                {
-                    LogInfo($"Upload was aborted: {e.Message}");
+                    await Task.Run(async () =>
                     {
-                        if (UploadResult == null)
-                        {
-                            UploadResult = BadRequest($"Upload was aborted:{e.Message}");
-                        }
+                        var taskToExecute2 = ParseXmlAsync(UploadFilePath, cts);
+                        await DoTaskWhileSendingUpdatesAsync(taskToExecute2, connectionId, "Dateistruktur validieren...");
+                        if (taskToExecute2.IsFaulted) throw taskToExecute2.Exception;
+                    }, cts.Token);
+
+                    await Task.Run(async () =>
+                    {
+                        var taskToExecute3 = ValidateFileAsync(fileName, cts);
+                        await DoTaskWhileSendingUpdatesAsync(taskToExecute3, connectionId, "Datei validated...");
+                        if (taskToExecute3.IsFaulted) throw taskToExecute3.Exception;
+                    }, cts.Token);
+                }
+                catch (Exception e)
+                {
+                    LogInfo($"Unexpected error: {e.Message}");
+                    if (UploadResult == null)
+                    {
+                        UploadResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     }
                 }
             }
@@ -98,15 +118,15 @@ namespace ILICheck.Web.Controllers
             Directory.CreateDirectory(UploadFolderPath);
         }
 
-        private async Task DoTaskWhileSendingUpdates(Task task, string connectionId, string updateMessage)
+        private async Task DoTaskWhileSendingUpdatesAsync(Task task, string connectionId, string updateMessage)
         {
             using var cts = new CancellationTokenSource();
-            await Task.WhenAny(task, SendPeriodicUploadFeedback(connectionId, updateMessage, cts.Token));
+            await Task.WhenAny(task, SendPeriodicUploadFeedbackAsync(connectionId, updateMessage, cts.Token));
             cts.Cancel();
             return;
         }
 
-        private async Task SendPeriodicUploadFeedback(string connectionId, string feedbackMessage, CancellationToken cancellationToken)
+        private async Task SendPeriodicUploadFeedbackAsync(string connectionId, string feedbackMessage, CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -241,15 +261,15 @@ namespace ILICheck.Web.Controllers
             settings.IgnoreWhitespace = true;
             settings.Async = true;
 
+            using var fileStream = System.IO.File.OpenText(filePath);
+            using var reader = XmlReader.Create(fileStream, settings);
             try
             {
-                using var fileStream = System.IO.File.OpenText(filePath);
-                using XmlReader reader = XmlReader.Create(fileStream, settings);
                 while (await reader.ReadAsync())
                 {
                 }
             }
-            catch (Exception e)
+            catch (XmlException e)
             {
                 UploadResult = BadRequest("Could not parse XTF File");
                 LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
