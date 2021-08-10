@@ -52,7 +52,7 @@ namespace ILICheck.Web.Controllers
 
             sessionLogger = GetLogger(fileName);
             LogInfo($"Start uploading: {fileName}");
-            await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload started for file {fileName}");
+            await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload von {fileName} gestartet.");
 
             using var internalTokenSource = new CancellationTokenSource();
             using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
@@ -175,7 +175,7 @@ namespace ILICheck.Web.Controllers
                 section = await reader.ReadNextSectionAsync();
             }
 
-            UploadResult = BadRequest("No files data in the request.");
+            UploadResult = BadRequest("Es wurde keine Datei hochgeladen.");
             LogInfo("Upload aborted, no files data in the request.");
             mainCts.Cancel();
             return;
@@ -203,7 +203,7 @@ namespace ILICheck.Web.Controllers
                 {
                     if (archive.Entries.Count != 1)
                     {
-                        UploadResult = BadRequest("Only zip archives containing exactly one file are supported.");
+                        UploadResult = BadRequest("Nur Zip-Archive die genau ein file enthalten, werden unterstützt.");
                         LogInfo("Upload aborted, only zip archives containing exactly one file are supported.");
                         mainCts.Cancel();
                         return;
@@ -222,7 +222,7 @@ namespace ILICheck.Web.Controllers
                             }
                             else
                             {
-                                UploadResult = BadRequest("Cannot get extraction path.");
+                                UploadResult = BadRequest("Dateipfad konnte nicht aufgelöst werden.");
                                 LogInfo("Upload aborted, cannot get extraction path.");
                                 mainCts.Cancel();
                                 return;
@@ -230,7 +230,7 @@ namespace ILICheck.Web.Controllers
                         }
                         else
                         {
-                            UploadResult = BadRequest("Zipped file has unsupported extension.");
+                            UploadResult = BadRequest("Nicht unterstützte Dateiendung.");
                             LogInfo("Upload aborted, zipped file has unsupported extension.");
                             mainCts.Cancel();
                             return;
@@ -246,7 +246,7 @@ namespace ILICheck.Web.Controllers
                 }
                 else
                 {
-                    UploadResult = BadRequest("Unknown error.");
+                    UploadResult = BadRequest("Unbekannter Fehler.");
                     LogInfo("Upload aborted, unknown error.");
                     mainCts.Cancel();
                     return;
@@ -271,7 +271,7 @@ namespace ILICheck.Web.Controllers
             }
             catch (XmlException e)
             {
-                UploadResult = BadRequest("Could not parse XTF File");
+                UploadResult = BadRequest("Datei hat keine gültige XML-Struktur.");
                 LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
                 mainCts.Cancel();
                 return;

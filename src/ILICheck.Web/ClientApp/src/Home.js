@@ -53,7 +53,7 @@ export const Home = props => {
         }
         else {
           setFileCheckStatus({
-            text: "Datei enthält Fehler!",
+            text: "Fehler!",
             class: "errors",
             testRunTime: new Date().toLocaleString(),
             fileName: fileToCheck.name,

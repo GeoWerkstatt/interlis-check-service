@@ -10,7 +10,6 @@ function App() {
 
   const updateLog = (message) => {
     setLog(log => [...log, message]);
-    console.log('SignalR Message:', message);
   }
 
   useEffect(() => {
@@ -19,7 +18,7 @@ function App() {
       .build();
 
     connection.on('confirmConnection', (message) => {
-      console.log('SignalR Message:', message);
+      console.log('Message:', message);
     });
 
     connection.on('uploadStarted', (message) => {
@@ -31,16 +30,15 @@ function App() {
     });
 
     connection.on('stopConnection', () => {
-      console.log('SignalR Message: Stop connection')
       setClosedConnectionId(connection.connectionId)
       connection.stop();
     });
 
     connection.start().then(a => {
       if (connection.connectionId) {
-        connection.invoke("SendConnectionId", connection.connectionId);
+        connection.invoke('SendConnectionId', connection.connectionId);
       }
-    }).catch((e) => console.log("Error SignalR: ", e));
+    }).catch((e) => console.log('Error: ', e));
 
     setConnection(connection)
   }, [closedConnectionId])

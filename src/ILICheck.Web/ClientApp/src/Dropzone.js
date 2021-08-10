@@ -27,7 +27,7 @@ const Container = styled.div`
 
 export const FileDropzone = ({ setFileToCheck, abortController}) => {
     const [fileAvailable, setFileAvailable] = useState(false);
-    const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip file hier ablegen, oder klicken um auf dem Filesystem auszuwählen.");
+    const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip file hier ablegen oder klicken um auf dem Filesystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
 
     const onDropAccepted = useCallback(acceptedFiles => {
@@ -54,7 +54,7 @@ export const FileDropzone = ({ setFileToCheck, abortController}) => {
                 setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wählen Sie eine kleinere Datei.");
                 break;
             default:
-                setDropZoneText("Fehler: Bitte wählen Sie eine Datei des Typs .xtf oder .xml oder .zip mit maximal 5MB aus.");
+                setDropZoneText("Fehler: Bitte wählen Sie eine Datei des Typs .xtf, .xml oder .zip mit maximal 200MB aus.");
         }
         setFileToCheck(null)
         setFileAvailable(false);
@@ -65,7 +65,7 @@ export const FileDropzone = ({ setFileToCheck, abortController}) => {
         abortController && abortController.abort();
         setFileToCheck(null);
         setFileAvailable(false);
-      setDropZoneText(".xtf, .xml oder .zip file hier ablegen, oder klicken um auf dem Filesystem auszuwählen.");
+      setDropZoneText(".xtf, .xml oder .zip file hier ablegen oder klicken um auf dem Filesystem auszuwählen.");
         setDropZoneTextClass("dropzone-text");
     }
 
