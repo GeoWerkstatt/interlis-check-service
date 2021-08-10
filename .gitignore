@@ -232,3 +232,4 @@ _Pvt_Extensions
 .fake/
 src/ILICheck.Web/ClientApp/node_modules/
 src/ILICheck.Web/Logs/
+src/ILICheck.Web/Upload/

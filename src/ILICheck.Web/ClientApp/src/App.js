@@ -4,52 +4,48 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import Home from './Home';
 
 function App() {
-  const [connection, setConnection] = useState(null); 
-  const [logMessage, setLogMessage] = useState(null);
-  
-  const updateLog=(message)=>{
-    setLogMessage(message);
-    console.log('SignalR Message:', message);
+  const [connection, setConnection] = useState(null);
+  const [log, setLog] = useState([]);
+  const [closedConnectionId, setClosedConnectionId] = useState("");
+
+  const updateLog = (message) => {
+    setLog(log => [...log, message]);
   }
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
       .withUrl("/hub")
       .build();
-    
-      connection.on('confirmConnection', (message) => {
-        console.log('SignalR Message:', message);
-      });
 
-      connection.on('validationStarted', (message) => {
-        updateLog(message)
-      });
+    connection.on('confirmConnection', (message) => {
+      console.log('Message:', message);
+    });
 
-      connection.on('secondValidationPass', (message) => {
-        updateLog(message)
-      });
+    connection.on('uploadStarted', (message) => {
+      updateLog(message)
+    });
 
-      connection.on('firstValidationPass', (message) => {
-        updateLog(message)
-      });
+    connection.on('fileUploading', (message) => {
+      updateLog(message)
+    });
 
-      connection.on('validationDone', (message) => {
-        updateLog(message)
-
-      });
+    connection.on('stopConnection', () => {
+      setClosedConnectionId(connection.connectionId)
+      connection.stop();
+    });
 
     connection.start().then(a => {
       if (connection.connectionId) {
-        connection.invoke("SendConnectionId", connection.connectionId);
+        connection.invoke('SendConnectionId', connection.connectionId);
       }
-    }).catch((e) => console.log("Error SignalR: ", e));
+    }).catch((e) => console.log('Error: ', e));
 
     setConnection(connection)
-  }, [])
+  }, [closedConnectionId])
 
   return (
     <div>
-      <Home connection={connection} logMessage={logMessage} />
+      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} setLog={setLog} />
     </div>
   );
 }
