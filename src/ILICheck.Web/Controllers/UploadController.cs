@@ -55,7 +55,7 @@ namespace ILICheck.Web.Controllers
             await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload von {fileName} gestartet.");
 
             using var internalTokenSource = new CancellationTokenSource();
-            using (CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
+            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
             {
                 try
                 {
@@ -199,7 +199,7 @@ namespace ILICheck.Web.Controllers
                 }
 
                 string unzippedFilePath = "";
-                using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
+                using (var archive = ZipFile.OpenRead(zipFilePath))
                 {
                     if (archive.Entries.Count != 1)
                     {
@@ -217,8 +217,7 @@ namespace ILICheck.Web.Controllers
                             unzippedFilePath = Path.GetFullPath(Path.ChangeExtension(zipFilePath, Path.GetExtension(archive.Entries[0].FullName)));
                             if (unzippedFilePath.StartsWith(extractPath, StringComparison.Ordinal))
                             {
-                                // Overwrite file if it exists.
-                                archive.Entries[0].ExtractToFile(unzippedFilePath, true);
+                                archive.Entries[0].ExtractToFile(unzippedFilePath);
                             }
                             else
                             {
@@ -291,7 +290,7 @@ namespace ILICheck.Web.Controllers
         {
             var ilivalidatorLog = $"Ilivalidator_{fileName}.xtf";
             var logFilePath = Path.Combine(UploadFolderPath, ilivalidatorLog);
-            using (StreamWriter outputFile = new StreamWriter(logFilePath))
+            using (var outputFile = new StreamWriter(logFilePath))
             {
                 outputFile.WriteLine("The Ilivalidator output: ... ");
             }
