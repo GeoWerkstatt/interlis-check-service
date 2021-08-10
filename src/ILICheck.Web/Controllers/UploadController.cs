@@ -52,7 +52,7 @@ namespace ILICheck.Web.Controllers
 
             sessionLogger = GetLogger(fileName);
             LogInfo($"Start uploading: {fileName}");
-            await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"Upload von {fileName} gestartet.");
+            await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"{fileName} wird hochgeladen.");
 
             using var internalTokenSource = new CancellationTokenSource();
             using (var cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
@@ -86,7 +86,7 @@ namespace ILICheck.Web.Controllers
                     await Task.Run(async () =>
                     {
                         var taskToExecute3 = ValidateFileAsync(fileName, cts);
-                        await DoTaskWhileSendingUpdatesAsync(taskToExecute3, connectionId, "Datei validated...");
+                        await DoTaskWhileSendingUpdatesAsync(taskToExecute3, connectionId, "Datei validieren...");
                         if (taskToExecute3.IsFaulted) throw taskToExecute3.Exception;
                     }, cts.Token);
                 }
@@ -203,7 +203,7 @@ namespace ILICheck.Web.Controllers
                 {
                     if (archive.Entries.Count != 1)
                     {
-                        UploadResult = BadRequest("Nur Zip-Archive die genau ein file enthalten, werden unterstützt.");
+                        UploadResult = BadRequest("Nur Zip-Archive, die genau eine Datei enthalten, werden unterstützt.");
                         LogInfo("Upload aborted, only zip archives containing exactly one file are supported.");
                         mainCts.Cancel();
                         return;

@@ -43,7 +43,7 @@ export const Home = props => {
       .then(res => {
         setTestRunning(false);
         if (res.status === 200) {
-          setLog(log => [...log, `${file.name} successfully uploaded!`])
+          setLog(log => [...log, `${file.name} erfolgreich hochgeladen!`])
           setFileCheckStatus({
             text: "Datei enthält keine Fehler!",
             class: "valid",
