@@ -189,8 +189,8 @@ namespace ILICheck.Web.Controllers
             await Task.Run(() =>
             {
                 LogInfo("Unzipping file");
-                string extractPath = @".\Upload";
-                extractPath = Path.GetFullPath(extractPath);
+                var uploadPath = Path.GetFullPath(configuration.GetSection("Upload")["PathFormat"]);
+                var extractPath = Path.GetDirectoryName(uploadPath);
 
                 // Ensures that the last character on the extraction path
                 // is the directory separator char.
