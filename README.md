@@ -101,6 +101,7 @@ services:
 Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 
 * Git
+* Docker
 * Visual Studio 2019
 * Node.js 14 LTS
 
