@@ -46,6 +46,9 @@ end_of_line = lf
 [*.svg]
 indent_size = 2
 
+[VERSION]
+insert_final_newline = false
+
 # Configure code analysis according to current standards by default.
 [*.cs]
 dotnet_diagnostic.CA1001.severity = warning

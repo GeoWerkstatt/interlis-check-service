@@ -17,7 +17,10 @@
 [Rr]eleases/
 x64/
 x86/
-build/
+[Bb]uild/
+[Aa]ssets/
+[Ll]ogs/
+[Uu]ploads/
 bld/
 bin/
 Bin/
@@ -180,7 +183,7 @@ ClientBin/
 *.publishsettings
 orleans.codegen.cs
 
-/node_modules
+**/node_modules
 
 # RIA/Silverlight projects
 Generated_Code/
@@ -230,6 +233,3 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-src/ILICheck.Web/ClientApp/node_modules/
-src/ILICheck.Web/Logs/
-src/ILICheck.Web/Upload/
