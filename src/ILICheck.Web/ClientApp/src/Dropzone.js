@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { AiOutlineCloseCircle } from 'react-icons/ai'
+import { IoIosRemoveCircleOutline } from 'react-icons/io'
 import styled from 'styled-components';
 
 const getColor = (props) => {
@@ -74,7 +74,7 @@ export const FileDropzone = ({ setFileToCheck, abortController}) => {
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
             <input {...getInputProps()} />
-            <p>{dropZoneText} {fileAvailable && <span className="remove-icon" onClick={removeFile}><AiOutlineCloseCircle /></span>}</p>
+            <p>{dropZoneText} {fileAvailable && <span onClick={removeFile}><IoIosRemoveCircleOutline/></span>}</p>
         </Container>
     )
 }
