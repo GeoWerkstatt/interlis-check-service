@@ -52,6 +52,8 @@ namespace ILICheck.Web.Controllers
 
             sessionLogger = GetLogger(fileName);
             LogInfo($"Start uploading: {fileName}");
+            LogInfo($"File size: {request.ContentLength}");
+            LogInfo($"Start time: {DateTime.Now}");
             await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"{fileName} wird hochgeladen.");
 
             using var internalTokenSource = new CancellationTokenSource();
@@ -106,6 +108,7 @@ namespace ILICheck.Web.Controllers
             }
 
             // Close connection after file upload attempt, to make a new connection for next file.
+            LogInfo($"Stop time: {DateTime.Now}");
             await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
             return UploadResult;
         }
@@ -281,6 +284,7 @@ namespace ILICheck.Web.Controllers
 
         private async Task ValidateFileAsync(string fileName, CancellationTokenSource cts)
         {
+            LogInfo("Validating file");
             MakeMockIlivalidatorLog(fileName);
             await Task.Delay(5000, cts.Token);
             return;
