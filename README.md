@@ -37,7 +37,7 @@ services:
     #     Application and error logs
     #
     #   - /path/to/uploads:/uploads
-    #     XTF transfer files and session logs
+    #     XTF transfer files, ilivalidator and session logs
     #
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
