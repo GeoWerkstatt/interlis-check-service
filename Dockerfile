@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+ARG VERSION
+ARG REVISION
 
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
@@ -14,10 +16,13 @@ COPY ["src/ILICheck.Web/", "src/ILICheck.Web/"]
 RUN dotnet publish "src/ILICheck.Web/ILICheck.Web.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS final
-
+ARG VERSION
+ARG REVISION
 ENV HOME=/app
 ENV TZ=Europe/Zurich
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ILICHECK_APP_VERSION=${VERSION}
+ENV ILICHECK_APP_REVISION=${REVISION}
 ENV ILICHECK_APP_HOME_DIR=/app
 ENV ILICHECK_APP_LOG_DIR=/logs
 ENV ILICHECK_UPLOADS_DIR=/uploads

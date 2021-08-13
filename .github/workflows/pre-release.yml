@@ -23,6 +23,7 @@ jobs:
           echo VERSION=$(cat VERSION).$GITHUB_RUN_NUMBER >> $GITHUB_ENV
           echo IMAGE_NAME=$REGISTRY/$(echo ${GITHUB_REPOSITORY,,}) >> $GITHUB_ENV
           echo COMMITED_AT=$(git show -s --format=%cI `git rev-parse HEAD`) >> $GITHUB_ENV
+          echo REVISION=$(git rev-parse --short HEAD) >> $GITHUB_ENV
 
       - name: Collect Docker image metadata
         id: meta
@@ -48,6 +49,9 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            VERSION=${{ env.VERSION }}
+            REVISION=${{ env.REVISION }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}

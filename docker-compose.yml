@@ -19,6 +19,9 @@ services:
       context: .
       dockerfile: Dockerfile
       target: final
+      args:
+        - VERSION=0.1.100
+        - REVISION=abcdefg
     # Docker container restart behavior
     restart: unless-stopped
     # Mount paths as volumes
