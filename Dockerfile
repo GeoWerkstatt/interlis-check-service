@@ -13,7 +13,11 @@ RUN dotnet restore "src/ILICheck.Web/ILICheck.Web.csproj"
 
 # Create optimized production build
 COPY ["src/ILICheck.Web/", "src/ILICheck.Web/"]
-RUN dotnet publish "src/ILICheck.Web/ILICheck.Web.csproj" -c Release -o /app/publish
+RUN dotnet publish "src/ILICheck.Web/ILICheck.Web.csproj" \
+  -c Release \
+  -p:VersionPrefix=${VERSION} \
+  -p:SourceRevisionId=${REVISION} \
+  -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS final
 ARG VERSION
