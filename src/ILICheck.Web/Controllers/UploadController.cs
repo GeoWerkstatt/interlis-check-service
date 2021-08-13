@@ -114,8 +114,11 @@ namespace ILICheck.Web.Controllers
             return UploadResult;
         }
 
-        private void MakeUploadFolder(string connectionId) =>
-            Directory.CreateDirectory(configuration.GetUploadPathForSession(connectionId));
+        private void MakeUploadFolder(string connectionId)
+        {
+            UploadFolderPath = configuration.GetUploadPathForSession(connectionId);
+            Directory.CreateDirectory(UploadFolderPath);
+        }
 
         private async Task DoTaskWhileSendingUpdatesAsync(Task task, string connectionId, string updateMessage)
         {
