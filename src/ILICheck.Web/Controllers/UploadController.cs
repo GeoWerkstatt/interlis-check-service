@@ -14,6 +14,7 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -113,13 +114,8 @@ namespace ILICheck.Web.Controllers
             return UploadResult;
         }
 
-        private void MakeUploadFolder(string connectionId)
-        {
-            var uploadPathFormat = configuration.GetSection("Upload")["PathFormat"];
-            var folderName = connectionId;
-            UploadFolderPath = uploadPathFormat.Replace("{Name}", folderName);
-            Directory.CreateDirectory(UploadFolderPath);
-        }
+        private void MakeUploadFolder(string connectionId) =>
+            Directory.CreateDirectory(configuration.GetUploadPathForSession(connectionId));
 
         private async Task DoTaskWhileSendingUpdatesAsync(Task task, string connectionId, string updateMessage)
         {

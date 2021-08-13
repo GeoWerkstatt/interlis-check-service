@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
+using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -25,8 +26,7 @@ namespace ILICheck.Web.Controllers
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
             var fileExtension = request.Query["fileExtension"][0];
-            var uploadPathFormat = configuration.GetSection("Upload")["PathFormat"];
-            var directoryPath = uploadPathFormat.Replace("{Name}", connectionId);
+            var directoryPath = configuration.GetUploadPathForSession(connectionId);
             try
             {
                 var logFiles = Directory.EnumerateFiles(directoryPath, "Ilivalidator_*", SearchOption.TopDirectoryOnly);
