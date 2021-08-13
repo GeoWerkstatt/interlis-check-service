@@ -1,14 +1,17 @@
 import './App.css';
 import React from 'react';
 import { Card, Container } from 'react-bootstrap';
-import { AiOutlineDownload } from 'react-icons/ai';
+import { GoFile, GoFileCode} from 'react-icons/go';
 
 export const Protokoll = props => {
   const { log, fileCheckStatus, connection, closedConnectionId } = props;
-  const protokollName = "Check_result_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
-  let downloadUrl;
+  const protokollNameLog = "Check_result_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".log";
+  const protokollNameXtf = "Check_result_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
+  let downloadLogUrl;
+  let downloadXTFUrl;
   if (connection && fileCheckStatus.class === "valid") {
-    downloadUrl = `api/download?connectionId=${closedConnectionId}`
+    downloadLogUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.log`
+    downloadXTFUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.xtf`
   }
 
   return (
@@ -16,9 +19,14 @@ export const Protokoll = props => {
       {log.length > 0 && <Card className="protokoll-card">
         <Card.Body>
           <Card.Title className={fileCheckStatus.class}>{fileCheckStatus.text} Testausführung: {fileCheckStatus.testRunTime}
-            {downloadUrl &&
-              <span title="Protokolldatei herunterladen.">
-                <a download={protokollName} className="download-icon" href={downloadUrl}><AiOutlineDownload /></a>
+            {downloadLogUrl && downloadXTFUrl &&
+              <span>
+                <span title="Log-Datei herunterladen.">
+                  <a download={protokollNameLog} className="download-icon" href={downloadLogUrl}><GoFile /></a>
+                </span>
+                <span title="XTF-Log-Datei herunterladen.">
+                  <a download={protokollNameXtf} className="download-icon" href={downloadXTFUrl}><GoFileCode /></a>
+                </span>
               </span>
             }
           </Card.Title>

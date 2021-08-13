@@ -14,6 +14,7 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -113,13 +114,8 @@ namespace ILICheck.Web.Controllers
             return UploadResult;
         }
 
-        private void MakeUploadFolder(string connectionId)
-        {
-            var uploadPathFormat = configuration.GetSection("Upload")["PathFormat"];
-            var folderName = connectionId;
-            UploadFolderPath = uploadPathFormat.Replace("{Name}", folderName);
-            Directory.CreateDirectory(UploadFolderPath);
-        }
+        private void MakeUploadFolder(string connectionId) =>
+            Directory.CreateDirectory(configuration.GetUploadPathForSession(connectionId));
 
         private async Task DoTaskWhileSendingUpdatesAsync(Task task, string connectionId, string updateMessage)
         {
@@ -285,18 +281,27 @@ namespace ILICheck.Web.Controllers
         private async Task ValidateFileAsync(string fileName, CancellationTokenSource cts)
         {
             LogInfo("Validating file");
-            MakeMockIlivalidatorLog(fileName);
+            MakeMockIlivalidatorLogFiles(fileName);
             await Task.Delay(5000, cts.Token);
             return;
         }
 
-        private void MakeMockIlivalidatorLog(string fileName)
+        private void MakeMockIlivalidatorLogFiles(string fileName)
         {
-            var ilivalidatorLog = $"Ilivalidator_{fileName}.xtf";
+            var ilivalidatorXTFLog = $"Ilivalidator_{fileName}.xtf";
+            var ilivalidatorLog = $"Ilivalidator_{fileName}.log";
+
             var logFilePath = Path.Combine(UploadFolderPath, ilivalidatorLog);
+            var xtfFilePath = Path.Combine(UploadFolderPath, ilivalidatorXTFLog);
+
             using (var outputFile = new StreamWriter(logFilePath))
             {
                 outputFile.WriteLine("The Ilivalidator output: ... ");
+            }
+
+            using (var outputFile = new StreamWriter(xtfFilePath))
+            {
+                outputFile.WriteLine("The Ilivalidator XTF output: ... ");
             }
         }
 
