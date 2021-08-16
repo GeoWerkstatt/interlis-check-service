@@ -86,9 +86,9 @@ services:
     #     Protocol (e.g. http://) and port (e.g. 8080) is mandatory in order do be able
     #     to parse values for ilivalidator properly
     #     examples: - http://example.com:8080
-    #               - https://hostexample.com:443
+    #               - https://host.example.com:443
     #               - http://10.10.5.68:5698
-    #               - https://USER:PASSWORD10.10.5.68:8443
+    #               - https://USER:PASSWORD@10.10.5.68:8443
     #
     #   - NO_PROXY=host.example.com,10.1.0.0/16
     #     Optional, Specifies URLs that should be excluded from proxying
