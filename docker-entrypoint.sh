@@ -42,6 +42,7 @@ echo -n "Configure environment ..." && \
 
 echo "
 --------------------------------------------------------------------------
+ilicheck version:                 $ILICHECK_APP_VERSION
 ilivalidator version:             $ILIVALIDATOR_VERSION `[[ $ILIVALIDATOR_VERSION != $ILIVALIDATOR_LATEST_VERSION ]] && echo "(new version $ILIVALIDATOR_LATEST_VERSION available!)"`
 ilivalidator config file name:    $([[ -n $ILIVALIDATOR_CONFIG_NAME ]] && echo $ILIVALIDATOR_CONFIG_NAME || echo disabled)
 ilivalidator model repositories:  $ILIVALIDATOR_MODEL_DIR

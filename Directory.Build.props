@@ -4,7 +4,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>CS1591</NoWarn>
-    <VersionPrefix>1.0</VersionPrefix>
     <Product>INTERLIS Web-Check-Service</Product>
     <Authors>GeoWerkstatt GmbH</Authors>
     <Company>GeoWerkstatt GmbH</Company>
@@ -13,7 +12,6 @@
     <PackageProjectUrl>https://github.com/GeoWerkstatt/interlis-check-service</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GeoWerkstatt/interlis-check-service.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryCommit>$(BUILD_VCS_NUMBER)</RepositoryCommit>
   </PropertyGroup>
 
   <ItemGroup>
