@@ -20,5 +20,13 @@ namespace ILICheck.Web
         /// <returns>The Upload Path for the specified <paramref name="connectionId"/>.</returns>
         public static string GetUploadPathForSession(this IConfiguration configuration, string connectionId) =>
             configuration.GetUploadPathFormat().Replace("{Name}", connectionId);
+
+        /// <summary>
+        /// Shorthand for GetSection("Validation")["ProcessExecutable"].
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns>The name of the process executable.</returns>
+        public static string GetProcessExecutable(this IConfiguration configuration) =>
+            configuration.GetSection("Validation")["ProcessExecutable"];
     }
 }

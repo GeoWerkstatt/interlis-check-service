@@ -39,9 +39,9 @@ services:
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
     volumes:
-      - ./logs:/logs
-      - ./uploads:/uploads
-      - ./config:/config
+      - ./src/ILICheck.Web/Logs:/logs
+      - ./src/ILICheck.Web/Uploads:/uploads
+      - ./src/ILICheck.Web/Config:/config
     # Add environment variables
     #
     # environment:

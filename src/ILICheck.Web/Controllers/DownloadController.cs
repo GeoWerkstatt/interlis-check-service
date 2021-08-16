@@ -29,7 +29,7 @@ namespace ILICheck.Web.Controllers
             var directoryPath = configuration.GetUploadPathForSession(connectionId);
             try
             {
-                var logFiles = Directory.EnumerateFiles(directoryPath, "Ilivalidator_*", SearchOption.TopDirectoryOnly);
+                var logFiles = Directory.EnumerateFiles(directoryPath, "ilivalidator_*", SearchOption.TopDirectoryOnly);
                 var logFile = logFiles
                     .Where(file => Path.GetExtension(file) == fileExtension)
                     .Single();

@@ -5,11 +5,11 @@ import { GoFile, GoFileCode} from 'react-icons/go';
 
 export const Protokoll = props => {
   const { log, fileCheckStatus, connection, closedConnectionId } = props;
-  const protokollNameLog = "Check_result_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".log";
-  const protokollNameXtf = "Check_result_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
+  const protokollNameLog = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".log";
+  const protokollNameXtf = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
   let downloadLogUrl;
   let downloadXTFUrl;
-  if (connection && fileCheckStatus.class === "valid") {
+  if (connection && fileCheckStatus.fileDownloadAvailable) {
     downloadLogUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.log`
     downloadXTFUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.xtf`
   }
@@ -22,10 +22,10 @@ export const Protokoll = props => {
             {downloadLogUrl && downloadXTFUrl &&
               <span>
                 <span title="Log-Datei herunterladen.">
-                  <a download={protokollNameLog} className="download-icon" href={downloadLogUrl}><GoFile /></a>
+                  <a download={protokollNameLog} className={fileCheckStatus.class + " download-icon"} href={downloadLogUrl}><GoFile /></a>
                 </span>
                 <span title="XTF-Log-Datei herunterladen.">
-                  <a download={protokollNameXtf} className="download-icon" href={downloadXTFUrl}><GoFileCode /></a>
+                  <a download={protokollNameXtf} className={fileCheckStatus.class + " download-icon"} href={downloadXTFUrl}><GoFileCode /></a>
                 </span>
               </span>
             }

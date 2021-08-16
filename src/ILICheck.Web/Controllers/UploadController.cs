@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.WebUtilities;
@@ -9,6 +10,7 @@ using Serilog;
 using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -23,6 +25,7 @@ namespace ILICheck.Web.Controllers
         private readonly IHubContext<SignalRHub> hubContext;
         private readonly ILogger<UploadController> applicationLogger;
         private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
         private Serilog.ILogger sessionLogger;
 
         public string UploadFolderPath { get; set; }
@@ -30,11 +33,12 @@ namespace ILICheck.Web.Controllers
 
         public IActionResult UploadResult { get; set; }
 
-        public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration)
+        public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.hubContext = hubcontext;
             this.applicationLogger = applicationLogger;
             this.configuration = configuration;
+            this.environment = environment;
         }
 
         /// <summary>
@@ -64,33 +68,33 @@ namespace ILICheck.Web.Controllers
                 {
                     await Task.Run(async () =>
                     {
-                        var taskToExecute = UploadToDirectoryAsync(request, cts);
-                        await DoTaskWhileSendingUpdatesAsync(taskToExecute, connectionId, "Datei wird hochgeladen...");
-                        if (taskToExecute.IsFaulted) throw taskToExecute.Exception;
+                        var uploadTask = UploadToDirectoryAsync(request, cts);
+                        await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, "Datei wird hochgeladen...");
+                        if (uploadTask.IsFaulted) throw uploadTask.Exception;
                     }, cts.Token);
 
                     if (Path.GetExtension(UploadFilePath) == ".zip")
                     {
                         await Task.Run(async () =>
                         {
-                            var taskToExecute1 = UnzipFileAsync(UploadFilePath, cts);
-                            await DoTaskWhileSendingUpdatesAsync(taskToExecute1, connectionId, "Datei wird entzipped...");
-                            if (taskToExecute1.IsFaulted) throw taskToExecute1.Exception;
+                            var unzipTask = UnzipFileAsync(UploadFilePath, cts);
+                            await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei wird entzipped...");
+                            if (unzipTask.IsFaulted) throw unzipTask.Exception;
                         }, cts.Token);
                     }
 
                     await Task.Run(async () =>
                     {
-                        var taskToExecute2 = ParseXmlAsync(UploadFilePath, cts);
-                        await DoTaskWhileSendingUpdatesAsync(taskToExecute2, connectionId, "Dateistruktur validieren...");
-                        if (taskToExecute2.IsFaulted) throw taskToExecute2.Exception;
+                        var parseTask = ParseXmlAsync(UploadFilePath, cts);
+                        await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
+                        if (parseTask.IsFaulted) throw parseTask.Exception;
                     }, cts.Token);
 
                     await Task.Run(async () =>
                     {
-                        var taskToExecute3 = ValidateFileAsync(fileName, cts);
-                        await DoTaskWhileSendingUpdatesAsync(taskToExecute3, connectionId, "Datei validieren...");
-                        if (taskToExecute3.IsFaulted) throw taskToExecute3.Exception;
+                        var validateTask = ValidateFileAsync(connectionId);
+                        await DoTaskWhileSendingUpdatesAsync(validateTask, connectionId, "Datei validieren...");
+                        if (validateTask.IsFaulted) throw validateTask.Exception;
                     }, cts.Token);
                 }
                 catch (Exception e)
@@ -170,7 +174,6 @@ namespace ILICheck.Web.Controllers
                         await section.Body.CopyToAsync(targetStream);
                     }
 
-                    UploadResult = Ok();
                     return;
                 }
 
@@ -281,30 +284,56 @@ namespace ILICheck.Web.Controllers
             return;
         }
 
-        private async Task ValidateFileAsync(string fileName, CancellationTokenSource cts)
+        private async Task ValidateFileAsync(string connectionId)
         {
-            LogInfo("Validating file");
-            MakeMockIlivalidatorLogFiles(fileName);
-            await Task.Delay(5000, cts.Token);
-            return;
+            await Task.Run(() =>
+            {
+                LogInfo("Validating file");
+                Validate(connectionId);
+                return;
+            });
         }
 
-        private void MakeMockIlivalidatorLogFiles(string fileName)
+        private void Validate(string connectionId)
         {
-            var ilivalidatorXTFLog = $"Ilivalidator_{fileName}.xtf";
-            var ilivalidatorLog = $"Ilivalidator_{fileName}.log";
+            var fileName = Path.GetFileName(UploadFilePath);
+            var uploadPath = configuration.GetUploadPathForSession(connectionId);
+            var commandPrefix = "";
 
-            var logFilePath = Path.Combine(UploadFolderPath, ilivalidatorLog);
-            var xtfFilePath = Path.Combine(UploadFolderPath, ilivalidatorXTFLog);
-
-            using (var outputFile = new StreamWriter(logFilePath))
+            if (environment.EnvironmentName.Equals("Development"))
             {
-                outputFile.WriteLine("The Ilivalidator output: ... ");
+                uploadPath = $"/uploads/{connectionId}";
+                commandPrefix = "docker compose exec --user abc web bash -l ";
             }
 
-            using (var outputFile = new StreamWriter(xtfFilePath))
+            var filePath = uploadPath + $"/{fileName}";
+            var logPath = uploadPath + "/ilivalidator_output.log";
+            var xtfLogPath = uploadPath + "/ilivalidator_output.xtf";
+
+            var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} {filePath}";
+
+            var startInfo = new ProcessStartInfo()
             {
-                outputFile.WriteLine("The Ilivalidator XTF output: ... ");
+                FileName = configuration.GetProcessExecutable(),
+                Arguments = $"{commandPrefix}{command}",
+                UseShellExecute = true,
+            };
+
+            using var process = new Process()
+            {
+                StartInfo = startInfo,
+                EnableRaisingEvents = true,
+            };
+
+            process.Start();
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                UploadResult = Ok("Der Ilivalidator hat Fehler in der Datei gefunden.");
+            }
+            else
+            {
+                UploadResult = Ok();
             }
         }
 
