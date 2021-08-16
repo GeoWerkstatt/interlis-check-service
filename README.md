@@ -6,7 +6,13 @@ Webbasierter Checkservice für INTERLIS Datenabgaben
 
 ## Quick Start
 
-Mit Docker-Compose kann der INTERLIS Check-Service in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
+Mit [Docker](https://www.docker.com/) kann der *INTERLIS Check-Service* in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
+
+Um einen ersten Augenschein der Applikation zu nehmen, kann der Container in der Kommandozeile wie folgt gestartet werden:
+
+```bash
+docker run --rm -p 8080:80 ghcr.io/geowerkstatt/interlis-check-service
+```
 
 ### docker-compose.yml
 
