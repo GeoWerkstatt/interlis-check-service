@@ -1,4 +1,4 @@
-# INTERLIS Check-Service (ILICHECK)
+# INTERLIS Web-Check-Service (ILICHECK)
 
 [![Release](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml)
 
@@ -6,7 +6,7 @@ Webbasierter Checkservice für INTERLIS Datenabgaben
 
 ## Quick Start
 
-Mit [Docker](https://www.docker.com/) kann der *INTERLIS Check-Service* in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
+Mit [Docker](https://www.docker.com/) kann der *INTERLIS Web-Check-Service* in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
 
 Um einen ersten Augenschein der Applikation zu nehmen, kann der Container in der Kommandozeile wie folgt gestartet werden:
 
