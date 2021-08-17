@@ -111,7 +111,7 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 
 * Git
 * Docker
-* Visual Studio 2019
+* Visual Studio 2019 oder Visual Studio Code
 * Node.js 14 LTS
 
 1. Git Repository klonen:  
@@ -119,7 +119,7 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
    `git clone https://github.com/GeoWerkstatt/interlis-check-service.git`
 
 1. Web-App (React Client und .NET Core Backend) starten:  
-   `IIS Express` Launch-Profil im Visual Studio mit F5 starten
+   `IIS Express` Launch-Profil im Visual Studio resp. Visual Studio Code mit F5 starten
 
 ## Testumgebung (GeoWerkstatt intern)
 
