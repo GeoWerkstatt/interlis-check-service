@@ -323,10 +323,12 @@ namespace ILICheck.Web.Controllers
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
+                LogInfo("The ilivalidator found errors in the file. Validation not successfull.");
                 ValidationResult = Ok("Der Ilivalidator hat Fehler in der Datei gefunden.");
             }
             else
             {
+                LogInfo("The ilivalidator found no errors in the file. Validation successfull!");
                 ValidationResult = Ok();
             }
         }
