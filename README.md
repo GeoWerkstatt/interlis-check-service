@@ -1,4 +1,4 @@
-# INTERLIS Check-Service (ILICHECK)
+# INTERLIS Web-Check-Service (ILICHECK)
 
 [![Release](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml)
 
@@ -6,7 +6,13 @@ Webbasierter Checkservice für INTERLIS Datenabgaben
 
 ## Quick Start
 
-Mit Docker-Compose kann der INTERLIS Check-Service in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
+Mit [Docker](https://www.docker.com/) kann der *INTERLIS Web-Check-Service* in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
+
+Um einen ersten Augenschein der Applikation zu nehmen, kann der Container in der Kommandozeile wie folgt gestartet werden:
+
+```bash
+docker run --rm -p 8080:80 ghcr.io/geowerkstatt/interlis-check-service
+```
 
 ### docker-compose.yml
 
@@ -17,6 +23,9 @@ services:
     # Docker image (NAME:TAG)
     #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1
     #     Stable tag for a specific major version
+    #
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1.2.3
+    #     Stable tag for a specific version
     #
     #   - image: ghcr.io/geowerkstatt/interlis-check-service:latest
     #     Points to the latest stable tag, no matter what the current major version is
@@ -112,6 +121,15 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 1. Web-App (React Client und .NET Core Backend) starten:  
    `IIS Express` Launch-Profil im Visual Studio mit F5 starten
 
+## Testumgebung (GeoWerkstatt intern)
+
+* [INTERLIS Web-Check-Service](https://ilicheck.geow.cloud/)-Webapplikation
+* Webbasierter [Datei Explorer](https://ilicheck-filebrowser.geow.cloud/files/) um hochgeladene XTF Transferdateien und Validierungslogs anzuzeigen. (Die Zugangsdaten befinden sich im GeoWerkstatt Keepass)
+
 ## Neue Version erstellen
 
-Ein neuer GitHub _Pre-release_ wird bei jeder Änderung auf [main](https://github.com/GeoWerkstatt/interlis-check-service) [automatisch](./.github/workflows/pre-release.yml) erstellt. In diesem Kontext wird auch auch ein neues Docker Image mit dem Tag _:edge_ erstellt und in die [GitHub Container Registry (ghcr.io)](https://github.com/geowerkstatt/interlis-check-service/pkgs/container/interlis-check-service) gepusht. Der definitve Release erfolgt, indem die Checkbox _This is a pre-release_ eines beliebigen Pre-releases entfernt wird. In der Folge wird das entsprechende Docker Image in der ghcr.io Registry mit den Tags (bspw.: _:v1_, _:1.1.23_ und _:latest_) [ergänzt](./.github/workflows/release.yml).
+Ein neuer GitHub _Pre-release_ wird bei jeder Änderung auf [main](https://github.com/GeoWerkstatt/interlis-check-service) [automatisch](./.github/workflows/pre-release.yml) erstellt. In diesem Kontext wird auch auch ein neues Docker Image mit dem Tag _:edge_ erstellt und in die [GitHub Container Registry (ghcr.io)](https://github.com/geowerkstatt/interlis-check-service/pkgs/container/interlis-check-service) gepusht. Der definitve Release erfolgt, indem die Checkbox _This is a pre-release_ eines beliebigen Pre-releases entfernt wird. In der Folge wird das entsprechende Docker Image in der ghcr.io Registry mit den Tags (bspw.: _:v1_, _:v1.2.3_ und _:latest_) [ergänzt](./.github/workflows/release.yml).
+
+## Lizenz
+
+Dieses Projekt ist unter der [GNU General Public License Version 3 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0.html) lizensiert. Eine Kopie der Lizenz ist [hier](./LICENSE) abgelegt.
