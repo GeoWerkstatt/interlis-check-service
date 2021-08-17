@@ -27,7 +27,7 @@ const Container = styled.div`
 
 export const FileDropzone = ({ setFileToCheck, abortController}) => {
     const [fileAvailable, setFileAvailable] = useState(false);
-    const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip file hier ablegen oder klicken um auf dem Filesystem auszuwählen.");
+    const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
 
     const onDropAccepted = useCallback(acceptedFiles => {
@@ -65,7 +65,7 @@ export const FileDropzone = ({ setFileToCheck, abortController}) => {
         abortController && abortController.abort();
         setFileToCheck(null);
         setFileAvailable(false);
-      setDropZoneText(".xtf, .xml oder .zip file hier ablegen oder klicken um auf dem Filesystem auszuwählen.");
+      setDropZoneText(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
         setDropZoneTextClass("dropzone-text");
     }
 

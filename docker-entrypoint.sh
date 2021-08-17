@@ -13,7 +13,7 @@ ILIVALIDATOR_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ilivalidato
 export ILIVALIDATOR_VERSION=${ILIVALIDATOR_VERSION:-$ILIVALIDATOR_LATEST_VERSION}
 export ILIVALIDATOR_MODEL_DIR=${ILIVALIDATOR_MODEL_DIR:-http://models.interlis.ch/}
 
-# Download ilivalidator
+# Download and configure ilivalidator
 echo -n "Download and configure ilivalidator-$ILIVALIDATOR_VERSION ..."
 curl https://downloads.interlis.ch/ilivalidator/ilivalidator-$ILIVALIDATOR_VERSION.zip -LO --silent --show-error && \
   unzip -o -q ilivalidator-$ILIVALIDATOR_VERSION.zip -d $ILIVALIDATOR_HOME_DIR/$ILIVALIDATOR_VERSION && \
