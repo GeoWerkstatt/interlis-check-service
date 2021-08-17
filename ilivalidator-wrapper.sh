@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-TRANSFER_FILE_NAME=${@: -1}
-OPTIONS=${@%"$TRANSFER_FILE_NAME"}
+[[ $# -ne 0 ]] && \
+  TRANSFER_FILE_NAME=${@: -1} && \
+  OPTIONS=${@%"$TRANSFER_FILE_NAME"}
+
 PROXY_PORT=$(echo $PROXY | grep -Eo '[0-9]+' | tail -1)
 PROXY_HOST=${PROXY%":$(echo ${PROXY##*:})"} # remove port
 PROXY_HOST=${PROXY_HOST#*://} # remove protocol
