@@ -25,7 +25,7 @@ const Container = styled.div`
   transition: border .24s ease-in-out;
 `;
 
-export const FileDropzone = ({ setFileToCheck, abortController}) => {
+export const FileDropzone = ({ setFileToCheck, abortController }) => {
     const [fileAvailable, setFileAvailable] = useState(false);
     const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
@@ -65,7 +65,7 @@ export const FileDropzone = ({ setFileToCheck, abortController}) => {
         abortController && abortController.abort();
         setFileToCheck(null);
         setFileAvailable(false);
-      setDropZoneText(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
+        setDropZoneText(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
         setDropZoneTextClass("dropzone-text");
     }
 
@@ -74,7 +74,7 @@ export const FileDropzone = ({ setFileToCheck, abortController}) => {
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
             <input {...getInputProps()} />
-            <p>{dropZoneText} {fileAvailable && <span onClick={removeFile}><IoIosRemoveCircleOutline/></span>}</p>
+            <p>{dropZoneText} {fileAvailable && <span onClick={removeFile}><IoIosRemoveCircleOutline /></span>}</p>
         </Container>
     )
 }

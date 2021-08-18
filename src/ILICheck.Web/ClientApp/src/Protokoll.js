@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import { Card, Container } from 'react-bootstrap';
-import { GoFile, GoFileCode} from 'react-icons/go';
+import { GoFile, GoFileCode } from 'react-icons/go';
 
 export const Protokoll = props => {
   const { log, fileCheckStatus, connection, closedConnectionId } = props;

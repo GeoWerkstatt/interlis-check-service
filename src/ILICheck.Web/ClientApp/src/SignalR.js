@@ -1,6 +1,6 @@
 import { HubConnectionBuilder } from '@microsoft/signalr';
 
-export function MakeSignalRConnection (){
+export function MakeSignalRConnection() {
   console.log("Start signalR use effect")
   const connection = new HubConnectionBuilder()
     .withUrl("/hub")
