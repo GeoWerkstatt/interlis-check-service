@@ -22,11 +22,11 @@ namespace ILICheck.Web
             configuration.GetUploadPathFormat().Replace("{Name}", connectionId);
 
         /// <summary>
-        /// Shorthand for GetSection("Validation")["ProcessExecutable"].
+        /// Shorthand for GetSection("Validation")["ShellExecutable"].
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns>The name of the process executable.</returns>
-        public static string GetProcessExecutable(this IConfiguration configuration) =>
-            configuration.GetSection("Validation")["ProcessExecutable"];
+        public static string GetShellExecutable(this IConfiguration configuration) =>
+            configuration.GetSection("Validation")["ShellExecutable"];
     }
 }

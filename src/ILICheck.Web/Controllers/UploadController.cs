@@ -314,7 +314,7 @@ namespace ILICheck.Web.Controllers
 
             var startInfo = new ProcessStartInfo()
             {
-                FileName = configuration.GetProcessExecutable(),
+                FileName = configuration.GetShellExecutable(),
                 Arguments = $"{commandPrefix}{command}",
                 UseShellExecute = true,
             };
