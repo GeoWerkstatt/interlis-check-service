@@ -31,7 +31,7 @@ namespace ILICheck.Web.Controllers
         public string UploadFolderPath { get; set; }
         public string UploadFilePath { get; set; }
 
-        public IActionResult UploadResult { get; set; }
+        public IActionResult ValidationResult { get; set; }
 
         public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
         {
@@ -100,14 +100,14 @@ namespace ILICheck.Web.Controllers
                 catch (Exception e)
                 {
                     LogInfo($"Unexpected error: {e.Message}");
-                    if (UploadResult == null)
+                    if (ValidationResult == null)
                     {
-                        UploadResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                        ValidationResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     }
                 }
             }
 
-            if (UploadResult.GetType() != typeof(OkResult))
+            if (ValidationResult.GetType() != typeof(OkResult))
             {
                 System.IO.File.Delete(UploadFilePath);
             }
@@ -115,7 +115,7 @@ namespace ILICheck.Web.Controllers
             // Close connection after file upload attempt, to make a new connection for next file.
             LogInfo($"Stop time: {DateTime.Now}");
             await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
-            return UploadResult;
+            return ValidationResult;
         }
 
         private void MakeUploadFolder(string connectionId)
@@ -148,7 +148,7 @@ namespace ILICheck.Web.Controllers
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                UploadResult = new UnsupportedMediaTypeResult();
+                ValidationResult = new UnsupportedMediaTypeResult();
                 LogInfo("Upload aborted, unsupported media type.");
                 mainCts.Cancel();
                 return;
@@ -180,7 +180,7 @@ namespace ILICheck.Web.Controllers
                 section = await reader.ReadNextSectionAsync();
             }
 
-            UploadResult = BadRequest("Es wurde keine Datei hochgeladen.");
+            ValidationResult = BadRequest("Es wurde keine Datei hochgeladen.");
             LogInfo("Upload aborted, no files data in the request.");
             mainCts.Cancel();
             return;
@@ -208,7 +208,7 @@ namespace ILICheck.Web.Controllers
                 {
                     if (archive.Entries.Count != 1)
                     {
-                        UploadResult = BadRequest("Nur Zip-Archive, die genau eine Datei enthalten, werden unterstützt.");
+                        ValidationResult = BadRequest("Nur Zip-Archive, die genau eine Datei enthalten, werden unterstützt.");
                         LogInfo("Upload aborted, only zip archives containing exactly one file are supported.");
                         mainCts.Cancel();
                         return;
@@ -226,7 +226,7 @@ namespace ILICheck.Web.Controllers
                             }
                             else
                             {
-                                UploadResult = BadRequest("Dateipfad konnte nicht aufgelöst werden.");
+                                ValidationResult = BadRequest("Dateipfad konnte nicht aufgelöst werden.");
                                 LogInfo("Upload aborted, cannot get extraction path.");
                                 mainCts.Cancel();
                                 return;
@@ -234,7 +234,7 @@ namespace ILICheck.Web.Controllers
                         }
                         else
                         {
-                            UploadResult = BadRequest("Nicht unterstützte Dateiendung.");
+                            ValidationResult = BadRequest("Nicht unterstützte Dateiendung.");
                             LogInfo("Upload aborted, zipped file has unsupported extension.");
                             mainCts.Cancel();
                             return;
@@ -250,7 +250,7 @@ namespace ILICheck.Web.Controllers
                 }
                 else
                 {
-                    UploadResult = BadRequest("Unbekannter Fehler.");
+                    ValidationResult = BadRequest("Unbekannter Fehler.");
                     LogInfo("Upload aborted, unknown error.");
                     mainCts.Cancel();
                     return;
@@ -275,7 +275,7 @@ namespace ILICheck.Web.Controllers
             }
             catch (XmlException e)
             {
-                UploadResult = BadRequest("Datei hat keine gültige XML-Struktur.");
+                ValidationResult = BadRequest("Datei hat keine gültige XML-Struktur.");
                 LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
                 mainCts.Cancel();
                 return;
@@ -323,11 +323,11 @@ namespace ILICheck.Web.Controllers
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
-                UploadResult = Ok("Der Ilivalidator hat Fehler in der Datei gefunden.");
+                ValidationResult = Ok("Der Ilivalidator hat Fehler in der Datei gefunden.");
             }
             else
             {
-                UploadResult = Ok();
+                ValidationResult = Ok();
             }
         }
 
