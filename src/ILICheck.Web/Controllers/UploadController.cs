@@ -296,20 +296,14 @@ namespace ILICheck.Web.Controllers
 
         private void Validate(string connectionId)
         {
+            var uploadPath = configuration.GetSection("Validation")["UploadFolderInContainer"].Replace("{Name}", connectionId);
             var fileName = Path.GetFileName(UploadFilePath);
-            var uploadPath = configuration.GetUploadPathForSession(connectionId);
-            var commandPrefix = "";
-
-            if (environment.EnvironmentName.Equals("Development"))
-            {
-                uploadPath = $"/uploads/{connectionId}";
-                commandPrefix = "docker compose exec --user abc web bash -l ";
-            }
 
             var filePath = uploadPath + $"/{fileName}";
             var logPath = uploadPath + "/ilivalidator_output.log";
             var xtfLogPath = uploadPath + "/ilivalidator_output.xtf";
 
+            var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
             var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} {filePath}";
 
             var startInfo = new ProcessStartInfo()
