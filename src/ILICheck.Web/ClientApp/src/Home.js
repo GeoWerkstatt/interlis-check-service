@@ -9,7 +9,7 @@ export const Home = props => {
   const { connection, closedConnectionId, log, setLog } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
-  const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, protokollName: "" });
+  const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
   const [abortController, setAbortController] = useState(null)
 
   // Reset log and abort upload on file change
@@ -17,14 +17,14 @@ export const Home = props => {
     setLog([]);
     setTestRunning(false);
     abortController && abortController.abort();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, setLog])
 
 
   const checkFile = () => {
     setLog([]);
     setTestRunning(true);
-    setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "" })
+    setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false })
     uploadFile(fileToCheck);
   }
 
@@ -42,26 +42,31 @@ export const Home = props => {
     })
       .then(res => {
         setTestRunning(false);
-        if (res.status === 200) {
-          setLog(log => [...log, `${file.name} erfolgreich hochgeladen!`])
+        res.text().then(content => {
+          let className;
+          let text;
+          let downloadAvailable = false;
+          if (content) {
+            className = "errors"
+            text = "Fehler!"
+            setLog(log => [...log, content])
+          }
+          else {
+            className = "valid"
+            text = "Keine Fehler!"
+            setLog(log => [...log, `${file.name} validiert!`])
+          }
+          if (res.status === 200) {
+            downloadAvailable = true;
+          }
           setFileCheckStatus({
-            text: "Datei enthält keine Fehler!",
-            class: "valid",
+            text: text,
+            class: className,
             testRunTime: new Date().toLocaleString(),
             fileName: fileToCheck.name,
+            fileDownloadAvailable: downloadAvailable
           })
-        }
-        else {
-          setFileCheckStatus({
-            text: "Fehler!",
-            class: "errors",
-            testRunTime: new Date().toLocaleString(),
-            fileName: fileToCheck.name,
-          })
-          res.text().then(text => {
-            setLog(log => [...log, text])
-          });
-        }
+        });
       })
       .catch(err => console.error(err));
   }
@@ -74,7 +79,7 @@ export const Home = props => {
         </p>
       </header>
       <Container>
-        <FileDropzone setFileToCheck={setFileToCheck} abortController={abortController}/>
+        <FileDropzone setFileToCheck={setFileToCheck} abortController={abortController} />
         <Button variant="success" className={fileToCheck ? "" : "invisible-check-button"} onClick={checkFile}>Check
           <span className="run-icon">
             {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}

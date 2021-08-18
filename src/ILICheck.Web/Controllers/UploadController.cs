@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.WebUtilities;
@@ -9,6 +10,7 @@ using Serilog;
 using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -23,18 +25,20 @@ namespace ILICheck.Web.Controllers
         private readonly IHubContext<SignalRHub> hubContext;
         private readonly ILogger<UploadController> applicationLogger;
         private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
         private Serilog.ILogger sessionLogger;
 
         public string UploadFolderPath { get; set; }
         public string UploadFilePath { get; set; }
 
-        public IActionResult UploadResult { get; set; }
+        public IActionResult ValidationResult { get; set; }
 
-        public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration)
+        public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.hubContext = hubcontext;
             this.applicationLogger = applicationLogger;
             this.configuration = configuration;
+            this.environment = environment;
         }
 
         /// <summary>
@@ -64,46 +68,46 @@ namespace ILICheck.Web.Controllers
                 {
                     await Task.Run(async () =>
                     {
-                        var taskToExecute = UploadToDirectoryAsync(request, cts);
-                        await DoTaskWhileSendingUpdatesAsync(taskToExecute, connectionId, "Datei wird hochgeladen...");
-                        if (taskToExecute.IsFaulted) throw taskToExecute.Exception;
+                        var uploadTask = UploadToDirectoryAsync(request, cts);
+                        await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, "Datei wird hochgeladen...");
+                        if (uploadTask.IsFaulted) throw uploadTask.Exception;
                     }, cts.Token);
 
                     if (Path.GetExtension(UploadFilePath) == ".zip")
                     {
                         await Task.Run(async () =>
                         {
-                            var taskToExecute1 = UnzipFileAsync(UploadFilePath, cts);
-                            await DoTaskWhileSendingUpdatesAsync(taskToExecute1, connectionId, "Datei wird entzipped...");
-                            if (taskToExecute1.IsFaulted) throw taskToExecute1.Exception;
+                            var unzipTask = UnzipFileAsync(UploadFilePath, cts);
+                            await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei wird entzipped...");
+                            if (unzipTask.IsFaulted) throw unzipTask.Exception;
                         }, cts.Token);
                     }
 
                     await Task.Run(async () =>
                     {
-                        var taskToExecute2 = ParseXmlAsync(UploadFilePath, cts);
-                        await DoTaskWhileSendingUpdatesAsync(taskToExecute2, connectionId, "Dateistruktur validieren...");
-                        if (taskToExecute2.IsFaulted) throw taskToExecute2.Exception;
+                        var parseTask = ParseXmlAsync(UploadFilePath, cts);
+                        await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
+                        if (parseTask.IsFaulted) throw parseTask.Exception;
                     }, cts.Token);
 
                     await Task.Run(async () =>
                     {
-                        var taskToExecute3 = ValidateFileAsync(fileName, cts);
-                        await DoTaskWhileSendingUpdatesAsync(taskToExecute3, connectionId, "Datei validieren...");
-                        if (taskToExecute3.IsFaulted) throw taskToExecute3.Exception;
+                        var validateTask = ValidateFileAsync(connectionId);
+                        await DoTaskWhileSendingUpdatesAsync(validateTask, connectionId, "Datei validieren...");
+                        if (validateTask.IsFaulted) throw validateTask.Exception;
                     }, cts.Token);
                 }
                 catch (Exception e)
                 {
                     LogInfo($"Unexpected error: {e.Message}");
-                    if (UploadResult == null)
+                    if (ValidationResult == null)
                     {
-                        UploadResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                        ValidationResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     }
                 }
             }
 
-            if (UploadResult.GetType() != typeof(OkResult))
+            if (ValidationResult.GetType() != typeof(OkResult))
             {
                 System.IO.File.Delete(UploadFilePath);
             }
@@ -111,7 +115,7 @@ namespace ILICheck.Web.Controllers
             // Close connection after file upload attempt, to make a new connection for next file.
             LogInfo($"Stop time: {DateTime.Now}");
             await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
-            return UploadResult;
+            return ValidationResult;
         }
 
         private void MakeUploadFolder(string connectionId)
@@ -144,7 +148,7 @@ namespace ILICheck.Web.Controllers
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                UploadResult = new UnsupportedMediaTypeResult();
+                ValidationResult = new UnsupportedMediaTypeResult();
                 LogInfo("Upload aborted, unsupported media type.");
                 mainCts.Cancel();
                 return;
@@ -170,14 +174,13 @@ namespace ILICheck.Web.Controllers
                         await section.Body.CopyToAsync(targetStream);
                     }
 
-                    UploadResult = Ok();
                     return;
                 }
 
                 section = await reader.ReadNextSectionAsync();
             }
 
-            UploadResult = BadRequest("Es wurde keine Datei hochgeladen.");
+            ValidationResult = BadRequest("Es wurde keine Datei hochgeladen.");
             LogInfo("Upload aborted, no files data in the request.");
             mainCts.Cancel();
             return;
@@ -205,7 +208,7 @@ namespace ILICheck.Web.Controllers
                 {
                     if (archive.Entries.Count != 1)
                     {
-                        UploadResult = BadRequest("Nur Zip-Archive, die genau eine Datei enthalten, werden unterstützt.");
+                        ValidationResult = BadRequest("Nur Zip-Archive, die genau eine Datei enthalten, werden unterstützt.");
                         LogInfo("Upload aborted, only zip archives containing exactly one file are supported.");
                         mainCts.Cancel();
                         return;
@@ -223,7 +226,7 @@ namespace ILICheck.Web.Controllers
                             }
                             else
                             {
-                                UploadResult = BadRequest("Dateipfad konnte nicht aufgelöst werden.");
+                                ValidationResult = BadRequest("Dateipfad konnte nicht aufgelöst werden.");
                                 LogInfo("Upload aborted, cannot get extraction path.");
                                 mainCts.Cancel();
                                 return;
@@ -231,7 +234,7 @@ namespace ILICheck.Web.Controllers
                         }
                         else
                         {
-                            UploadResult = BadRequest("Nicht unterstützte Dateiendung.");
+                            ValidationResult = BadRequest("Nicht unterstützte Dateiendung.");
                             LogInfo("Upload aborted, zipped file has unsupported extension.");
                             mainCts.Cancel();
                             return;
@@ -247,7 +250,7 @@ namespace ILICheck.Web.Controllers
                 }
                 else
                 {
-                    UploadResult = BadRequest("Unbekannter Fehler.");
+                    ValidationResult = BadRequest("Unbekannter Fehler.");
                     LogInfo("Upload aborted, unknown error.");
                     mainCts.Cancel();
                     return;
@@ -272,7 +275,7 @@ namespace ILICheck.Web.Controllers
             }
             catch (XmlException e)
             {
-                UploadResult = BadRequest("Datei hat keine gültige XML-Struktur.");
+                ValidationResult = BadRequest("Datei hat keine gültige XML-Struktur.");
                 LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
                 mainCts.Cancel();
                 return;
@@ -281,30 +284,50 @@ namespace ILICheck.Web.Controllers
             return;
         }
 
-        private async Task ValidateFileAsync(string fileName, CancellationTokenSource cts)
+        private async Task ValidateFileAsync(string connectionId)
         {
-            LogInfo("Validating file");
-            MakeMockIlivalidatorLogFiles(fileName);
-            await Task.Delay(5000, cts.Token);
-            return;
+            await Task.Run(() =>
+            {
+                LogInfo("Validating file");
+                Validate(connectionId);
+                return;
+            });
         }
 
-        private void MakeMockIlivalidatorLogFiles(string fileName)
+        private void Validate(string connectionId)
         {
-            var ilivalidatorXTFLog = $"Ilivalidator_{fileName}.xtf";
-            var ilivalidatorLog = $"Ilivalidator_{fileName}.log";
+            var uploadPath = configuration.GetSection("Validation")["UploadFolderInContainer"].Replace("{Name}", connectionId);
+            var fileName = Path.GetFileName(UploadFilePath);
 
-            var logFilePath = Path.Combine(UploadFolderPath, ilivalidatorLog);
-            var xtfFilePath = Path.Combine(UploadFolderPath, ilivalidatorXTFLog);
+            var filePath = uploadPath + $"/{fileName}";
+            var logPath = uploadPath + "/ilivalidator_output.log";
+            var xtfLogPath = uploadPath + "/ilivalidator_output.xtf";
 
-            using (var outputFile = new StreamWriter(logFilePath))
+            var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
+            var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} {filePath}";
+
+            var startInfo = new ProcessStartInfo()
             {
-                outputFile.WriteLine("The Ilivalidator output: ... ");
+                FileName = configuration.GetShellExecutable(),
+                Arguments = $"{commandPrefix}{command}",
+                UseShellExecute = true,
+            };
+
+            using var process = new Process()
+            {
+                StartInfo = startInfo,
+                EnableRaisingEvents = true,
+            };
+
+            process.Start();
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                ValidationResult = Ok("Der Ilivalidator hat Fehler in der Datei gefunden.");
             }
-
-            using (var outputFile = new StreamWriter(xtfFilePath))
+            else
             {
-                outputFile.WriteLine("The Ilivalidator XTF output: ... ");
+                ValidationResult = Ok();
             }
         }
 
