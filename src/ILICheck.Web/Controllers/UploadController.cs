@@ -217,7 +217,7 @@ namespace ILICheck.Web.Controllers
                     {
                         var extention = Path.GetExtension(archive.Entries[0].FullName);
                         var supportedExtension = new List<string>() { ".xtf", ".xml" };
-                        if (supportedExtension.Contains(extention))
+                        if (supportedExtension.Contains(extention.ToLower()))
                         {
                             unzippedFilePath = Path.GetFullPath(Path.ChangeExtension(zipFilePath, Path.GetExtension(archive.Entries[0].FullName)));
                             if (unzippedFilePath.StartsWith(extractPath, StringComparison.Ordinal))
