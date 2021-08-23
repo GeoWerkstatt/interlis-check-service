@@ -4,6 +4,8 @@
 
 Webbasierter Checkservice für INTERLIS Datenabgaben
 
+![INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot.png)
+
 ## Quick Start
 
 Mit [Docker](https://www.docker.com/) kann der *INTERLIS Web-Check-Service* in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
