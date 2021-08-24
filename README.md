@@ -1,5 +1,6 @@
 # INTERLIS Web-Check-Service (ILICHECK)
 
+[![CI](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml)
 [![Release](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml)
 
 Webbasierter Checkservice für INTERLIS Datenabgaben
