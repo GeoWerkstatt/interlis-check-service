@@ -1,8 +1,11 @@
 # INTERLIS Web-Check-Service (ILICHECK)
 
+[![CI](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml)
 [![Release](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml)
 
 Webbasierter Checkservice für INTERLIS Datenabgaben
+
+![INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot.png)
 
 ## Quick Start
 
@@ -119,7 +122,8 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
    `git clone https://github.com/GeoWerkstatt/interlis-check-service.git`
 
 1. Web-App (React Client und .NET Core Backend) starten:  
-   `IIS Express` Launch-Profil im Visual Studio resp. Visual Studio Code mit F5 starten
+   `IIS Express` Launch-Profil im Visual Studio resp. Visual Studio Code mit F5 starten  
+   _Hinweis: Damit in der lokalen Entwicklungsumgebung der ilivalidator-Aufruf aus dem .NET Backend erfolgen kann, muss vorgängig das [docker-compose.yml](./docker-compose.yml) mit `docker-compose up` gestartet werden._
 
 ## Testumgebung (GeoWerkstatt intern)
 
