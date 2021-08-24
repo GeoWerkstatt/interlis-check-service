@@ -14,7 +14,7 @@ Mit [Docker](https://www.docker.com/) kann der *INTERLIS Web-Check-Service* in e
 Um einen ersten Augenschein der Applikation zu nehmen, kann der Container in der Kommandozeile wie folgt gestartet werden:
 
 ```bash
-docker run --rm -p 8080:80 ghcr.io/geowerkstatt/interlis-check-service
+docker run -it --rm -p 8080:80 ghcr.io/geowerkstatt/interlis-check-service
 ```
 
 ### docker-compose.yml
