@@ -122,7 +122,8 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
    `git clone https://github.com/GeoWerkstatt/interlis-check-service.git`
 
 1. Web-App (React Client und .NET Core Backend) starten:  
-   `IIS Express` Launch-Profil im Visual Studio resp. Visual Studio Code mit F5 starten
+   `IIS Express` Launch-Profil im Visual Studio resp. Visual Studio Code mit F5 starten  
+   _Hinweis: Damit in der lokalen Entwicklungsumgebung der ilivalidator-Aufruf aus dem .NET Backend erfolgen kann, muss vorgängig das [docker-compose.yml](./docker-compose.yml) mit `docker-compose up` gestartet werden._
 
 ## Testumgebung (GeoWerkstatt intern)
 
