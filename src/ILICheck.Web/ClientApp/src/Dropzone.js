@@ -51,7 +51,7 @@ export const FileDropzone = ({ setFileToCheck, abortController }) => {
                 setDropZoneText("Fehler: Es kann nur eine Datei aufs mal geprüft werden.");
                 break;
             case "file-too-large":
-                setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wählen Sie eine kleinere Datei.");
+                setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wählen Sie eine kleinere Datei oder erstellen Sie eine .zip Datei.");
                 break;
             default:
                 setDropZoneText("Fehler: Bitte wählen Sie eine Datei des Typs .xtf, .xml oder .zip mit maximal 200MB aus.");
