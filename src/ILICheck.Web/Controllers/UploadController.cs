@@ -52,7 +52,7 @@ namespace ILICheck.Web.Controllers
             var connectionId = request.Query["connectionId"][0];
             var fileName = request.Query["fileName"][0];
             var deleteXtfTransferFile = string.Equals(
-                Environment.GetEnvironmentVariable("DELETE_TRANFER_FILES", EnvironmentVariableTarget.Process),
+                Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
                 "true",
                 StringComparison.InvariantCultureIgnoreCase);
 
