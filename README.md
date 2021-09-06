@@ -70,6 +70,10 @@ services:
     #     Using PUID and PGID allows to map the container's internal user to a user on the
     #     host machine which prevents permisson issues when writing files to the mounted volume
     #
+    #   - DELETE_TRANFER_FILES=true
+    #     Optional, If set to true, the XTF transfer file gets deleted right after validation
+    #     Default false
+    #
     #   - ILIVALIDATOR_VERSION=1.11.10
     #     Optional, Default latest version available from
     #     https://www.interlis.ch/downloads/ilivalidator

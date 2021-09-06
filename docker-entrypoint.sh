@@ -8,10 +8,11 @@ set -e
   HTTP_PROXY=$PROXY \
   HTTPS_PROXY=$PROXY
 
-# Set ilivalidator default values (if not specified in docker-compose)
+# Set default values (if not specified in docker-compose)
 ILIVALIDATOR_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ilivalidator --silent | grep -Po '(?<=ilivalidator-)\d+.\d+.\d+' | head -n 1)
 export ILIVALIDATOR_VERSION=${ILIVALIDATOR_VERSION:-$ILIVALIDATOR_LATEST_VERSION}
 export ILIVALIDATOR_MODEL_DIR=${ILIVALIDATOR_MODEL_DIR:-http://models.interlis.ch/}
+export DELETE_TRANFER_FILES=${DELETE_TRANFER_FILES:-false}
 
 # Download and configure ilivalidator
 echo -n "Download and configure ilivalidator-$ILIVALIDATOR_VERSION ..."
@@ -43,6 +44,7 @@ echo -n "Configure environment ..." && \
 echo "
 --------------------------------------------------------------------------
 ilicheck version:                 $ILICHECK_APP_VERSION
+delete transfer files:            $([[ $DELETE_TRANFER_FILES = true ]] && echo enabled || echo disabled)
 ilivalidator version:             $ILIVALIDATOR_VERSION `[[ $ILIVALIDATOR_VERSION != $ILIVALIDATOR_LATEST_VERSION ]] && echo "(new version $ILIVALIDATOR_LATEST_VERSION available!)"`
 ilivalidator config file name:    $([[ -n $ILIVALIDATOR_CONFIG_NAME ]] && echo $ILIVALIDATOR_CONFIG_NAME || echo disabled)
 ilivalidator model repositories:  $ILIVALIDATOR_MODEL_DIR
