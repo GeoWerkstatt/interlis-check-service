@@ -1,5 +1,6 @@
 import './App.css';
 import React, { useState } from 'react';
+import DayJS from 'dayjs'
 import { Button, Card, Container } from 'react-bootstrap';
 import { GoFile, GoFileCode } from 'react-icons/go';
 import { BsLink45Deg } from 'react-icons/bs';
@@ -8,19 +9,19 @@ export const Protokoll = props => {
   const { log, fileCheckStatus, connection, closedConnectionId } = props;
   const copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
   const [copyToClipboardTooltipText, setCopyToClipboardTooltipText] = useState(copyToClipboardTooltipDefaultText);
-  const protokollNameLog = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".log";
-  const protokollNameXtf = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
-  let downloadLogUrl;
-  let downloadXTFUrl;
-  if (connection && fileCheckStatus.fileDownloadAvailable) {
-    downloadLogUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.log`
-    downloadXTFUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.xtf`
-  }
+
+  const protokollTimestamp = DayJS(fileCheckStatus.testRunTime).format('YYYYMMDDHHmm');
+  const protokollFileName = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + protokollTimestamp;
+
+  const xtfLogFileExtension = ".xtf";
+  const logFileExtension = ".log";
+  const downloadAvailable = connection && fileCheckStatus.fileDownloadAvailable;
+  const downloadUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=`;
 
   // Copy to clipboard
   const resetToDefaultText = () => setCopyToClipboardTooltipText(copyToClipboardTooltipDefaultText);
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location + downloadXTFUrl);
+    navigator.clipboard.writeText(window.location + downloadUrl + xtfLogFileExtension);
     setCopyToClipboardTooltipText("Link wurde kopiert");
   }
 
@@ -28,14 +29,14 @@ export const Protokoll = props => {
     <Container>
       {log.length > 0 && <Card className="protokoll-card">
         <Card.Body>
-          <Card.Title className={fileCheckStatus.class}>{fileCheckStatus.text} Testausführung: {fileCheckStatus.testRunTime}
-            {downloadLogUrl && downloadXTFUrl &&
+          <Card.Title className={fileCheckStatus.class}>{fileCheckStatus.text} Testausführung: {fileCheckStatus.testRunTime?.toLocaleString()}
+            {downloadAvailable &&
               <span>
                 <span title="Log-Datei herunterladen.">
-                  <a download={protokollNameLog} className={fileCheckStatus.class + " download-icon"} href={downloadLogUrl}><GoFile /></a>
+                  <a download={protokollFileName + logFileExtension} className={fileCheckStatus.class + " download-icon"} href={downloadUrl + logFileExtension}><GoFile /></a>
                 </span>
                 <span title="XTF-Log-Datei herunterladen.">
-                  <a download={protokollNameXtf} className={fileCheckStatus.class + " download-icon"} href={downloadXTFUrl}><GoFileCode /></a>
+                  <a download={protokollFileName + xtfLogFileExtension} className={fileCheckStatus.class + " download-icon"} href={downloadUrl + xtfLogFileExtension}><GoFileCode /></a>
                 </span>
                 <span class="copy-tooltip">
                   <Button variant="secondary" className="btn-sm btn-copy-to-clipboard" onClick={copyToClipboard} onMouseLeave={resetToDefaultText}>
