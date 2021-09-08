@@ -62,7 +62,7 @@ export const Home = props => {
           setFileCheckStatus({
             text: text,
             class: className,
-            testRunTime: new Date().toLocaleString(),
+            testRunTime: new Date(),
             fileName: fileToCheck.name,
             fileDownloadAvailable: downloadAvailable
           })

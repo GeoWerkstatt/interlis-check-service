@@ -1,5 +1,6 @@
 import './App.css';
 import React, { useState } from 'react';
+import Moment from 'moment'
 import { Button, Card, Container } from 'react-bootstrap';
 import { GoFile, GoFileCode } from 'react-icons/go';
 import { BsLink45Deg } from 'react-icons/bs';
@@ -8,8 +9,10 @@ export const Protokoll = props => {
   const { log, fileCheckStatus, connection, closedConnectionId } = props;
   const copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
   const [copyToClipboardTooltipText, setCopyToClipboardTooltipText] = useState(copyToClipboardTooltipDefaultText);
-  const protokollNameLog = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".log";
-  const protokollNameXtf = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
+
+  const protokollTimestamp = Moment(fileCheckStatus.testRunTime).format('YYYYMMDDHHmm');
+  const protokollNamePrefix = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + protokollTimestamp;
+
   let downloadLogUrl;
   let downloadXTFUrl;
   if (connection && fileCheckStatus.fileDownloadAvailable) {
@@ -28,14 +31,14 @@ export const Protokoll = props => {
     <Container>
       {log.length > 0 && <Card className="protokoll-card">
         <Card.Body>
-          <Card.Title className={fileCheckStatus.class}>{fileCheckStatus.text} Testausführung: {fileCheckStatus.testRunTime}
+          <Card.Title className={fileCheckStatus.class}>{fileCheckStatus.text} Testausführung: {fileCheckStatus.testRunTime?.toLocaleString()}
             {downloadLogUrl && downloadXTFUrl &&
               <span>
                 <span title="Log-Datei herunterladen.">
-                  <a download={protokollNameLog} className={fileCheckStatus.class + " download-icon"} href={downloadLogUrl}><GoFile /></a>
+                  <a download={protokollNamePrefix + ".log"} className={fileCheckStatus.class + " download-icon"} href={downloadLogUrl}><GoFile /></a>
                 </span>
                 <span title="XTF-Log-Datei herunterladen.">
-                  <a download={protokollNameXtf} className={fileCheckStatus.class + " download-icon"} href={downloadXTFUrl}><GoFileCode /></a>
+                  <a download={protokollNamePrefix + ".xtf"} className={fileCheckStatus.class + " download-icon"} href={downloadXTFUrl}><GoFileCode /></a>
                 </span>
                 <span class="copy-tooltip">
                   <Button variant="secondary" className="btn-sm btn-copy-to-clipboard" onClick={copyToClipboard} onMouseLeave={resetToDefaultText}>
