@@ -1,11 +1,13 @@
 import './App.css';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card, Container } from 'react-bootstrap';
 import { GoFile, GoFileCode } from 'react-icons/go';
 import { BsLink45Deg } from 'react-icons/bs';
 
 export const Protokoll = props => {
   const { log, fileCheckStatus, connection, closedConnectionId } = props;
+  const copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
+  const [copyToClipboardTooltipText, setCopyToClipboardTooltipText] = useState(copyToClipboardTooltipDefaultText);
   const protokollNameLog = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".log";
   const protokollNameXtf = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + fileCheckStatus.testRunTime + ".xtf";
   let downloadLogUrl;
@@ -16,12 +18,10 @@ export const Protokoll = props => {
   }
 
   // Copy to clipboard
-  let copyToClipboardTooltipRef = React.createRef();
-  let copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
-  const resetToDefaultText = () => copyToClipboardTooltipRef.current.innerHTML = copyToClipboardTooltipDefaultText
+  const resetToDefaultText = () => setCopyToClipboardTooltipText(copyToClipboardTooltipDefaultText);
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location + downloadXTFUrl);
-    copyToClipboardTooltipRef.current.innerHTML = "Link wurde kopiert";
+    setCopyToClipboardTooltipText("Link wurde kopiert");
   }
 
   return (
@@ -41,7 +41,7 @@ export const Protokoll = props => {
                   <Button variant="secondary" className="btn-sm btn-copy-to-clipboard" onClick={copyToClipboard} onMouseLeave={resetToDefaultText}>
                     <BsLink45Deg />
                     <span class="copy-icon">
-                      <span class="copy-tooltip-text" ref={copyToClipboardTooltipRef} id="copy-tooltip">{copyToClipboardTooltipDefaultText}</span>
+                      <span class="copy-tooltip-text" id="copy-tooltip">{copyToClipboardTooltipText}</span>
                     </span>
                     Link kopieren
                   </Button>
