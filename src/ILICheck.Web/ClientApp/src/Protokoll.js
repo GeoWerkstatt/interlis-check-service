@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useState } from 'react';
-import Moment from 'moment'
+import DayJS from 'dayjs'
 import { Button, Card, Container } from 'react-bootstrap';
 import { GoFile, GoFileCode } from 'react-icons/go';
 import { BsLink45Deg } from 'react-icons/bs';
@@ -10,7 +10,7 @@ export const Protokoll = props => {
   const copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
   const [copyToClipboardTooltipText, setCopyToClipboardTooltipText] = useState(copyToClipboardTooltipDefaultText);
 
-  const protokollTimestamp = Moment(fileCheckStatus.testRunTime).format('YYYYMMDDHHmm');
+  const protokollTimestamp = DayJS(fileCheckStatus.testRunTime).format('YYYYMMDDHHmm');
   const protokollNamePrefix = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + protokollTimestamp;
 
   let downloadLogUrl;
