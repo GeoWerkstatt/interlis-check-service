@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
-using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -34,7 +33,7 @@ namespace ILICheck.Web.Controllers
                     .Where(file => Path.GetExtension(file) == fileExtension)
                     .Single();
 
-                return PhysicalFile(Path.GetFullPath(logFile), "text/plain");
+                return File(System.IO.File.ReadAllBytes(logFile), "text/xml; charset=utf-8");
             }
             catch (Exception)
             {
