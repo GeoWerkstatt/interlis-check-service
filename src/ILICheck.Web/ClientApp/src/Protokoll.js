@@ -1,7 +1,8 @@
 import './App.css';
 import React from 'react';
-import { Card, Container } from 'react-bootstrap';
+import { Button, Card, Container } from 'react-bootstrap';
 import { GoFile, GoFileCode } from 'react-icons/go';
+import { BsLink45Deg } from 'react-icons/bs';
 
 export const Protokoll = props => {
   const { log, fileCheckStatus, connection, closedConnectionId } = props;
@@ -12,6 +13,15 @@ export const Protokoll = props => {
   if (connection && fileCheckStatus.fileDownloadAvailable) {
     downloadLogUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.log`
     downloadXTFUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=.xtf`
+  }
+
+  // Copy to clipboard
+  let copyToClipboardTooltipRef = React.createRef();
+  let copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
+  const resetToDefaultText = () => copyToClipboardTooltipRef.current.innerHTML = copyToClipboardTooltipDefaultText
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location + downloadXTFUrl);
+    copyToClipboardTooltipRef.current.innerHTML = "Link wurde kopiert";
   }
 
   return (
@@ -26,6 +36,15 @@ export const Protokoll = props => {
                 </span>
                 <span title="XTF-Log-Datei herunterladen.">
                   <a download={protokollNameXtf} className={fileCheckStatus.class + " download-icon"} href={downloadXTFUrl}><GoFileCode /></a>
+                </span>
+                <span class="copy-tooltip">
+                  <Button variant="secondary" className="btn-sm btn-copy-to-clipboard" onClick={copyToClipboard} onMouseLeave={resetToDefaultText}>
+                    <BsLink45Deg />
+                    <span class="copy-icon">
+                      <span class="copy-tooltip-text" ref={copyToClipboardTooltipRef} id="copy-tooltip">{copyToClipboardTooltipDefaultText}</span>
+                    </span>
+                    Link kopieren
+                  </Button>
                 </span>
               </span>
             }
