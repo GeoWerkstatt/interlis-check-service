@@ -16,7 +16,6 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -52,6 +51,10 @@ namespace ILICheck.Web.Controllers
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
             var fileName = request.Query["fileName"][0];
+            var deleteXtfTransferFile = string.Equals(
+                Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
+                "true",
+                StringComparison.InvariantCultureIgnoreCase);
 
             MakeUploadFolder(connectionId);
 
@@ -59,6 +62,7 @@ namespace ILICheck.Web.Controllers
             LogInfo($"Start uploading: {fileName}");
             LogInfo($"File size: {request.ContentLength}");
             LogInfo($"Start time: {DateTime.Now}");
+            LogInfo($"Delete XTF transfer file after validation: {deleteXtfTransferFile}");
             await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"{fileName} wird hochgeladen.");
 
             using var internalTokenSource = new CancellationTokenSource();
@@ -107,8 +111,9 @@ namespace ILICheck.Web.Controllers
                 }
             }
 
-            if (ValidationResult.GetType() != typeof(OkResult))
+            if (deleteXtfTransferFile || ValidationResult.GetType() != typeof(OkResult))
             {
+                LogInfo($"Deleting {UploadFilePath}...");
                 System.IO.File.Delete(UploadFilePath);
             }
 
