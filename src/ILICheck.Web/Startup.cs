@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +38,11 @@ namespace ILICheck.Web
             services.AddSignalR();
             services.Configure<FormOptions>(options =>
             {
-                options.MultipartBodyLengthLimit = 200000000;
+                options.MultipartBodyLengthLimit = 209715200;
+            });
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = 209715200;
             });
 
             // In production, the React files will be served from this directory
