@@ -8,9 +8,7 @@ function App() {
   const [log, setLog] = useState([]);
   const [closedConnectionId, setClosedConnectionId] = useState("");
 
-  const updateLog = (message) => {
-    setLog(log => [...log, message]);
-  }
+  const updateLog = (message) => setLog(log => [...log, message]);
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
@@ -21,13 +19,7 @@ function App() {
       console.log('Message:', message);
     });
 
-    connection.on('uploadStarted', (message) => {
-      updateLog(message)
-    });
-
-    connection.on('fileUploading', (message) => {
-      updateLog(message)
-    });
+    connection.on('updateLog', (message) => updateLog(message));
 
     connection.on('stopConnection', () => {
       setClosedConnectionId(connection.connectionId)

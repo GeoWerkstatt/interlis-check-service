@@ -63,7 +63,8 @@ namespace ILICheck.Web.Controllers
             LogInfo($"File size: {request.ContentLength}");
             LogInfo($"Start time: {DateTime.Now}");
             LogInfo($"Delete XTF transfer file after validation: {deleteXtfTransferFile}");
-            await hubContext.Clients.Client(connectionId).SendAsync("uploadStarted", $"{fileName} wird hochgeladen.");
+
+            await UpdateClientLogAsync(connectionId, $"{fileName} wird hochgeladen.", CancellationToken.None);
 
             using var internalTokenSource = new CancellationTokenSource();
             using (var cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
@@ -129,22 +130,28 @@ namespace ILICheck.Web.Controllers
             Directory.CreateDirectory(UploadFolderPath);
         }
 
-        private async Task DoTaskWhileSendingUpdatesAsync(Task task, string connectionId, string updateMessage)
+        private async Task DoTaskWhileSendingUpdatesAsync(Task taskToRun, string connectionId, string updateMessage)
         {
             using var cts = new CancellationTokenSource();
-            await Task.WhenAny(task, SendPeriodicUploadFeedbackAsync(connectionId, updateMessage, cts.Token));
+
+            await Task.WhenAny(
+                taskToRun,
+                Task.Run(async () =>
+                {
+                    // Periodically update client log
+                    while (true)
+                    {
+                        await UpdateClientLogAsync(connectionId, updateMessage, cts.Token);
+                        await Task.Delay(2000, cts.Token);
+                    }
+                }));
+
             cts.Cancel();
             return;
         }
 
-        private async Task SendPeriodicUploadFeedbackAsync(string connectionId, string feedbackMessage, CancellationToken cancellationToken)
-        {
-            while (true)
-            {
-                await hubContext.Clients.Client(connectionId).SendAsync("fileUploading", feedbackMessage, cancellationToken: cancellationToken);
-                await Task.Delay(2000, cancellationToken);
-            }
-        }
+        private async Task UpdateClientLogAsync(string connectionId, string message, CancellationToken cancellationToken) =>
+            await hubContext.Clients.Client(connectionId).SendAsync("updateLog", message, cancellationToken);
 
         private async Task UploadToDirectoryAsync(HttpRequest request, CancellationTokenSource mainCts)
         {
