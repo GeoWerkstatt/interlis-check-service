@@ -6,7 +6,7 @@ import { FileDropzone } from './Dropzone';
 import Protokoll from './Protokoll';
 
 export const Home = props => {
-  const { connection, closedConnectionId, log, setLog } = props;
+  const { connection, closedConnectionId, log, updateLog, resetLog } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
@@ -14,15 +14,15 @@ export const Home = props => {
 
   // Reset log and abort upload on file change
   useEffect(() => {
-    setLog([]);
+    resetLog();
     setTestRunning(false);
     abortController && abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileToCheck, setLog])
+  }, [fileToCheck, resetLog])
 
 
   const checkFile = () => {
-    setLog([]);
+    resetLog();
     setTestRunning(true);
     setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false })
     uploadFile(fileToCheck);
@@ -49,12 +49,12 @@ export const Home = props => {
           if (content) {
             className = "errors"
             text = "Fehler!"
-            setLog(log => [...log, content])
+            updateLog(content);
           }
           else {
             className = "valid"
             text = "Keine Fehler!"
-            setLog(log => [...log, `${file.name} validiert!`])
+            updateLog(`${file.name} validiert!`);
           }
           if (res.status === 200) {
             downloadAvailable = true;

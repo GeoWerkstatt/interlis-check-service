@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import Home from './Home';
 
@@ -8,7 +8,8 @@ function App() {
   const [log, setLog] = useState([]);
   const [closedConnectionId, setClosedConnectionId] = useState("");
 
-  const updateLog = (message) => setLog(log => [...log, message]);
+  const updateLog = useCallback((message) => setLog(log => [...log, message]), [ setLog ]);
+  const resetLog = useCallback(() => setLog([]), [ setLog ]);
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
@@ -33,11 +34,11 @@ function App() {
     }).catch((e) => console.log('Error: ', e));
 
     setConnection(connection)
-  }, [closedConnectionId])
+  }, [closedConnectionId, updateLog])
 
   return (
     <div>
-      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} setLog={setLog} />
+      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} />
     </div>
   );
 }
