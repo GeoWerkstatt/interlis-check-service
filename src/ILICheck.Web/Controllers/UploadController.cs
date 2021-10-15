@@ -113,8 +113,11 @@ namespace ILICheck.Web.Controllers
 
             if (deleteXtfTransferFile || ValidationResult.GetType() != typeof(OkResult))
             {
-                LogInfo($"Deleting {UploadFilePath}...");
-                System.IO.File.Delete(UploadFilePath);
+                if (!string.IsNullOrEmpty(UploadFilePath))
+                {
+                    LogInfo($"Deleting {UploadFilePath}...");
+                    System.IO.File.Delete(UploadFilePath);
+                }
             }
 
             // Close connection after file upload attempt, to make a new connection for next file.
