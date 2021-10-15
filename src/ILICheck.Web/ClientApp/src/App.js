@@ -7,9 +7,17 @@ function App() {
   const [connection, setConnection] = useState(null);
   const [log, setLog] = useState([]);
   const [closedConnectionId, setClosedConnectionId] = useState("");
+  const [uploadLogsInterval, setUploadLogsInterval] = useState(-1);
+  const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
 
-  const updateLog = useCallback((message) => setLog(log => [...log, message]), [ setLog ]);
   const resetLog = useCallback(() => setLog([]), [ setLog ]);
+  const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
+    if (disableUploadLogs) setUploadLogsEnabled(false);
+    setLog(log => [...log, message]);
+  }, []);
+
+  useEffect(() => setUploadLogsEnabled(true), [uploadLogsInterval]);
+  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled, uploadLogsInterval]);
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
@@ -38,7 +46,7 @@ function App() {
 
   return (
     <div>
-      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} />
+      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
     </div>
   );
 }

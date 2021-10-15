@@ -64,8 +64,6 @@ namespace ILICheck.Web.Controllers
             LogInfo($"Start time: {DateTime.Now}");
             LogInfo($"Delete XTF transfer file after validation: {deleteXtfTransferFile}");
 
-            await UpdateClientLogAsync(connectionId, $"{fileName} wird hochgeladen.", CancellationToken.None);
-
             using var internalTokenSource = new CancellationTokenSource();
             using (var cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
             {
@@ -74,7 +72,7 @@ namespace ILICheck.Web.Controllers
                     await Task.Run(async () =>
                     {
                         var uploadTask = UploadToDirectoryAsync(request, cts);
-                        await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, "Datei wird hochgeladen...");
+                        await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, null);
                         if (uploadTask.IsFaulted) throw uploadTask.Exception;
                     }, cts.Token);
 
