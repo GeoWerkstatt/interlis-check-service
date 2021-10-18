@@ -36,15 +36,22 @@ echo -n "Fix permissions for mounted volumes ..." && \
   chown -R abc:abc $ILIVALIDATOR_CONFIG_DIR && \
   echo "done!"
 
-# Export current environment for all users
+# Export current environment for all users and cron jobs
 echo -n "Configure environment ..." && \
   env | xargs -L 1 -I {} echo 'export "{}"' > /etc/profile.d/env.sh && \
-  echo "done!"
+  env >> /etc/environment && echo "done!"
+
+# Setup and run cron jobs
+[[ -n $TRANSFER_AND_LOG_DATA_RETENTION ]] && \
+  echo -n "Setup cron jobs ..." && \
+  echo '* * * * * /usr/bin/find $ILICHECK_UPLOADS_DIR -mindepth 1 -maxdepth 1 -type d -not -newermt "$TRANSFER_AND_LOG_DATA_RETENTION ago" -exec rm -r "{}" \; > /proc/1/fd/1 2>/proc/1/fd/2' | crontab - && \
+  cron && echo "done!"
 
 echo "
 --------------------------------------------------------------------------
 ilicheck version:                 $ILICHECK_APP_VERSION
 delete transfer files:            $([[ $DELETE_TRANSFER_FILES = true ]] && echo enabled || echo disabled)
+transfer and log data retention:  $([[ -n $TRANSFER_AND_LOG_DATA_RETENTION ]] && echo $TRANSFER_AND_LOG_DATA_RETENTION || echo unset)
 ilivalidator version:             $ILIVALIDATOR_VERSION `[[ $ILIVALIDATOR_VERSION != $ILIVALIDATOR_LATEST_VERSION ]] && echo "(new version $ILIVALIDATOR_LATEST_VERSION available!)"`
 ilivalidator config file name:    $([[ -n $ILIVALIDATOR_CONFIG_NAME ]] && echo $ILIVALIDATOR_CONFIG_NAME || echo disabled)
 ilivalidator model repositories:  $ILIVALIDATOR_MODEL_DIR

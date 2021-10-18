@@ -56,8 +56,22 @@ services:
     #     host machine which prevents permisson issues when writing files to the mounted volume
     #
     #   - DELETE_TRANSFER_FILES=true
-    #     Optional, If set to true, the XTF transfer file gets deleted right after validation
+    #     Optional, If set to true, the XTF transfer file gets deleted right after ilivalidator
+    #     has completed validation
     #     Default false
+    #
+    #   - TRANSFER_AND_LOG_DATA_RETENTION=15 minutes
+    #     Optional, If set, XTF transfer files and ilivalidator log files older than the
+    #     specified value get deleted
+    #     Keep in mind, a validation may last for several minutes. In order to prevent files
+    #     from getting deleted during a long running validation choose at least '15 minutes'
+    #     Default unset (preserves logs and XTF transfer files forever)
+    #     examples: - 30 minutes
+    #               - 10 hours
+    #               - 5 days
+    #               - 3 weeks
+    #               - 6 months
+    #               - 1 year
     #
     #   - ILIVALIDATOR_VERSION=1.11.10
     #     Optional, Default latest version available from
