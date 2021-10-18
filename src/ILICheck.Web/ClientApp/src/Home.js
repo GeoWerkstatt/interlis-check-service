@@ -6,25 +6,29 @@ import { FileDropzone } from './Dropzone';
 import Protokoll from './Protokoll';
 
 export const Home = props => {
-  const { connection, closedConnectionId, log, setLog } = props;
+  const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
   const [abortController, setAbortController] = useState(null)
 
+  const logUploadLogMessages = () => updateLog(`${fileToCheck.name} wird hochgeladen...`, { disableUploadLogs: false });
+  const setIntervalImmediately = (func, interval) => { func(); return setInterval(func, interval); }
+
   // Reset log and abort upload on file change
   useEffect(() => {
-    setLog([]);
+    resetLog();
     setTestRunning(false);
     abortController && abortController.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileToCheck, setLog])
+  }, [fileToCheck, resetLog])
 
 
   const checkFile = () => {
-    setLog([]);
+    resetLog();
     setTestRunning(true);
     setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false })
+    setUploadLogsInterval(setIntervalImmediately(logUploadLogMessages, 2000));
     uploadFile(fileToCheck);
   }
 
@@ -49,12 +53,12 @@ export const Home = props => {
           if (content) {
             className = "errors"
             text = "Fehler!"
-            setLog(log => [...log, content])
+            updateLog(content);
           }
           else {
             className = "valid"
             text = "Keine Fehler!"
-            setLog(log => [...log, `${file.name} validiert!`])
+            updateLog(`${file.name} validiert!`);
           }
           if (res.status === 200) {
             downloadAvailable = true;

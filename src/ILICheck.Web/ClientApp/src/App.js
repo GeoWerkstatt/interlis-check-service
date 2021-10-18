@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import Home from './Home';
 
@@ -7,10 +7,17 @@ function App() {
   const [connection, setConnection] = useState(null);
   const [log, setLog] = useState([]);
   const [closedConnectionId, setClosedConnectionId] = useState("");
+  const [uploadLogsInterval, setUploadLogsInterval] = useState(-1);
+  const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
 
-  const updateLog = (message) => {
+  const resetLog = useCallback(() => setLog([]), [ setLog ]);
+  const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
+    if (disableUploadLogs) setUploadLogsEnabled(false);
     setLog(log => [...log, message]);
-  }
+  }, []);
+
+  useEffect(() => setUploadLogsEnabled(true), [uploadLogsInterval]);
+  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled, uploadLogsInterval]);
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
@@ -21,13 +28,7 @@ function App() {
       console.log('Message:', message);
     });
 
-    connection.on('uploadStarted', (message) => {
-      updateLog(message)
-    });
-
-    connection.on('fileUploading', (message) => {
-      updateLog(message)
-    });
+    connection.on('updateLog', (message) => updateLog(message));
 
     connection.on('stopConnection', () => {
       setClosedConnectionId(connection.connectionId)
@@ -41,11 +42,11 @@ function App() {
     }).catch((e) => console.log('Error: ', e));
 
     setConnection(connection)
-  }, [closedConnectionId])
+  }, [closedConnectionId, updateLog])
 
   return (
     <div>
-      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} setLog={setLog} />
+      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
     </div>
   );
 }
