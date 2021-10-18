@@ -148,8 +148,13 @@ namespace ILICheck.Web.Controllers
             return;
         }
 
-        private async Task UpdateClientLogAsync(string connectionId, string message, CancellationToken cancellationToken) =>
-            await hubContext.Clients.Client(connectionId).SendAsync("updateLog", message, cancellationToken);
+        private async Task UpdateClientLogAsync(string connectionId, string message, CancellationToken cancellationToken)
+        {
+            if (!string.IsNullOrEmpty(message))
+            {
+                await hubContext.Clients.Client(connectionId).SendAsync("updateLog", message, cancellationToken);
+            }
+        }
 
         private async Task UploadToDirectoryAsync(HttpRequest request, CancellationTokenSource mainCts)
         {
