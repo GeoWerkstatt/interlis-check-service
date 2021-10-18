@@ -35,12 +35,12 @@ ENV ILIVALIDATOR_HOME_DIR=/ilivalidator
 ENV ILIVALIDATOR_CONFIG_DIR=/config
 WORKDIR ${ILICHECK_APP_HOME_DIR}
 
-# Install missing packages (curl unzip jre sudo vim htop)
+# Install missing packages (curl unzip jre sudo vim htop cron)
 RUN \
   DEBIAN_FRONTEND=noninteractive && \
   mkdir -p /usr/share/man/man1 /usr/share/man/man2 && \
   apt-get update && \
-  apt-get install -y curl unzip default-jre-headless sudo vim htop && \
+  apt-get install -y curl unzip default-jre-headless sudo vim htop cron && \
   rm -rf /var/lib/apt/lists/*
 
 # Add non-root user and create our folders
