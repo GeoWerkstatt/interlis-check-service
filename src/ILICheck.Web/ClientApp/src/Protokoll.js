@@ -38,11 +38,11 @@ export const Protokoll = props => {
                 <span title="XTF-Log-Datei herunterladen.">
                   <a download={protokollFileName + xtfLogFileExtension} className={fileCheckStatus.class + " download-icon"} href={downloadUrl + xtfLogFileExtension}><GoFileCode /></a>
                 </span>
-                <span class="copy-tooltip">
+                <span className="copy-tooltip">
                   <Button variant="secondary" className="btn-sm btn-copy-to-clipboard" onClick={copyToClipboard} onMouseLeave={resetToDefaultText}>
                     <BsLink45Deg />
-                    <span class="copy-icon">
-                      <span class="copy-tooltip-text" id="copy-tooltip">{copyToClipboardTooltipText}</span>
+                    <span className="copy-icon">
+                      <span className="copy-tooltip-text" id="copy-tooltip">{copyToClipboardTooltipText}</span>
                     </span>
                     Link kopieren
                   </Button>
