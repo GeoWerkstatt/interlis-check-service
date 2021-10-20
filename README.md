@@ -39,7 +39,7 @@ services:
     #     Reflects the last commit of an active branch
     #     May contain breaking changes and incompatibilities
     #     NOT RECOMMENDED!
-    image: ghcr.io/geowerkstatt/interlis-check-service:latest
+    image: ghcr.io/geowerkstatt/interlis-check-service:v1
     # Docker container restart behavior
     restart: unless-stopped
     # Mount paths as volumes
