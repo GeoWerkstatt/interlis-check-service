@@ -342,7 +342,7 @@ namespace ILICheck.Web.Controllers
             if (process.ExitCode != 0)
             {
                 LogInfo("The ilivalidator found errors in the file. Validation failed.");
-                ValidationResult = Ok("Der Ilivalidator hat Fehler in der Datei gefunden.");
+                ValidationResult = Ok("Der ILICOP hat Fehler in der Datei gefunden.");
             }
             else
             {

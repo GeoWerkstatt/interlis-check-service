@@ -61,6 +61,7 @@ export const Home = props => {
             className = "valid"
             text = "Keine Fehler!"
             updateLog(`${file.name} validiert!`);
+            updateLog("Alles nach Vorschrift, der ILICOP hat nichts zu beanstanden!");
           }
           if (res.status === 200) {
             downloadAvailable = true;
