@@ -36,131 +36,124 @@ footer {
   align-self: flex-start;
 }
 
-
 /************ Protokoll ************/
 .protokoll {
-    max-height: 50vh;
-    overflow-y: auto;
-    text-align: left;
-    width: 65vw;
-    height: 50vh;
-  }
-  
-  .protokoll-card {
-    color: black;
-    margin-top: 30px;
-  }
-  
-  
-  /************ Dropzone ************/
-  input {
-    border-radius: 5px;
-    background-color: white;
-    color: black;
-  }
-  
-  .dropzone-text {
-    color: #bdbdbd;
-    border-color: white;
-  }
-  
-  .dropzone-text-file {
-    color: black;
-    font-weight: 600;
-    border-color: white;
-  }
-  
-  .dropzone-text-error {
-    color: #ff1744;
-    border-color: #ff1744;
-  }
-  .dropzone-wrapper{
-    display: flex;
-  }
-  
-  /************ Buttons & Icons ************/
-  .btn {
-    margin-left: 10px;
-    font-size: 20px;
-  }
-  
-  .check-button {
-    width: 110px;
-    border: none;
-  }
-  
-  .invisible-check-button {
-    display: none;
-  }
-  
-  .download-icon {
-    font-size: 30px;
-    margin-left: 10px;
-  }
-  
-  .run-icon {
-    margin-left: 10px;
-  }
-  
-  .copy-icon {
-    margin-left: 5px;
-  }
-  
-  /************ Check status ************/
-  .valid {
-    color: #198754;
-  }
-  
-  .errors {
-    color: #ff1744;
-  }
-  
-  /************ Copy to clipboard function ************/
-  .copy-tooltip {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .copy-tooltip .copy-tooltip-text {
-    visibility: hidden;
-    width: 280px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1;
-    bottom: 150%;
-    left: 50%;
-    margin-left: -75px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  
-  .copy-tooltip .copy-tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-  }
-  
-  .copy-tooltip:hover .copy-tooltip-text {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  .btn-copy-to-clipboard {
-    font-size: 1rem;
-    margin-top: -4px;
-    line-height: 1;
-  }
-  
-  .introduction {
-    text-align: left;
-  }
-  
+  max-height: 50vh;
+  overflow-y: auto;
+  text-align: left;
+  width: 65vw;
+  height: 50vh;
+}
+
+.protokoll-card {
+  color: black;
+  margin-top: 30px;
+}
+
+/************ Dropzone ************/
+input {
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+}
+
+.dropzone-text {
+  color: #bdbdbd;
+  border-color: white;
+}
+
+.dropzone-text-file {
+  color: black;
+  font-weight: 600;
+  border-color: white;
+}
+
+.dropzone-text-error {
+  color: #ff1744;
+  border-color: #ff1744;
+}
+.dropzone-wrapper {
+  display: flex;
+}
+
+/************ Buttons & Icons ************/
+.btn {
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.check-button {
+  width: 110px;
+  border: none;
+}
+
+.invisible-check-button {
+  display: none;
+}
+
+.download-icon {
+  font-size: 30px;
+  margin-left: 10px;
+}
+
+.run-icon {
+  margin-left: 10px;
+}
+
+.copy-icon {
+  margin-left: 5px;
+}
+
+/************ Check status ************/
+.valid {
+  color: #198754;
+}
+
+.errors {
+  color: #ff1744;
+}
+
+/************ Copy to clipboard function ************/
+.copy-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.copy-tooltip .copy-tooltip-text {
+  visibility: hidden;
+  width: 280px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.copy-tooltip .copy-tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.copy-tooltip:hover .copy-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.btn-copy-to-clipboard {
+  font-size: 1rem;
+  margin-top: -4px;
+  line-height: 1;
+}
