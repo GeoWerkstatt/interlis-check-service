@@ -1,7 +1,6 @@
 body {
   color: white;
   text-align: center;
-  font-size: 24px;
   background: #282c34;
 }
 
@@ -20,4 +19,9 @@ body {
 .title {
   font-size: 45px;
   padding-bottom: 5vh;
+}
+
+.card-body
+{
+  text-align: left;
 }
