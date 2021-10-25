@@ -27,7 +27,7 @@ const Container = styled.div`
 
 export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled }) => {
     const [fileAvailable, setFileAvailable] = useState(false);
-    const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
+    const [dropZoneText, setDropZoneText] = useState("Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
 
     const onDropAccepted = useCallback(acceptedFiles => {
@@ -45,16 +45,16 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
 
         switch (errorCode) {
             case "file-invalid-type":
-                setDropZoneText("Fehler: Nicht unterstütze Datei. Bitte wählen Sie eine Datei des Typs .xtf oder .xml aus.");
+                setDropZoneText("Fehler: Nicht unterstütze Datei. Bitte wähle eine .xtf Datei aus.");
                 break;
             case "too-many-files":
                 setDropZoneText("Fehler: Es kann nur eine Datei aufs mal geprüft werden.");
                 break;
             case "file-too-large":
-                setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wählen Sie eine kleinere Datei oder erstellen Sie eine .zip Datei.");
+                setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wähle eine kleinere Datei oder erstelle eine .zip Datei.");
                 break;
             default:
-                setDropZoneText("Fehler: Bitte wählen Sie eine Datei des Typs .xtf, .xml oder .zip mit maximal 200MB aus.");
+                setDropZoneText("Fehler: Bitte wähle eine Datei des Typs .xtf oder .zip mit maximal 200MB aus.");
         }
         setFileToCheck(null)
         setFileAvailable(false);
@@ -66,7 +66,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
         setUploadLogsEnabled(false);
         setFileToCheck(null);
         setFileAvailable(false);
-        setDropZoneText(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
+        setDropZoneText("Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
         setDropZoneTextClass("dropzone-text");
     }
 

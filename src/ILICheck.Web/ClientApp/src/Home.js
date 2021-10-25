@@ -38,6 +38,7 @@ export const Home = props => {
           downloadAvailable =true;
           className = "valid"
           text = "Keine Fehler!"
+          updateLog("Alles nach Vorschrift, der ILICOP hat nichts zu beanstanden!");
         }
         if(validationResult === "error"|| validationResult === "aborted"){
           className = "errors"
