@@ -1,147 +1,166 @@
+/************ Base Layout ************/
 .app {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  color: white;
-  padding-top: 50px;
+  min-height: 100vh;
 }
 
-.app-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  font-size: 45px;
-  color: white;
-  margin-right: 200px;
-}
-
-.app-footer {
-  font-size: 12px;
-  color: #636973;
-  width: 100%;
-  padding-left: 60px;
-  height: 40px;
-  margin-top: auto;
-}
-
-.protokoll {
-  max-height: 50vh;
-  overflow-y: auto;
+header {
   text-align: left;
-  width: 65vw;
-  height: 50vh;
-}
-
-.protokoll-card {
-  color: #282c34;
-  margin-top: 30px;
-}
-
-input {
-  border-radius: 5px;
-  background-color: white;
-  color: #282c34;
-}
-
-.container {
+  line-height: 2;
+  justify-content: space-between;
   display: flex;
-  margin: 5px;
+  padding-left: 20px;
+  padding-right: 40px;
 }
 
-/************ Dropzone ************/
-.dropzone-text {
-  color: #bdbdbd;
-  border-color: white;
+main {
+  min-height: 80vh;
+  flex: 1 0 auto;
 }
 
-.dropzone-text-file {
-  color: #282c34;
-  font-weight: 600;
-  border-color: white;
+footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
 }
 
-.dropzone-text-error {
-  color: #ff1744;
-  border-color: #ff1744;
+.flex-item {
+  flex-grow: 1;
+  align-self: flex-start;
+  text-align: left;
 }
 
-/************ Buttons & Icons ************/
-.btn {
-  margin-left: 10px;
-  font-size: 20px;
+.flex-icon {
+  flex-grow: 5;
+  align-self: flex-start;
 }
 
-.invisible-check-button {
-  visibility: hidden;
-}
 
-.download-icon {
-  font-size: 30px;
-  margin-left: 10px;
-}
-
-.run-icon {
-  margin-left: 10px;
-}
-
-.copy-icon {
-  margin-left: 5px;
-}
-
-/************ Check status ************/
-
-.valid {
-  color: #198754;
-}
-
-.errors {
-  color: #ff1744;
-}
-
-/************ Copy to clipboard function ************/
-
-.copy-tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.copy-tooltip .copy-tooltip-text {
-  visibility: hidden;
-  width: 280px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -75px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.copy-tooltip .copy-tooltip-text::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-.copy-tooltip:hover .copy-tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
-
-.btn-copy-to-clipboard {
-  font-size: 1rem;
-  margin-top: -4px;
-  line-height: 1;
-}
+/************ Protokoll ************/
+.protokoll {
+    max-height: 50vh;
+    overflow-y: auto;
+    text-align: left;
+    width: 65vw;
+    height: 50vh;
+  }
+  
+  .protokoll-card {
+    color: black;
+    margin-top: 30px;
+  }
+  
+  
+  /************ Dropzone ************/
+  input {
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+  }
+  
+  .dropzone-text {
+    color: #bdbdbd;
+    border-color: white;
+  }
+  
+  .dropzone-text-file {
+    color: black;
+    font-weight: 600;
+    border-color: white;
+  }
+  
+  .dropzone-text-error {
+    color: #ff1744;
+    border-color: #ff1744;
+  }
+  .dropzone-wrapper{
+    display: flex;
+  }
+  
+  /************ Buttons & Icons ************/
+  .btn {
+    margin-left: 10px;
+    font-size: 20px;
+  }
+  
+  .check-button {
+    width: 110px;
+    border: none;
+  }
+  
+  .invisible-check-button {
+    display: none;
+  }
+  
+  .download-icon {
+    font-size: 30px;
+    margin-left: 10px;
+  }
+  
+  .run-icon {
+    margin-left: 10px;
+  }
+  
+  .copy-icon {
+    margin-left: 5px;
+  }
+  
+  /************ Check status ************/
+  .valid {
+    color: #198754;
+  }
+  
+  .errors {
+    color: #ff1744;
+  }
+  
+  /************ Copy to clipboard function ************/
+  .copy-tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .copy-tooltip .copy-tooltip-text {
+    visibility: hidden;
+    width: 280px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .copy-tooltip .copy-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  .copy-tooltip:hover .copy-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .btn-copy-to-clipboard {
+    font-size: 1rem;
+    margin-top: -4px;
+    line-height: 1;
+  }
+  
+  .introduction {
+    text-align: left;
+  }
+  

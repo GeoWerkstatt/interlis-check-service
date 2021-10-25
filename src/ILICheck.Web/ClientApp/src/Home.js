@@ -1,4 +1,5 @@
 import './App.css';
+import './CI.css';
 import React, { useState, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { AiOutlinePlayCircle } from 'react-icons/ai';
@@ -76,24 +77,21 @@ export const Home = props => {
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <p>
-          INTERLIS Web-Check-Service
-        </p>
-      </header>
+    <div>
       <Container>
-        <FileDropzone setFileToCheck={setFileToCheck} abortController={abortController} />
-        <Button variant="success" className={fileToCheck ? "" : "invisible-check-button"} onClick={checkFile}>Check
-          <span className="run-icon">
-            {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
-          </span>
+        <div className="title">
+        INTERLIS Web-Check-Service
+        </div>
+        <div className="dropzone-wrapper">
+          <FileDropzone setFileToCheck={setFileToCheck} abortController={abortController} />
+          <Button variant="success" className={fileToCheck ? "check-button" : "invisible-check-button"} onClick={checkFile}>Check
+            <span className="run-icon">
+              {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
+            </span>
         </Button>
+        </div>
       </Container>
       <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />
-      <footer className="app-footer">
-        <div>{process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}</div>
-      </footer>
     </div>
   );
 }

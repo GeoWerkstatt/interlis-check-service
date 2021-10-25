@@ -1,0 +1,23 @@
+body {
+  color: white;
+  text-align: center;
+  font-size: 24px;
+  background: #282c34;
+}
+
+.footer-style {
+  padding: 35px;
+  background: #282c34;
+  font-size: 12px;
+  color: #636973;
+  text-align: left;
+}
+
+.header-style {
+  min-height: 5vh;
+}
+
+.title {
+  font-size: 45px;
+  padding-bottom: 5vh;
+}
