@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import Home from './Home';
+import Layout from './Layout';
 
 function App() {
   const [connection, setConnection] = useState(null);
@@ -45,9 +45,7 @@ function App() {
   }, [closedConnectionId, updateLog])
 
   return (
-    <div>
-      <Home connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
-    </div>
+      <Layout connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
   );
 }
 
