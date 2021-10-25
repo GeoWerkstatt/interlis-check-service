@@ -1,10 +1,10 @@
 import './App.css';
-import './CI.css';
+import './CI_geow.css';
 import React, { useState, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
-import { AiOutlinePlayCircle } from 'react-icons/ai';
 import { FileDropzone } from './Dropzone';
 import Protokoll from './Protokoll';
+import ili_cop_logo from './img/ILI_cop.png'
 
 export const Home = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval } = props;
@@ -79,16 +79,17 @@ export const Home = props => {
   return (
     <div>
       <Container>
+        <img src={ili_cop_logo} width="200" alt="ILICop_Logo" />
         <div className="title">
-        INTERLIS Web-Check-Service
+          ILICOP
         </div>
         <div className="dropzone-wrapper">
           <FileDropzone setFileToCheck={setFileToCheck} abortController={abortController} />
-          <Button variant="success" className={fileToCheck ? "check-button" : "invisible-check-button"} onClick={checkFile}>Check
+          <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}>
             <span className="run-icon">
-              {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
+              {testRunning ? (<span className="spinner-border spinner-border-sm text-light"></span>) : ("Los!")}
             </span>
-        </Button>
+          </Button>
         </div>
       </Container>
       <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />

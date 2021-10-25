@@ -1,4 +1,5 @@
 import './App.css';
+import './CI_geow.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import Layout from './Layout';
