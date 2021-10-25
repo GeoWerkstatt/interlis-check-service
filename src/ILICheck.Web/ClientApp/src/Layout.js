@@ -1,12 +1,19 @@
 import './App.css';
-import React from 'react';
+import React, { useState } from 'react';
 import geow_logo from './img/GeoW.png'
 import github_logo from './img/GitHub-Mark-Light-64px.png'
 import qgis_logo from './img/qgis_transparent.png'
 import Home from './Home';
+import ImpressumModal from './Impressum';
+import DatenschutzModal from './Datenschutz';
+import HilfeModal from './Hilfe';
+import { Button } from 'react-bootstrap';
 
 export const Layout = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, validationResult, setValidationResult, setUploadLogsEnabled } = props;
+  const [showImpressum, setShowImpressum] = useState(false);
+  const [showDatenschutz, setShowDatenschutz] = useState(false);
+  const [showHilfe, setShowHilfe] = useState(false);
 
   return (
     <div className="app">
@@ -20,16 +27,25 @@ export const Layout = props => {
       </header>
       <main>
         <Home connection={connection}
-              closedConnectionId={closedConnectionId} 
+              closedConnectionId={closedConnectionId}
               validationResult ={validationResult}
               setValidationResult ={setValidationResult}
-              log={log} 
-              updateLog={updateLog} 
-              resetLog={resetLog} 
+              log={log}
+              updateLog={updateLog}
+              resetLog={resetLog}
               setUploadLogsInterval={setUploadLogsInterval}
               setUploadLogsEnabled={setUploadLogsEnabled} />
       </main>
       <footer className="footer-style">
+        <Button variant="link" className="flex-item footer-button" onClick={() => setShowImpressum(true)}>
+          IMPRESSUM
+        </Button>
+        <Button variant="link" className="flex-item footer-button" onClick={() => setShowDatenschutz(true)}>
+          DATENSCHUTZ
+        </Button>
+        <Button variant="link" className="flex-item footer-button" onClick={() => setShowHilfe(true)}>
+          INFO & HILFE
+        </Button>
         <div className="flex-item"></div>
         <div className="flex-item"></div>
         <div className="flex-item"></div>
@@ -43,6 +59,21 @@ export const Layout = props => {
           <span className="version-tag">{process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}</span>
         </div>
       </footer>
+      < ImpressumModal
+        className="modal"
+        show={showImpressum}
+        onHide={() => setShowImpressum(false)}
+      />
+      < DatenschutzModal
+        className="modal"
+        show={showDatenschutz}
+        onHide={() => setShowDatenschutz(false)}
+      />
+      < HilfeModal
+        className="modal"
+        show={showHilfe}
+        onHide={() => setShowHilfe(false)}
+      />
     </div>
   );
 }
