@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { FileDropzone } from './Dropzone';
 import Protokoll from './Protokoll';
+import InfoCarousel from './InfoCarousel';
 import ili_cop_logo from './img/ILI_cop.png'
 
 export const Home = props => {
@@ -97,6 +98,7 @@ export const Home = props => {
         <div className="title">
           ILICOP
         </div>
+        <InfoCarousel />
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
           <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}>
