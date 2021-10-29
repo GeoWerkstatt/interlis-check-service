@@ -16,8 +16,8 @@ function App() {
     setLog(log => [...log, message]);
   }, []);
 
-  useEffect(() => setUploadLogsEnabled(true), [uploadLogsInterval]);
-  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled, uploadLogsInterval]);
+  useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
+  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled]);
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
