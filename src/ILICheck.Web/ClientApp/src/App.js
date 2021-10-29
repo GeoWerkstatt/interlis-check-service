@@ -7,7 +7,7 @@ function App() {
   const [connection, setConnection] = useState(null);
   const [log, setLog] = useState([]);
   const [closedConnectionId, setClosedConnectionId] = useState("");
-  const [uploadLogsInterval, setUploadLogsInterval] = useState(-1);
+  const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
   const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
 
   const resetLog = useCallback(() => setLog([]), [ setLog ]);
