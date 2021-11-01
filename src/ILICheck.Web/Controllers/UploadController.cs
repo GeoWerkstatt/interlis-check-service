@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -8,14 +16,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Serilog;
 using SignalR.Hubs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace ILICheck.Web.Controllers
 {
@@ -27,10 +27,11 @@ namespace ILICheck.Web.Controllers
         private readonly IWebHostEnvironment environment;
         private Serilog.ILogger sessionLogger;
 
+        public CancellationTokenSource UploadCts { get; set; }
+        public string CurrentConnectionId { get; set; }
+
         public string UploadFolderPath { get; set; }
         public string UploadFilePath { get; set; }
-
-        public IActionResult ValidationResult { get; set; }
 
         public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
         {
@@ -38,6 +39,7 @@ namespace ILICheck.Web.Controllers
             this.applicationLogger = applicationLogger;
             this.configuration = configuration;
             this.environment = environment;
+            SignalREventHelper.DisconnectedEvent += ValidationAborted;
         }
 
         /// <summary>
@@ -50,6 +52,8 @@ namespace ILICheck.Web.Controllers
         {
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
+            CurrentConnectionId = connectionId;
+            UploadCts = new CancellationTokenSource();
             var fileName = request.Query["fileName"][0];
             var deleteXtfTransferFile = string.Equals(
                 Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
@@ -64,23 +68,27 @@ namespace ILICheck.Web.Controllers
             LogInfo($"Start time: {DateTime.Now}");
             LogInfo($"Delete XTF transfer file after validation: {deleteXtfTransferFile}");
 
-            using var internalTokenSource = new CancellationTokenSource();
-            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(internalTokenSource.Token, HttpContext.RequestAborted))
+            var uploadTask = UploadToDirectoryAsync(request);
+            await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, null);
+            if (uploadTask.IsFaulted) throw uploadTask.Exception;
+
+            DoValidation(connectionId, deleteXtfTransferFile, UploadCts);
+
+            LogInfo($"Stop time: {DateTime.Now}");
+            return uploadTask.Result;
+        }
+
+        private async void DoValidation(string connectionId, bool deleteXtfTransferFile, CancellationTokenSource uploadCts)
+        {
+            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(uploadCts.Token, HttpContext.RequestAborted))
             {
                 try
                 {
-                    await Task.Run(async () =>
-                    {
-                        var uploadTask = UploadToDirectoryAsync(request, cts);
-                        await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, null);
-                        if (uploadTask.IsFaulted) throw uploadTask.Exception;
-                    }, cts.Token);
-
                     if (Path.GetExtension(UploadFilePath) == ".zip")
                     {
                         await Task.Run(async () =>
                         {
-                            var unzipTask = UnzipFileAsync(UploadFilePath, cts);
+                            var unzipTask = UnzipFileAsync(UploadFilePath, cts, connectionId);
                             await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei wird entzipped...");
                             if (unzipTask.IsFaulted) throw unzipTask.Exception;
                         }, cts.Token);
@@ -88,7 +96,7 @@ namespace ILICheck.Web.Controllers
 
                     await Task.Run(async () =>
                     {
-                        var parseTask = ParseXmlAsync(UploadFilePath, cts);
+                        var parseTask = ParseXmlAsync(UploadFilePath, cts, connectionId);
                         await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
                         if (parseTask.IsFaulted) throw parseTask.Exception;
                     }, cts.Token);
@@ -103,26 +111,20 @@ namespace ILICheck.Web.Controllers
                 catch (Exception e)
                 {
                     LogInfo($"Unexpected error: {e.Message}");
-                    if (ValidationResult == null)
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted");
+                }
+
+                if (deleteXtfTransferFile || cts.Token.IsCancellationRequested)
+                {
+                    if (!string.IsNullOrEmpty(UploadFilePath))
                     {
-                        ValidationResult = new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                        LogInfo($"Deleting {UploadFilePath}...");
+                        System.IO.File.Delete(UploadFilePath);
                     }
                 }
-            }
 
-            if (deleteXtfTransferFile || ValidationResult.GetType() != typeof(OkResult))
-            {
-                if (!string.IsNullOrEmpty(UploadFilePath))
-                {
-                    LogInfo($"Deleting {UploadFilePath}...");
-                    System.IO.File.Delete(UploadFilePath);
-                }
+                await hubContext.Clients.Client(connectionId).SendAsync("validationOk");
             }
-
-            // Close connection after file upload attempt, to make a new connection for next file.
-            LogInfo($"Stop time: {DateTime.Now}");
-            await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
-            return ValidationResult;
         }
 
         private void MakeUploadFolder(string connectionId)
@@ -159,17 +161,15 @@ namespace ILICheck.Web.Controllers
             }
         }
 
-        private async Task UploadToDirectoryAsync(HttpRequest request, CancellationTokenSource mainCts)
+        private async Task<IActionResult> UploadToDirectoryAsync(HttpRequest request)
         {
             LogInfo("Uploading file");
             if (!request.HasFormContentType ||
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                ValidationResult = new UnsupportedMediaTypeResult();
                 LogInfo("Upload aborted, unsupported media type.");
-                mainCts.Cancel();
-                return;
+                return new UnsupportedMediaTypeResult();
             }
 
             var reader = new MultipartReader(mediaTypeHeader.Boundary.Value, request.Body);
@@ -192,21 +192,19 @@ namespace ILICheck.Web.Controllers
                         await section.Body.CopyToAsync(targetStream);
                     }
 
-                    return;
+                    return Ok();
                 }
 
                 section = await reader.ReadNextSectionAsync();
             }
 
-            ValidationResult = BadRequest("Es wurde keine Datei hochgeladen.");
             LogInfo("Upload aborted, no files data in the request.");
-            mainCts.Cancel();
-            return;
+            return BadRequest("Es wurde keine Datei hochgeladen.");
         }
 
-        private async Task UnzipFileAsync(string zipFilePath, CancellationTokenSource mainCts)
+        private async Task UnzipFileAsync(string zipFilePath, CancellationTokenSource mainCts, string connectionId)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 LogInfo("Unzipping file");
                 var uploadPath = Path.GetFullPath(configuration.GetSection("Upload")["PathFormat"]);
@@ -226,7 +224,8 @@ namespace ILICheck.Web.Controllers
                 {
                     if (archive.Entries.Count != 1)
                     {
-                        ValidationResult = BadRequest("Nur Zip-Archive, die genau eine Datei enthalten, werden unterstützt.");
+                        await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nur Zip-Archive, die genau eine Datei enthalten, werden unterstützt.");
+
                         LogInfo("Upload aborted, only zip archives containing exactly one file are supported.");
                         mainCts.Cancel();
                         return;
@@ -244,7 +243,7 @@ namespace ILICheck.Web.Controllers
                             }
                             else
                             {
-                                ValidationResult = BadRequest("Dateipfad konnte nicht aufgelöst werden.");
+                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Dateipfad konnte nicht aufgelöst werden.");
                                 LogInfo("Upload aborted, cannot get extraction path.");
                                 mainCts.Cancel();
                                 return;
@@ -252,7 +251,7 @@ namespace ILICheck.Web.Controllers
                         }
                         else
                         {
-                            ValidationResult = BadRequest("Nicht unterstützte Dateiendung.");
+                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nicht unterstützte Dateiendung.");
                             LogInfo("Upload aborted, zipped file has unsupported extension.");
                             mainCts.Cancel();
                             return;
@@ -268,7 +267,7 @@ namespace ILICheck.Web.Controllers
                 }
                 else
                 {
-                    ValidationResult = BadRequest("Unbekannter Fehler.");
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Unbekannter Fehler.");
                     LogInfo("Upload aborted, unknown error.");
                     mainCts.Cancel();
                     return;
@@ -276,7 +275,7 @@ namespace ILICheck.Web.Controllers
             });
         }
 
-        private async Task ParseXmlAsync(string filePath, CancellationTokenSource mainCts)
+        private async Task ParseXmlAsync(string filePath, CancellationTokenSource mainCts, string connectionId)
         {
             LogInfo("Parsing file");
             var settings = new XmlReaderSettings();
@@ -293,7 +292,7 @@ namespace ILICheck.Web.Controllers
             }
             catch (XmlException e)
             {
-                ValidationResult = BadRequest("Datei hat keine gültige XML-Struktur.");
+                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Datei hat keine gültige XML-Struktur.");
                 LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
                 mainCts.Cancel();
                 return;
@@ -304,15 +303,15 @@ namespace ILICheck.Web.Controllers
 
         private async Task ValidateFileAsync(string connectionId)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 LogInfo("Validating file");
-                Validate(connectionId);
+                await ValidateAsync(connectionId);
                 return;
             });
         }
 
-        private void Validate(string connectionId)
+        private async Task ValidateAsync(string connectionId)
         {
             var uploadPath = configuration.GetSection("Validation")["UploadFolderInContainer"].Replace("{Name}", connectionId);
             var fileName = Path.GetFileName(UploadFilePath);
@@ -342,12 +341,23 @@ namespace ILICheck.Web.Controllers
             if (process.ExitCode != 0)
             {
                 LogInfo("The ilivalidator found errors in the file. Validation failed.");
-                ValidationResult = Ok("Der Ilivalidator hat Fehler in der Datei gefunden.");
+                await hubContext.Clients.Client(connectionId).SendAsync("validatedWithErrors", "Der Ilivalidator hat Fehler in der Datei gefunden.");
             }
             else
             {
                 LogInfo("The ilivalidator found no errors in the file. Validation successfull!");
-                ValidationResult = Ok();
+                await hubContext.Clients.Client(connectionId).SendAsync("validatedWithoutErrors", "Der Ilivalidator hat keine Fehler in der Datei gefunden.");
+            }
+
+            await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
+        }
+
+        private void ValidationAborted(object sender, SignalrEventArgs args)
+        {
+            if (args.ConnectionId == CurrentConnectionId)
+            {
+                UploadCts.Cancel();
+                Console.WriteLine("Validation aborted {1}.", sender);
             }
         }
 

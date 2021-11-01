@@ -25,7 +25,7 @@ const Container = styled.div`
   transition: border .24s ease-in-out;
 `;
 
-export const FileDropzone = ({ setFileToCheck, abortController }) => {
+export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled }) => {
     const [fileAvailable, setFileAvailable] = useState(false);
     const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
@@ -62,7 +62,8 @@ export const FileDropzone = ({ setFileToCheck, abortController }) => {
 
     const removeFile = (event) => {
         event.stopPropagation();
-        abortController && abortController.abort();
+        connection.stop();
+        setUploadLogsEnabled(false);
         setFileToCheck(null);
         setFileAvailable(false);
         setDropZoneText(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");

@@ -9,8 +9,9 @@ function App() {
   const [closedConnectionId, setClosedConnectionId] = useState("");
   const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
   const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
+  const [validationResult, setValidationResult] = useState(false);
 
-  const resetLog = useCallback(() => setLog([]), [ setLog ]);
+  const resetLog = useCallback(() => setLog([]), [setLog]);
   const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
     if (disableUploadLogs) setUploadLogsEnabled(false);
     setLog(log => [...log, message]);
@@ -24,6 +25,19 @@ function App() {
       .withUrl("/hub")
       .build();
 
+    async function start() {
+      try {
+        await connection.start().then(a => {
+          if (connection.connectionId) {
+            connection.invoke('SendConnectionId', connection.connectionId);
+          }
+        }).catch((e) => console.log('Error: ', e));
+      } catch (err) {
+        console.log(err);
+        setTimeout(start, 5000);
+      }
+    };
+
     connection.on('confirmConnection', (message) => {
       console.log('Message:', message);
     });
@@ -35,17 +49,39 @@ function App() {
       connection.stop();
     });
 
-    connection.start().then(a => {
-      if (connection.connectionId) {
-        connection.invoke('SendConnectionId', connection.connectionId);
-      }
-    }).catch((e) => console.log('Error: ', e));
+    connection.on('validatedWithErrors', (message) => {
+      updateLog(message)
+      setValidationResult("error")
+    });
+
+    connection.on('validatedWithoutErrors', (message) => {
+      updateLog(message)
+      setValidationResult("ok")
+    });
+
+    connection.on('validationAborted', (message) => {
+      updateLog(message)
+      setValidationResult("aborted")
+    });
+
+    connection.onclose(async () => {
+      await start();
+    });
+
+    start();
 
     setConnection(connection)
   }, [closedConnectionId, updateLog])
 
   return (
-      <Layout connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
+    <Layout connection={connection}
+      closedConnectionId={closedConnectionId}
+      log={log} updateLog={updateLog}
+      resetLog={resetLog}
+      validationResult={validationResult}
+      setValidationResult={setValidationResult}
+      setUploadLogsInterval={setUploadLogsInterval}
+      setUploadLogsEnabled={setUploadLogsEnabled} />
   );
 }
 

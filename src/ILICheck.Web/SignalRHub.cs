@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using ILICheck.Web;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace SignalR.Hubs
@@ -17,6 +19,12 @@ namespace SignalR.Hubs
         {
             applicationLogger.LogInformation($"SignalR Hub received Connection Id: {connectionId}");
             await Clients.Client(connectionId).SendAsync("confirmConnection", "A connection with ID '" + connectionId + "' has been established.");
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            SignalREventHelper.InvokeDisconnectedEvent(Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }
