@@ -8,7 +8,7 @@ import InfoCarousel from './InfoCarousel';
 import ili_cop_logo from './img/ILI_cop.png'
 
 export const Home = props => {
-  const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval } = props;
+  const { settings, connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
@@ -83,7 +83,7 @@ export const Home = props => {
       <Container>
         <img src={ili_cop_logo} width="200" alt="ILICop_Logo" />
         <div className="title">
-          ILICOP
+          {settings? settings.title : "INTERLIS WEB CHECK SERVICE"}
         </div>
         <InfoCarousel />
         <div className="dropzone-wrapper">

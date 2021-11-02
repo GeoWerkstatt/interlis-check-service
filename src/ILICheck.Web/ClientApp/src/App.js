@@ -3,6 +3,7 @@ import './CI_geow.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import Layout from './Layout';
+import { Settings } from './Settings';
 
 function App() {
   const [connection, setConnection] = useState(null);
@@ -46,7 +47,7 @@ function App() {
   }, [closedConnectionId, updateLog])
 
   return (
-      <Layout connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
+      <Layout connection={connection} closedConnectionId={closedConnectionId} settings={JSON.parse(Settings)} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
   );
 }
 

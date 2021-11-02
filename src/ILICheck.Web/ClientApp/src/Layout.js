@@ -10,7 +10,7 @@ import HilfeModal from './Hilfe';
 import { Button } from 'react-bootstrap';
 
 export const Layout = props => {
-  const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval } = props;
+  const { settings, connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval } = props;
   const [showImpressum, setShowImpressum] = useState(false);
   const [showDatenschutz, setShowDatenschutz] = useState(false);
   const [showHilfe, setShowHilfe] = useState(false);
@@ -19,14 +19,14 @@ export const Layout = props => {
     <div className="app">
       <header className="header-style">
         <div className="icon">
-          <a href="https://www.geowerkstatt.ch" title="www.geowerkstatt.ch" target="_blank" rel="noreferrer">
+          <a href={settings.vendor_website} title={settings.vendor_website_display} target="_blank" rel="noreferrer">
             <img src={geow_logo} width="150" alt="GeoWerkstatt_Logo" />
           </a>
         </div>
         <div className="subtitle">ilicop - online <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">Ilivalidator</a></div>
       </header>
       <main>
-        <Home connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
+        <Home settings={settings} connection={connection} closedConnectionId={closedConnectionId} log={log} updateLog={updateLog} resetLog={resetLog} setUploadLogsInterval={setUploadLogsInterval} />
       </main>
       <footer className="footer-style">
         <Button variant="link" className="flex-item footer-button" onClick={() => setShowImpressum(true)}>
@@ -54,6 +54,7 @@ export const Layout = props => {
       < ImpressumModal
         className="modal"
         show={showImpressum}
+        settings={settings}
         onHide={() => setShowImpressum(false)}
       />
       < DatenschutzModal
