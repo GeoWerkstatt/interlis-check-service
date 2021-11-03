@@ -23,7 +23,7 @@ namespace SignalR.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            SignalREventHelper.InvokeDisconnectedEvent(Context.ConnectionId);
+            SignalRConnectionHelper.OnDisconnected(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
     }

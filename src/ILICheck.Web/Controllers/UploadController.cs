@@ -33,13 +33,13 @@ namespace ILICheck.Web.Controllers
         public string UploadFolderPath { get; set; }
         public string UploadFilePath { get; set; }
 
-        public UploadController(IHubContext<SignalRHub> hubcontext, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
+        public UploadController(IHubContext<SignalRHub> hubContext, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            this.hubContext = hubcontext;
+            this.hubContext = hubContext;
             this.applicationLogger = applicationLogger;
             this.configuration = configuration;
             this.environment = environment;
-            SignalREventHelper.DisconnectedEvent += ValidationAborted;
+            SignalRConnectionHelper.Disconnected += ValidationAborted;
         }
 
         /// <summary>
@@ -352,7 +352,7 @@ namespace ILICheck.Web.Controllers
             await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
         }
 
-        private void ValidationAborted(object sender, SignalrEventArgs args)
+        private void SignalRConnectionDisconnected(object sender, SignalRDisconnectedEventArgs args)
         {
             if (args.ConnectionId == CurrentConnectionId)
             {
