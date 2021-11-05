@@ -22,6 +22,7 @@ namespace ILICheck.Web.Controllers
     public class UploadController : Controller
     {
         private readonly IHubContext<SignalRHub> hubContext;
+        private readonly SignalRConnectionHelper signalRConnectionHelper;
         private readonly ILogger<UploadController> applicationLogger;
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment environment;
@@ -33,15 +34,16 @@ namespace ILICheck.Web.Controllers
         public string UploadFolderPath { get; set; }
         public string UploadFilePath { get; set; }
 
-        public UploadController(IHubContext<SignalRHub> hubContext, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
+        public UploadController(IHubContext<SignalRHub> hubContext, SignalRConnectionHelper signalRConnectionHelper, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.hubContext = hubContext;
+            this.signalRConnectionHelper = signalRConnectionHelper;
             this.applicationLogger = applicationLogger;
             this.configuration = configuration;
             this.environment = environment;
 
             validationTokenSource = new CancellationTokenSource();
-            SignalRConnectionHelper.Disconnected += SignalRConnectionDisconnected;
+            signalRConnectionHelper.Disconnected += SignalRConnectionDisconnected;
         }
 
         /// <summary>

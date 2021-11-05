@@ -9,10 +9,12 @@ namespace SignalR.Hubs
     public class SignalRHub : Hub
     {
         private readonly ILogger<SignalRHub> applicationLogger;
+        private readonly SignalRConnectionHelper signalRConnectionHelper;
 
-        public SignalRHub(ILogger<SignalRHub> applicationLogger)
+        public SignalRHub(ILogger<SignalRHub> applicationLogger, SignalRConnectionHelper signalRConnectionHelper)
         {
             this.applicationLogger = applicationLogger;
+            this.signalRConnectionHelper = signalRConnectionHelper;
         }
 
         public async Task SendConnectionId(string connectionId)
@@ -23,7 +25,7 @@ namespace SignalR.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            SignalRConnectionHelper.OnDisconnected(Context.ConnectionId);
+            signalRConnectionHelper.OnDisconnected(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
     }
