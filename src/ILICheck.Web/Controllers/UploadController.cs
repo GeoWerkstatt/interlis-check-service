@@ -25,9 +25,9 @@ namespace ILICheck.Web.Controllers
         private readonly ILogger<UploadController> applicationLogger;
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment environment;
+        private readonly CancellationTokenSource validationTokenSource;
         private Serilog.ILogger sessionLogger;
 
-        public CancellationTokenSource UploadCts { get; set; }
         public string CurrentConnectionId { get; set; }
 
         public string UploadFolderPath { get; set; }
@@ -39,7 +39,9 @@ namespace ILICheck.Web.Controllers
             this.applicationLogger = applicationLogger;
             this.configuration = configuration;
             this.environment = environment;
-            SignalRConnectionHelper.Disconnected += ValidationAborted;
+
+            validationTokenSource = new CancellationTokenSource();
+            SignalRConnectionHelper.Disconnected += SignalRConnectionDisconnected;
         }
 
         /// <summary>
@@ -53,7 +55,6 @@ namespace ILICheck.Web.Controllers
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
             CurrentConnectionId = connectionId;
-            UploadCts = new CancellationTokenSource();
             var fileName = request.Query["fileName"][0];
             var deleteXtfTransferFile = string.Equals(
                 Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
@@ -72,58 +73,53 @@ namespace ILICheck.Web.Controllers
             await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, null);
             if (uploadTask.IsFaulted) throw uploadTask.Exception;
 
-            DoValidation(connectionId, deleteXtfTransferFile, UploadCts);
+            DoValidation(connectionId, deleteXtfTransferFile);
 
             LogInfo($"Stop time: {DateTime.Now}");
             return uploadTask.Result;
         }
 
-        private async void DoValidation(string connectionId, bool deleteXtfTransferFile, CancellationTokenSource uploadCts)
+        private async void DoValidation(string connectionId, bool deleteXtfTransferFile)
         {
-            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(uploadCts.Token, HttpContext.RequestAborted))
+            try
             {
-                try
+                if (Path.GetExtension(UploadFilePath) == ".zip")
                 {
-                    if (Path.GetExtension(UploadFilePath) == ".zip")
-                    {
-                        await Task.Run(async () =>
-                        {
-                            var unzipTask = UnzipFileAsync(UploadFilePath, cts, connectionId);
-                            await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei wird entzipped...");
-                            if (unzipTask.IsFaulted) throw unzipTask.Exception;
-                        }, cts.Token);
-                    }
-
                     await Task.Run(async () =>
                     {
-                        var parseTask = ParseXmlAsync(UploadFilePath, cts, connectionId);
-                        await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
-                        if (parseTask.IsFaulted) throw parseTask.Exception;
-                    }, cts.Token);
-
-                    await Task.Run(async () =>
-                    {
-                        var validateTask = ValidateFileAsync(connectionId);
-                        await DoTaskWhileSendingUpdatesAsync(validateTask, connectionId, "Datei validieren...");
-                        if (validateTask.IsFaulted) throw validateTask.Exception;
-                    }, cts.Token);
+                        var unzipTask = UnzipFileAsync(UploadFilePath, validationTokenSource, connectionId);
+                        await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei wird entzipped...");
+                        if (unzipTask.IsFaulted) throw unzipTask.Exception;
+                    }, validationTokenSource.Token);
                 }
-                catch (Exception e)
+
+                await Task.Run(async () =>
                 {
-                    LogInfo($"Unexpected error: {e.Message}");
-                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted");
-                }
+                    var parseTask = ParseXmlAsync(UploadFilePath, validationTokenSource, connectionId);
+                    await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
+                    if (parseTask.IsFaulted) throw parseTask.Exception;
+                }, validationTokenSource.Token);
 
-                if (deleteXtfTransferFile || cts.Token.IsCancellationRequested)
+                await Task.Run(async () =>
                 {
-                    if (!string.IsNullOrEmpty(UploadFilePath))
-                    {
-                        LogInfo($"Deleting {UploadFilePath}...");
-                        System.IO.File.Delete(UploadFilePath);
-                    }
-                }
+                    var validateTask = ValidateFileAsync(connectionId);
+                    await DoTaskWhileSendingUpdatesAsync(validateTask, connectionId, "Datei validieren...");
+                    if (validateTask.IsFaulted) throw validateTask.Exception;
+                }, validationTokenSource.Token);
+            }
+            catch (Exception e)
+            {
+                LogInfo($"Unexpected error: {e.Message}");
+                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted");
+            }
 
-                await hubContext.Clients.Client(connectionId).SendAsync("validationOk");
+            if (deleteXtfTransferFile || validationTokenSource.Token.IsCancellationRequested)
+            {
+                if (!string.IsNullOrEmpty(UploadFilePath))
+                {
+                    LogInfo($"Deleting {UploadFilePath}...");
+                    System.IO.File.Delete(UploadFilePath);
+                }
             }
         }
 
@@ -356,8 +352,8 @@ namespace ILICheck.Web.Controllers
         {
             if (args.ConnectionId == CurrentConnectionId)
             {
-                UploadCts.Cancel();
-                Console.WriteLine("Validation aborted {1}.", sender);
+                validationTokenSource.Cancel();
+                Console.WriteLine("Validation aborted {0}.", args.ConnectionId);
             }
         }
 
