@@ -19,7 +19,7 @@ export const Home = props => {
   useEffect(() => {
     resetLog();
     setTestRunning(false);
-    if (connection && connection.connectionId) {
+    if (connection?.connectionId) {
       connection.stop();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

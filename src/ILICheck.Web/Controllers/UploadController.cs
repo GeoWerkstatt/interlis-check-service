@@ -104,7 +104,7 @@ namespace ILICheck.Web.Controllers
 
                 await Task.Run(async () =>
                 {
-                    var validateTask = ValidateFileAsync(connectionId);
+                    var validateTask = ValidateAsync(connectionId);
                     await DoTaskWhileSendingUpdatesAsync(validateTask, connectionId, "Datei validieren...");
                     if (validateTask.IsFaulted) throw validateTask.Exception;
                 }, validationTokenSource.Token);
@@ -299,18 +299,9 @@ namespace ILICheck.Web.Controllers
             return;
         }
 
-        private async Task ValidateFileAsync(string connectionId)
-        {
-            await Task.Run(async () =>
-            {
-                LogInfo("Validating file");
-                await ValidateAsync(connectionId);
-                return;
-            });
-        }
-
         private async Task ValidateAsync(string connectionId)
         {
+            LogInfo("Validating file");
             var uploadPath = configuration.GetSection("Validation")["UploadFolderInContainer"].Replace("{Name}", connectionId);
             var fileName = Path.GetFileName(UploadFilePath);
 
@@ -335,7 +326,7 @@ namespace ILICheck.Web.Controllers
             };
 
             process.Start();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             if (process.ExitCode != 0)
             {
                 LogInfo("The ilivalidator found errors in the file. Validation failed.");
