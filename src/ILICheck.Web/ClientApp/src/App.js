@@ -71,7 +71,7 @@ function App() {
     start();
 
     setConnection(connection)
-  }, [closedConnectionId, updateLog])
+  }, [updateLog])
 
   return (
     <Layout connection={connection}
