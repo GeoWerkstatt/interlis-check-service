@@ -75,13 +75,13 @@ namespace ILICheck.Web.Controllers
             await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, null);
             if (uploadTask.IsFaulted) throw uploadTask.Exception;
 
-            DoValidation(connectionId, deleteXtfTransferFile);
+            _ = DoValidationAsync(connectionId, deleteXtfTransferFile);
 
-            LogInfo($"Stop time: {DateTime.Now}");
+            LogInfo($"Successfully received file: {DateTime.Now}");
             return uploadTask.Result;
         }
 
-        private async void DoValidation(string connectionId, bool deleteXtfTransferFile)
+        private async Task DoValidationAsync(string connectionId, bool deleteXtfTransferFile)
         {
             try
             {
@@ -338,6 +338,7 @@ namespace ILICheck.Web.Controllers
                 await hubContext.Clients.Client(connectionId).SendAsync("validatedWithoutErrors", "Der Ilivalidator hat keine Fehler in der Datei gefunden.");
             }
 
+            LogInfo($"Validation completed: {DateTime.Now}");
             await hubContext.Clients.Client(connectionId).SendAsync("stopConnection");
         }
 

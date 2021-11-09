@@ -27,7 +27,7 @@ function App() {
 
     async function start() {
       try {
-        await connection.start().then(a => {
+        await connection.start().then(() => {
           if (connection.connectionId) {
             connection.invoke('SendConnectionId', connection.connectionId);
           }
