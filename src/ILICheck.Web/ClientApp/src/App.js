@@ -17,6 +17,8 @@ function App() {
   }, []);
 
   useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled]);
 
   useEffect(() => {
