@@ -1,12 +1,12 @@
-import './App.css';
+import './app.css';
 import React, { useState } from 'react';
 import vendorLogo from './img/vendor.png'
 import githubLogo from './img/github.png'
 import qgisLogo from './img/qgis.png'
-import Home from './Home';
-import ImpressumModal from './Impressum';
-import DatenschutzModal from './Datenschutz';
-import HilfeModal from './Hilfe';
+import Home from './home';
+import ImpressumModal from './impressum';
+import DatenschutzModal from './datenschutz';
+import HilfeModal from './hilfe';
 import { Button } from 'react-bootstrap';
 
 export const Layout = props => {

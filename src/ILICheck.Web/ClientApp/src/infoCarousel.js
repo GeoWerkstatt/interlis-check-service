@@ -1,5 +1,5 @@
-import './App.css';
-import './Custom.css';
+import './app.css';
+import './custom.css';
 import React from 'react';
 import { Carousel } from 'react-bootstrap';
 

@@ -1,8 +1,8 @@
-import './App.css';
-import './Custom.css';
+import './app.css';
+import './custom.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import Layout from './Layout';
+import Layout from './layout';
 
 function App() {
   const [connection, setConnection] = useState(null);

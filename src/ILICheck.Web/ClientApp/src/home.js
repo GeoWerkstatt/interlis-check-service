@@ -1,10 +1,10 @@
-import './App.css';
-import './Custom.css';
+import './app.css';
+import './custom.css';
 import React, { useState, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
-import { FileDropzone } from './Dropzone';
-import Protokoll from './Protokoll';
-import InfoCarousel from './InfoCarousel';
+import { FileDropzone } from './dropzone';
+import Protokoll from './protokoll';
+import InfoCarousel from './infoCarousel';
 import appLogo from './img/app.png'
 
 export const Home = props => {
