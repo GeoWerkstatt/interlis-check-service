@@ -50,12 +50,13 @@ main a {
 
   .title {
     font-family: "Dosis", sans-serif;
-    font-size: 60px;
+    font-size: 50px;
     font-weight: 700;
   }
 
   .subtitle {
+    padding: 5px;
     font-family: "Dosis", sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     color: white;
   }

@@ -1,11 +1,11 @@
 import './App.css';
-import './CI_geow.css';
+import './Custom.css';
 import React, { useState, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { FileDropzone } from './Dropzone';
 import Protokoll from './Protokoll';
 import InfoCarousel from './InfoCarousel';
-import ili_cop_logo from './img/ILI_cop.png'
+import appLogo from './img/app.png'
 
 export const Home = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
@@ -38,7 +38,7 @@ export const Home = props => {
           downloadAvailable =true;
           className = "valid"
           text = "Keine Fehler!"
-          updateLog("Alles nach Vorschrift, der ILICOP hat nichts zu beanstanden!");
+          updateLog("Alles nach Vorschrift, der INTERLIS Web-Check-Service hat nichts zu beanstanden!");
         }
         if(validationResult === "error"|| validationResult === "aborted"){
           className = "errors"
@@ -95,9 +95,9 @@ export const Home = props => {
   return (
     <div>
       <Container>
-        <img src={ili_cop_logo} width="200" alt="ILICop_Logo" />
+        <img src={appLogo} width="200" alt="App Logo" />
         <div className="title">
-          ILICOP
+        INTERLIS Web-Check-Service
         </div>
         <InfoCarousel />
         <div className="dropzone-wrapper">

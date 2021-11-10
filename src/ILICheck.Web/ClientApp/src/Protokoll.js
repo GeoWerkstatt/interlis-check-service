@@ -1,5 +1,5 @@
 import './App.css';
-import './CI_geow.css';
+import './Custom.css';
 import React, { useState } from 'react';
 import DayJS from 'dayjs'
 import { Button, Card, Container } from 'react-bootstrap';

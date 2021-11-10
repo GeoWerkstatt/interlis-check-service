@@ -1,5 +1,5 @@
 import './App.css';
-import './CI_geow.css';
+import './Custom.css';
 import React from 'react';
 import { Carousel } from 'react-bootstrap';
 
@@ -7,7 +7,7 @@ export const InfoCarousel = () => {
   return (
     <Carousel interval={null} wrap="false" nextLabel="" prevLabel="" prevIcon="">
       <Carousel.Item>
-        <div>Der Ilicop überprüft deine XTF-Dateien für dich.</div>
+        <div>Der INTERLIS Web-Check-Service überprüft deine XTF-Dateien für dich.</div>
       </Carousel.Item>
       <Carousel.Item>
         <div>Er nimmt es ganz genau und lässt nur passieren, was INTERLIS-konform ist.</div>
@@ -22,7 +22,7 @@ export const InfoCarousel = () => {
         <div>Das Feedback kannst du als Textdatei oder XTFLog-Datei herunterladen.</div>
       </Carousel.Item>
       <Carousel.Item>
-        <div>So kannst du beim nächsten Mal konforme Daten hochladen und den Ilicop zufrieden stellen.</div>
+        <div>So kannst du beim nächsten Mal konforme Daten hochladen und den INTERLIS Web-Check-Service zufrieden stellen.</div>
       </Carousel.Item>
       <Carousel.Item>
         <div>Bei grossen Dateien braucht er seine Zeit, er prüft schliesslich sehr gewissenhaft.</div>
@@ -38,7 +38,7 @@ export const InfoCarousel = () => {
         </a> zusammen.</div>
       </Carousel.Item>
       <Carousel.Item>
-        <div>Alles klar? Der Ilicop nimmt jetzt gern dein (gezipptes) XTF-File entgegen!</div>
+        <div>Alles klar? Der INTERLIS Web-Check-Service nimmt jetzt gern dein (gezipptes) XTF-File entgegen!</div>
       </Carousel.Item>
     </Carousel>
   );

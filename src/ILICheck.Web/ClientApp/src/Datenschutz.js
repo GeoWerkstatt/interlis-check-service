@@ -39,7 +39,7 @@ export const DatenschutzModal = props => {
           <p>
             ... zu ergänzen.
 
-            Hochgeladene files und geschriebene Logfiles werden für maximal 24h gespeichert und anschliessend automatisch gelöscht. Der ILICOP darf ausschliesslich mit nicht zugangsbeschränkten Daten genutzt werden.
+            Hochgeladene files und geschriebene Logfiles werden für maximal 24h gespeichert und anschliessend automatisch gelöscht. Der INTERLIS Web-Check-Service darf ausschliesslich mit nicht zugangsbeschränkten Daten genutzt werden.
             Nur Geobasisdaten der Zugangsberechtigungsstufe A gemäss <span><a style={{ color: 'black' }} href="https://fedlex.data.admin.ch/filestore/fedlex.data.admin.ch/eli/cc/2008/389/20190601/de/pdf-a/fedlex-data-admin-ch-eli-cc-2008-389-20190601-de-pdf-a.pdf">GEOIV</a></span> dürfen hochgeladen werden
           </p>
           <h4>Datenschutzerklärung für Cookies</h4>
