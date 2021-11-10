@@ -75,7 +75,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
             <input {...getInputProps()} />
-            <p>{dropZoneText} {fileAvailable && <span onClick={removeFile}><IoIosRemoveCircleOutline /></span>}</p>
+            <div>{dropZoneText} {fileAvailable && <span onClick={removeFile}><IoIosRemoveCircleOutline /></span>}</div>
         </Container>
     )
 }

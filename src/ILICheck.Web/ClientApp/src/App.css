@@ -10,8 +10,13 @@ header {
   line-height: 2;
   justify-content: space-between;
   display: flex;
-  padding-left: 20px;
-  padding-right: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 5px;
+}
+
+.carousel {
+  margin: 15px 50px;
 }
 
 main {
@@ -27,26 +32,38 @@ footer {
 
 .flex-item {
   flex-grow: 1;
-  align-self: flex-start;
   text-align: left;
 }
 
-.flex-icon {
+.version-info {
+  text-align: right;
+  margin-top: 8px;
+  color: slategrey;
+}
+
+.flex-icons {
   flex-grow: 5;
   align-self: flex-start;
+  margin-right: 20px;
+  margin-top: 5px;
 }
 
 /************ Protokoll ************/
 .protokoll {
-  max-height: 50vh;
+  max-height: 20vh;
   overflow-y: auto;
   text-align: left;
-  height: 50vh;
+  height: 15vh;
 }
 
 .protokoll-card {
   color: black;
   margin-top: 30px;
+}
+
+.card-body
+{
+  text-align: left;
 }
 
 /************ Dropzone ************/

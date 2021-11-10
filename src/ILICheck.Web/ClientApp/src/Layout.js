@@ -46,9 +46,9 @@ export const Layout = props => {
         <Button variant="link" className="flex-item footer-button" onClick={() => setShowHilfe(true)}>
           INFO & HILFE
         </Button>
-        <div className="flex-item"></div>
-        <div className="flex-item"></div>
-        <div className="flex-item"></div>
+        <div className="flex-item version-info">
+          <span className="version-tag">ilicop ({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}), ilivalidator (1.11.12), ili2gpkg (4.6.0)</span>
+        </div>
         <div className="flex-icons">
           <a href="https://github.com/GeoWerkstatt/interlis-check-service" title="Link zum github reporsitory" target="_blank" rel="noreferrer">
             <img className="icon" src={github_logo} color="#c1c1c1" width="40" alt="Github_Logo" />
@@ -56,7 +56,6 @@ export const Layout = props => {
           <a href="https://plugins.qgis.org/plugins/xtflog_checker/" title="Link zum QGIS Plugin XTFLog Checker" target="_blank" rel="noreferrer">
             <img className="icon" src={qgis_logo} color="#c1c1c1" width="40" alt="QGIS_Logo" />
           </a>
-          <span className="version-tag">{process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}</span>
         </div>
       </footer>
       < ImpressumModal

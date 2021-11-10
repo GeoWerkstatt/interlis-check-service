@@ -1,7 +1,7 @@
 main a {
     color: white;
   }
-  
+
   header a {
     color: white;
     text-decoration: none;
@@ -15,7 +15,6 @@ main a {
   body {
     color: white;
     text-align: center;
-    font-size: 24px;
     background: #007cc3;
   }
 
@@ -40,7 +39,7 @@ main a {
     font-size: 14px;
     text-align: left;
   }
-  
+
   .version-tag {
     font-size: 12px;
   }
@@ -54,7 +53,7 @@ main a {
     font-size: 60px;
     font-weight: 700;
   }
-  
+
   .subtitle {
     font-family: "Dosis", sans-serif;
     font-size: 20px;
