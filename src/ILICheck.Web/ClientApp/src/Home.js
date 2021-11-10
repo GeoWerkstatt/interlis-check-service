@@ -1,4 +1,5 @@
 import './App.css';
+import './CI.css';
 import React, { useState, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { AiOutlinePlayCircle } from 'react-icons/ai';
@@ -6,11 +7,10 @@ import { FileDropzone } from './Dropzone';
 import Protokoll from './Protokoll';
 
 export const Home = props => {
-  const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval } = props;
+  const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
-  const [abortController, setAbortController] = useState(null)
 
   const logUploadLogMessages = () => updateLog(`${fileToCheck.name} wird hochgeladen...`, { disableUploadLogs: false });
   const setIntervalImmediately = (func, interval) => { func(); return setInterval(func, interval); }
@@ -19,10 +19,43 @@ export const Home = props => {
   useEffect(() => {
     resetLog();
     setTestRunning(false);
-    abortController && abortController.abort();
+    if (connection?.connectionId) {
+      connection.stop();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, resetLog])
 
+
+    useEffect(() => {
+      if(validationResult !== "none")
+      {
+      let className;
+      let text;
+      let downloadAvailable = false;
+      setTestRunning(false);
+        if(validationResult === "ok"){
+          downloadAvailable =true;
+          className = "valid"
+          text = "Keine Fehler!"
+        }
+        if(validationResult === "error"|| validationResult === "aborted"){
+          className = "errors"
+          text = "Fehler!"
+          if(validationResult === "error"){
+            downloadAvailable =true;
+          }
+        }
+
+        setFileCheckStatus({
+          text: text,
+          class: className,
+          testRunTime: new Date(),
+          fileName: fileToCheck? fileToCheck.name : "",
+          fileDownloadAvailable: downloadAvailable
+        })
+        setValidationResult("none")
+        }
+    }, [validationResult, fileToCheck, setValidationResult,updateLog])
 
   const checkFile = () => {
     resetLog();
@@ -38,62 +71,41 @@ export const Home = props => {
 
     const controller = new AbortController()
     const signal = controller.signal
-    setAbortController(controller);
     fetch(`api/upload?connectionId=${connection.connectionId}&fileName=${file.name}`, {
       method: 'POST',
       signal: signal,
       body: formData,
     })
       .then(res => {
-        setTestRunning(false);
-        res.text().then(content => {
-          let className;
-          let text;
-          let downloadAvailable = false;
-          if (content) {
-            className = "errors"
-            text = "Fehler!"
-            updateLog(content);
-          }
-          else {
-            className = "valid"
-            text = "Keine Fehler!"
-            updateLog(`${file.name} validiert!`);
-          }
-          if (res.status === 200) {
-            downloadAvailable = true;
-          }
-          setFileCheckStatus({
-            text: text,
-            class: className,
-            testRunTime: new Date(),
-            fileName: fileToCheck.name,
-            fileDownloadAvailable: downloadAvailable
-          })
-        });
+        if(res.status === 200)
+        {
+          console.log("Datei erfolgreich hochgeladen.")
+        }
+        else 
+        {
+          updateLog("Fehler beim Hochladen der Datei.")
+          console.log("Fehler beim Hochladen der Datei.")
+        }
       })
       .catch(err => console.error(err));
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <p>
-          INTERLIS Web-Check-Service
-        </p>
-      </header>
+    <div>
       <Container>
-        <FileDropzone setFileToCheck={setFileToCheck} abortController={abortController} />
-        <Button variant="success" className={fileToCheck ? "" : "invisible-check-button"} onClick={checkFile}>Check
-          <span className="run-icon">
-            {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
-          </span>
+        <div className="title">
+        INTERLIS Web-Check-Service
+        </div>
+        <div className="dropzone-wrapper">
+          <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
+          <Button variant="success" className={fileToCheck ? "check-button" : "invisible-check-button"} onClick={checkFile}>Check
+            <span className="run-icon">
+              {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
+            </span>
         </Button>
+        </div>
       </Container>
       <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />
-      <footer className="app-footer">
-        <div>{process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}</div>
-      </footer>
     </div>
   );
 }

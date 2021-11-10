@@ -36,6 +36,7 @@ namespace ILICheck.Web
                 });
             });
             services.AddSignalR();
+            services.AddSingleton(typeof(SignalRConnectionHelper));
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 209715200;

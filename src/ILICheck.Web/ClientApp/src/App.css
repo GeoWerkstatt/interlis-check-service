@@ -1,63 +1,68 @@
+/************ Base Layout ************/
 .app {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  color: white;
-  padding-top: 50px;
+  min-height: 100vh;
 }
 
-.app-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  font-size: 45px;
-  color: white;
-  margin-right: 200px;
+header {
+  text-align: left;
+  line-height: 2;
+  justify-content: space-between;
+  display: flex;
+  padding-left: 20px;
+  padding-right: 40px;
 }
 
-.app-footer {
-  font-size: 12px;
-  color: #636973;
-  width: 100%;
-  padding-left: 60px;
-  height: 40px;
-  margin-top: auto;
+main {
+  min-height: 80vh;
+  flex: 1 0 auto;
 }
 
+footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-item {
+  flex-grow: 1;
+  align-self: flex-start;
+  text-align: left;
+}
+
+.flex-icon {
+  flex-grow: 5;
+  align-self: flex-start;
+}
+
+/************ Protokoll ************/
 .protokoll {
   max-height: 50vh;
   overflow-y: auto;
   text-align: left;
-  width: 65vw;
   height: 50vh;
 }
 
 .protokoll-card {
-  color: #282c34;
+  color: black;
   margin-top: 30px;
 }
 
+/************ Dropzone ************/
 input {
   border-radius: 5px;
   background-color: white;
-  color: #282c34;
+  color: black;
 }
 
-.container {
-  display: flex;
-  margin: 5px;
-}
-
-/************ Dropzone ************/
 .dropzone-text {
   color: #bdbdbd;
   border-color: white;
 }
 
 .dropzone-text-file {
-  color: #282c34;
+  color: black;
   font-weight: 600;
   border-color: white;
 }
@@ -66,6 +71,9 @@ input {
   color: #ff1744;
   border-color: #ff1744;
 }
+.dropzone-wrapper {
+  display: flex;
+}
 
 /************ Buttons & Icons ************/
 .btn {
@@ -73,8 +81,13 @@ input {
   font-size: 20px;
 }
 
+.check-button {
+  width: 110px;
+  border: none;
+}
+
 .invisible-check-button {
-  visibility: hidden;
+  display: none;
 }
 
 .download-icon {
@@ -91,7 +104,6 @@ input {
 }
 
 /************ Check status ************/
-
 .valid {
   color: #198754;
 }
@@ -101,7 +113,6 @@ input {
 }
 
 /************ Copy to clipboard function ************/
-
 .copy-tooltip {
   position: relative;
   display: inline-block;
