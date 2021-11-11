@@ -1,4 +1,5 @@
 /************ Base Layout ************/
+
 .app {
   display: flex;
   flex-direction: column;
@@ -48,7 +49,9 @@ footer {
   margin-top: 5px;
 }
 
+
 /************ Protokoll ************/
+
 .protokoll {
   max-height: 20vh;
   overflow-y: auto;
@@ -61,12 +64,13 @@ footer {
   margin-top: 30px;
 }
 
-.card-body
-{
+.card-body {
   text-align: left;
 }
 
+
 /************ Dropzone ************/
+
 input {
   border-radius: 5px;
   background-color: white;
@@ -88,11 +92,14 @@ input {
   color: #ff1744;
   border-color: #ff1744;
 }
+
 .dropzone-wrapper {
   display: flex;
 }
 
+
 /************ Buttons & Icons ************/
+
 .btn {
   margin-left: 10px;
   font-size: 20px;
@@ -120,7 +127,9 @@ input {
   margin-left: 5px;
 }
 
+
 /************ Check status ************/
+
 .valid {
   color: #198754;
 }
@@ -129,7 +138,9 @@ input {
   color: #ff1744;
 }
 
+
 /************ Copy to clipboard function ************/
+
 .copy-tooltip {
   position: relative;
   display: inline-block;
