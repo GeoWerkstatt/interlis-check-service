@@ -1,4 +1,5 @@
-import './App.css';
+import './app.css';
+import './custom.css';
 import React, { useState } from 'react';
 import DayJS from 'dayjs'
 import { Button, Card, Container } from 'react-bootstrap';

@@ -1,10 +1,11 @@
-import './App.css';
-import './CI.css';
+import './app.css';
+import './custom.css';
 import React, { useState, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
-import { AiOutlinePlayCircle } from 'react-icons/ai';
-import { FileDropzone } from './Dropzone';
-import Protokoll from './Protokoll';
+import { FileDropzone } from './dropzone';
+import Protokoll from './protokoll';
+import InfoCarousel from './infoCarousel';
+import appLogo from './img/app.png'
 
 export const Home = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
@@ -37,6 +38,7 @@ export const Home = props => {
           downloadAvailable =true;
           className = "valid"
           text = "Keine Fehler!"
+          updateLog("Alles nach Vorschrift, der INTERLIS Web-Check-Service hat nichts zu beanstanden!");
         }
         if(validationResult === "error"|| validationResult === "aborted"){
           className = "errors"
@@ -81,7 +83,7 @@ export const Home = props => {
         {
           console.log("Datei erfolgreich hochgeladen.")
         }
-        else 
+        else
         {
           updateLog("Fehler beim Hochladen der Datei.")
           console.log("Fehler beim Hochladen der Datei.")
@@ -93,16 +95,18 @@ export const Home = props => {
   return (
     <div>
       <Container>
+        <img src={appLogo} width="200" alt="App Logo" />
         <div className="title">
         INTERLIS Web-Check-Service
         </div>
+        <InfoCarousel />
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
-          <Button variant="success" className={fileToCheck ? "check-button" : "invisible-check-button"} onClick={checkFile}>Check
+          <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}>
             <span className="run-icon">
-              {testRunning ? (<div className="spinner-border spinner-border-sm text-light"></div>) : (<AiOutlinePlayCircle />)}
+              {testRunning ? (<span className="spinner-border spinner-border-sm text-light"></span>) : ("Los!")}
             </span>
-        </Button>
+          </Button>
         </div>
       </Container>
       <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />

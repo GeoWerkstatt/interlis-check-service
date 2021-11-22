@@ -1,0 +1,61 @@
+main a {
+  color: white;
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+}
+
+.btn-color {
+  background-color: #004489;
+}
+
+body {
+  color: white;
+  text-align: center;
+  background: #007cc3;
+}
+
+.footer-style {
+  font-family: "Dosis", sans-serif;
+  padding: 10px;
+  background: #004489;
+  text-align: right;
+  font-size: 20px;
+  min-height: 70px;
+  font-stretch: expanded;
+}
+
+.footer-button {
+  color: white;
+  border: none;
+  text-decoration-line: none;
+}
+
+.modal {
+  color: black;
+  font-size: 14px;
+  text-align: left;
+}
+
+.version-tag {
+  font-size: 12px;
+}
+
+.icon {
+  padding: 5px;
+}
+
+.title {
+  font-family: "Dosis", sans-serif;
+  font-size: 50px;
+  font-weight: 700;
+}
+
+.subtitle {
+  padding: 5px;
+  font-family: "Dosis", sans-serif;
+  font-size: 18px;
+  color: white;
+}
