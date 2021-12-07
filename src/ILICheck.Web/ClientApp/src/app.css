@@ -6,6 +6,16 @@
   min-height: 100vh;
 }
 
+.app-logo {
+  max-height: 200px;
+  max-width: 650px;
+}
+
+.vendor-logo {
+  max-height: 70px;
+  max-width: 200px;
+}
+
 header {
   text-align: left;
   line-height: 2;

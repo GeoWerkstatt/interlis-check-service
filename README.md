@@ -59,10 +59,17 @@ services:
     #
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
+    #
+    #   - /path/to/web-assets:/web-assets
+    #     Folder containing optional custom web assets
+    #     examples: - favicon.ico
+    #               - app.png (max-height: 200px, max-width: 650px)
+    #               - vendor.png (max-height: 70px, max-width: 200px)
     volumes:
       - ./logs:/logs
       - ./uploads:/uploads
       - ./config:/config
+      - ./web-assets:/web-assets
     # Add environment variables
     #
     # environment:

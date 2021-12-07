@@ -1,6 +1,5 @@
 import './app.css';
 import React, { useState } from 'react';
-import vendorLogo from './img/vendor.png'
 import githubLogo from './img/github.png'
 import qgisLogo from './img/qgis.png'
 import Home from './home';
@@ -20,7 +19,7 @@ export const Layout = props => {
       <header className="header-style">
         <div className="icon">
           <a href="https://www.example.com" title="www.example.com" target="_blank" rel="noreferrer">
-            <img src={vendorLogo} width="150" alt="Vendor Logo" />
+            <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
           </a>
         </div>
         <div className="subtitle">INTERLIS Web-Check-Service - online <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">Ilivalidator</a></div>

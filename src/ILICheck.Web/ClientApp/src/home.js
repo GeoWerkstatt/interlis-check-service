@@ -5,7 +5,6 @@ import { Button, Container } from 'react-bootstrap';
 import { FileDropzone } from './dropzone';
 import Protokoll from './protokoll';
 import InfoCarousel from './infoCarousel';
-import appLogo from './img/app.png'
 
 export const Home = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
@@ -95,10 +94,8 @@ export const Home = props => {
   return (
     <div>
       <Container>
-        <img src={appLogo} width="200" alt="App Logo" />
-        <div className="title">
-        INTERLIS Web-Check-Service
-        </div>
+        <img className="app-logo" src="/app.png" alt="App Logo" />
+        <div className="title">INTERLIS Web-Check-Service</div>
         <InfoCarousel />
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />

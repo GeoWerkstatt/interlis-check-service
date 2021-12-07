@@ -44,10 +44,17 @@ services:
     #
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
+    #
+    #   - /path/to/web-assets:/web-assets
+    #     Folder containing optional custom web assets
+    #     examples: - favicon.ico
+    #               - app.png (max-height: 200px, max-width: 650px)
+    #               - vendor.png (max-height: 70px, max-width: 200px)
     volumes:
       - ./src/ILICheck.Web/Logs:/logs
       - ./src/ILICheck.Web/Uploads:/uploads
       - ./src/ILICheck.Web/Config:/config
+      - ./src/ILICheck.Web/Web-Assets:/web-assets
     # Add environment variables
     #
     # environment:
