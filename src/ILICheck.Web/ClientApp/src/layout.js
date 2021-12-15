@@ -51,12 +51,10 @@ export const Layout = props => {
 
   return (
     <div className="app">
-      <header className="header-style">
-        <div className="icon">
-          <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
-            <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
-          </a>
-        </div>
+      <header>
+        <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
+          <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
+        </a>
         <div className="subtitle">{clientSettings?.applicationName} - online&nbsp;
           <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">livalidator</a>
         </div>
@@ -89,10 +87,10 @@ export const Layout = props => {
         </div>
         <div className="flex-icons">
           <a href="https://github.com/GeoWerkstatt/interlis-check-service" title="Link zum github reporsitory" target="_blank" rel="noreferrer">
-            <img className="icon" src={githubLogo} color="#c1c1c1" width="40" alt="GitHub Logo" />
+            <img className="footer-icon" src={githubLogo} alt="GitHub Logo" />
           </a>
           <a href="https://plugins.qgis.org/plugins/xtflog_checker/" title="Link zum QGIS Plugin XTFLog Checker" target="_blank" rel="noreferrer">
-            <img className="icon" src={qgisLogo} color="#c1c1c1" width="40" alt="QGIS Logo" />
+            <img className="footer-icon" src={qgisLogo} alt="QGIS Logo" />
           </a>
         </div>
       </footer>
