@@ -39,6 +39,21 @@ body {
   text-align: left;
 }
 
+.modal-content h1 {
+  padding-top: 0.25em;
+  font-size: 1.75rem;
+}
+
+.modal-content h2 {
+  padding-top: 0.3em;
+  font-size: 1.25rem;
+}
+
+.modal-content h3 {
+  padding-top: 0.25em;
+  font-size: 1rem;
+}
+
 .version-tag {
   font-size: 12px;
 }

@@ -1,5 +1,5 @@
 import './app.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import githubLogo from './img/github.png'
 import qgisLogo from './img/qgis.png'
 import Home from './home';
@@ -13,6 +13,30 @@ export const Layout = props => {
   const [showImpressum, setShowImpressum] = useState(false);
   const [showDatenschutz, setShowDatenschutz] = useState(false);
   const [showHilfe, setShowHilfe] = useState(false);
+
+  const [datenschutzContent, setDatenschutzContent] = useState(null);
+  const [impressumContent, setImpressumContent] = useState(null);
+  const [infoHilfeContent, setInfoHilfeContent] = useState(null);
+  const [quickStartContent, setQuickStartContent] = useState(null);
+
+  // Fetch optional custom content
+  useEffect(() => {
+    fetch('impressum.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setImpressumContent(text));
+
+    fetch('datenschutz.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setDatenschutzContent(text));
+
+    fetch('info-hilfe.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setInfoHilfeContent(text));
+
+    fetch('quickstart.txt')
+      .then(res => res.headers.get('content-type')?.includes('text/plain') && res.text())
+      .then(text => setQuickStartContent(text));
+  }, []);
 
   return (
     <div className="app">
@@ -29,6 +53,7 @@ export const Layout = props => {
               closedConnectionId={closedConnectionId}
               validationResult ={validationResult}
               setValidationResult ={setValidationResult}
+              quickStartContent={quickStartContent}
               log={log}
               updateLog={updateLog}
               resetLog={resetLog}
@@ -36,15 +61,15 @@ export const Layout = props => {
               setUploadLogsEnabled={setUploadLogsEnabled} />
       </main>
       <footer className="footer-style">
-        <Button variant="link" className="flex-item footer-button" onClick={() => setShowImpressum(true)}>
+        {impressumContent && <Button variant="link" className="flex-item footer-button" onClick={() => setShowImpressum(true)}>
           IMPRESSUM
-        </Button>
-        <Button variant="link" className="flex-item footer-button" onClick={() => setShowDatenschutz(true)}>
+        </Button>}
+        {datenschutzContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => setShowDatenschutz(true)}>
           DATENSCHUTZ
-        </Button>
-        <Button variant="link" className="flex-item footer-button" onClick={() => setShowHilfe(true)}>
+        </Button>}
+        {infoHilfeContent && <Button variant="link" className="flex-item footer-button" onClick={() => setShowHilfe(true)}>
           INFO & HILFE
-        </Button>
+        </Button>}
         <div className="flex-item version-info">
           <span className="version-tag">INTERLIS Web-Check-Service ({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}), ilivalidator (1.11.12), ili2gpkg (4.6.0)</span>
         </div>
@@ -60,16 +85,19 @@ export const Layout = props => {
       < ImpressumModal
         className="modal"
         show={showImpressum}
+        content={impressumContent}
         onHide={() => setShowImpressum(false)}
       />
       < DatenschutzModal
         className="modal"
         show={showDatenschutz}
+        content={datenschutzContent}
         onHide={() => setShowDatenschutz(false)}
       />
       < HilfeModal
         className="modal"
         show={showHilfe}
+        content={infoHilfeContent}
         onHide={() => setShowHilfe(false)}
       />
     </div>

@@ -7,7 +7,7 @@ import Protokoll from './protokoll';
 import InfoCarousel from './infoCarousel';
 
 export const Home = props => {
-  const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
+  const { connection, closedConnectionId, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
@@ -96,7 +96,7 @@ export const Home = props => {
       <Container>
         <img className="app-logo" src="/app.png" alt="App Logo" />
         <div className="title">INTERLIS Web-Check-Service</div>
-        <InfoCarousel />
+        {quickStartContent && <InfoCarousel content={quickStartContent} />}
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
           <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}>

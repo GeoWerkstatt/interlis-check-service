@@ -50,6 +50,10 @@ services:
     #     examples: - favicon.ico
     #               - app.png (max-height: 200px, max-width: 650px)
     #               - vendor.png (max-height: 70px, max-width: 200px)
+    #               - impressum.md (imprint as Markdown-formatted document)
+    #               - datenschutz.md (privacy statement as Markdown-formatted document)
+    #               - info-hilfe.md (operating instructions as Markdown-formatted document)
+    #               - quickstart.txt (line-separated brief instructions as plain text document)
     volumes:
       - ./src/ILICheck.Web/Logs:/logs
       - ./src/ILICheck.Web/Uploads:/uploads
