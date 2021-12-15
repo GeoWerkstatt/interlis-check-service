@@ -115,6 +115,14 @@ services:
     #
     #   - NO_PROXY=host.example.com,10.1.0.0/16
     #     Optional, Specifies URLs that should be excluded from proxying
+    #
+    #   - CUSTOM_APP_NAME=ilicop
+    #     Optional custom application name
+    #     Default INTERLIS Web-Check-Service
+    #
+    #   - CUSTOM_VENDOR_LINK=https://www.example.com
+    #     Optional link to the vendors webpage
+    #     The link is only taken into account if there is a corresponding vendor.png
     environment:
       - PUID=1000
       - PGID=1000

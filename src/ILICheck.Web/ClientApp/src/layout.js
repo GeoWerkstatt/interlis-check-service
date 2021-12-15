@@ -14,10 +14,21 @@ export const Layout = props => {
   const [showDatenschutz, setShowDatenschutz] = useState(false);
   const [showHilfe, setShowHilfe] = useState(false);
 
+  const [clientSettings, setClientSettings] = useState(null);
   const [datenschutzContent, setDatenschutzContent] = useState(null);
   const [impressumContent, setImpressumContent] = useState(null);
   const [infoHilfeContent, setInfoHilfeContent] = useState(null);
   const [quickStartContent, setQuickStartContent] = useState(null);
+
+  // Update HTML title property
+  useEffect(() => document.title = clientSettings?.applicationName, [clientSettings])
+
+  // Fetch client settings
+  useEffect(() => {
+    fetch('api/settings')
+      .then(res => res.headers.get('content-type')?.includes('application/json') && res.json())
+      .then(json => setClientSettings(json));
+  }, []);
 
   // Fetch optional custom content
   useEffect(() => {
@@ -42,17 +53,20 @@ export const Layout = props => {
     <div className="app">
       <header className="header-style">
         <div className="icon">
-          <a href="https://www.example.com" title="www.example.com" target="_blank" rel="noreferrer">
+          <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
             <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
           </a>
         </div>
-        <div className="subtitle">INTERLIS Web-Check-Service - online <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">Ilivalidator</a></div>
+        <div className="subtitle">{clientSettings?.applicationName} - online&nbsp;
+          <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">livalidator</a>
+        </div>
       </header>
       <main>
         <Home connection={connection}
               closedConnectionId={closedConnectionId}
               validationResult ={validationResult}
               setValidationResult ={setValidationResult}
+              clientSettings={clientSettings}
               quickStartContent={quickStartContent}
               log={log}
               updateLog={updateLog}
@@ -71,7 +85,7 @@ export const Layout = props => {
           INFO & HILFE
         </Button>}
         <div className="flex-item version-info">
-          <span className="version-tag">INTERLIS Web-Check-Service ({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}), ilivalidator (1.11.12), ili2gpkg (4.6.0)</span>
+          <span className="version-tag">{clientSettings?.applicationName} ({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}), ilivalidator ({clientSettings?.ilivalidatorVersion})</span>
         </div>
         <div className="flex-icons">
           <a href="https://github.com/GeoWerkstatt/interlis-check-service" title="Link zum github reporsitory" target="_blank" rel="noreferrer">

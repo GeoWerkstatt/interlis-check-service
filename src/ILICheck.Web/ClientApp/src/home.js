@@ -7,7 +7,7 @@ import Protokoll from './protokoll';
 import InfoCarousel from './infoCarousel';
 
 export const Home = props => {
-  const { connection, closedConnectionId, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
+  const { connection, closedConnectionId, clientSettings, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
@@ -37,7 +37,7 @@ export const Home = props => {
           downloadAvailable =true;
           className = "valid"
           text = "Keine Fehler!"
-          updateLog("Alles nach Vorschrift, der INTERLIS Web-Check-Service hat nichts zu beanstanden!");
+          updateLog(`Alles nach Vorschrift, der ${clientSettings?.applicationName} hat nichts zu beanstanden!`);
         }
         if(validationResult === "error"|| validationResult === "aborted"){
           className = "errors"
@@ -56,7 +56,7 @@ export const Home = props => {
         })
         setValidationResult("none")
         }
-    }, [validationResult, fileToCheck, setValidationResult,updateLog])
+    }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings])
 
   const checkFile = () => {
     resetLog();
@@ -95,7 +95,7 @@ export const Home = props => {
     <div>
       <Container>
         <img className="app-logo" src="/app.png" alt="App Logo" />
-        <div className="title">INTERLIS Web-Check-Service</div>
+        <div className="title">{clientSettings?.applicationName}</div>
         {quickStartContent && <InfoCarousel content={quickStartContent} />}
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
