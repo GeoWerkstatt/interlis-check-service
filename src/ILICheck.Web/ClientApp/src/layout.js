@@ -4,16 +4,13 @@ import swissMadeSwissHosted from './img/sms-sh.png'
 import githubLogo from './img/github.png'
 import qgisLogo from './img/qgis.png'
 import Home from './home';
-import ImpressumModal from './impressum';
-import DatenschutzModal from './datenschutz';
-import HilfeModal from './hilfe';
+import ModalContent from './modalContent';
 import { Button } from 'react-bootstrap';
 
 export const Layout = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, validationResult, setValidationResult, setUploadLogsEnabled } = props;
-  const [showImpressum, setShowImpressum] = useState(false);
-  const [showDatenschutz, setShowDatenschutz] = useState(false);
-  const [showHilfe, setShowHilfe] = useState(false);
+  const [modalContent, setModalContent] = useState(false);
+  const [showModalContent, setShowModalContent] = useState(false);
 
   const [clientSettings, setClientSettings] = useState(null);
   const [datenschutzContent, setDatenschutzContent] = useState(null);
@@ -50,6 +47,8 @@ export const Layout = props => {
       .then(text => setQuickStartContent(text));
   }, []);
 
+  const openModalContent = content => setModalContent(content) & setShowModalContent(true);
+
   return (
     <div className="app">
       <header>
@@ -74,13 +73,13 @@ export const Layout = props => {
               setUploadLogsEnabled={setUploadLogsEnabled} />
       </main>
       <footer className="footer-style">
-        {impressumContent && <Button variant="link" className="flex-item footer-button" onClick={() => setShowImpressum(true)}>
+        {impressumContent && <Button variant="link" className="flex-item footer-button" onClick={() => openModalContent(impressumContent) }>
           IMPRESSUM
         </Button>}
-        {datenschutzContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => setShowDatenschutz(true)}>
+        {datenschutzContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => openModalContent(datenschutzContent)}>
           DATENSCHUTZ
         </Button>}
-        {infoHilfeContent && <Button variant="link" className="flex-item footer-button" onClick={() => setShowHilfe(true)}>
+        {infoHilfeContent && <Button variant="link" className="flex-item footer-button" onClick={() => openModalContent(infoHilfeContent)}>
           INFO & HILFE
         </Button>}
         <div className="flex-item version-info">
@@ -98,23 +97,11 @@ export const Layout = props => {
           </a>
         </div>
       </footer>
-      < ImpressumModal
+      < ModalContent
         className="modal"
-        show={showImpressum}
-        content={impressumContent}
-        onHide={() => setShowImpressum(false)}
-      />
-      < DatenschutzModal
-        className="modal"
-        show={showDatenschutz}
-        content={datenschutzContent}
-        onHide={() => setShowDatenschutz(false)}
-      />
-      < HilfeModal
-        className="modal"
-        show={showHilfe}
-        content={infoHilfeContent}
-        onHide={() => setShowHilfe(false)}
+        show={showModalContent}
+        content={modalContent}
+        onHide={() => setShowModalContent(false)}
       />
     </div>
   );
