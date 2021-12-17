@@ -11,6 +11,7 @@ export const Home = props => {
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
+  const [customAppLogoPresent, setCustomAppLogoPresent] = useState(true);
 
   const logUploadLogMessages = () => updateLog(`${fileToCheck.name} wird hochgeladen...`, { disableUploadLogs: false });
   const setIntervalImmediately = (func, interval) => { func(); return setInterval(func, interval); }
@@ -94,8 +95,8 @@ export const Home = props => {
   return (
     <div>
       <Container>
-        <img className="app-logo" src="/app.png" alt="App Logo" />
-        <div className="title">{clientSettings?.applicationName}</div>
+        <img className="app-logo" src="/app.png" alt="App Logo" onError={e => {setCustomAppLogoPresent(false); e.target.style.display='none'}} />
+        {!customAppLogoPresent && <div className="app-title">{clientSettings?.applicationName}</div>}
         {quickStartContent && <InfoCarousel content={quickStartContent} />}
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />

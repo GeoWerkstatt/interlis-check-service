@@ -60,10 +60,11 @@ body {
   margin-right: 0.4em;
 }
 
-.title {
+.app-title {
   font-family: "Dosis", sans-serif;
   font-size: 50px;
   font-weight: 700;
+  padding: 30px;
 }
 
 .subtitle {
