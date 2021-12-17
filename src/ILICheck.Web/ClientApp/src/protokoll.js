@@ -1,6 +1,6 @@
 import './app.css';
 import './custom.css';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import DayJS from 'dayjs'
 import { Button, Card, Container } from 'react-bootstrap';
 import { GoFile, GoFileCode } from 'react-icons/go';
@@ -25,6 +25,11 @@ export const Protokoll = props => {
     navigator.clipboard.writeText(window.location + downloadUrl + xtfLogFileExtension);
     setCopyToClipboardTooltipText("Link wurde kopiert");
   }
+
+  // Autoscroll protokoll log
+  const logEndRef = useRef(null);
+  const scrollToBottom = () => logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => scrollToBottom(), [log]);
 
   return (
     <Container>
@@ -52,9 +57,8 @@ export const Protokoll = props => {
             }
           </Card.Title>
           <div className="protokoll">
-            {log.map((logEntry, index) => (
-              <div key={index}>{logEntry}</div>
-            ))}
+            {log.map((logEntry, index) => <div key={index}>{logEntry}</div>)}
+            <div ref={logEndRef} />
           </div>
         </Card.Body>
       </Card>}
