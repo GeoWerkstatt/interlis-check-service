@@ -102,7 +102,7 @@ export const Home = props => {
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
           <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}
-            disabled={nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen}>
+            disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || testRunning}>
             <span className="run-icon">
               {testRunning ? (<span className="spinner-border spinner-border-sm text-light"></span>) : ("Los!")}
             </span>
