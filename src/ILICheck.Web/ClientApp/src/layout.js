@@ -16,6 +16,7 @@ export const Layout = props => {
   const [datenschutzContent, setDatenschutzContent] = useState(null);
   const [impressumContent, setImpressumContent] = useState(null);
   const [infoHilfeContent, setInfoHilfeContent] = useState(null);
+  const [nutzungsbestimmungenContent, setNutzungsbestimmungenContent] = useState(null);
   const [quickStartContent, setQuickStartContent] = useState(null);
 
   // Update HTML title property
@@ -42,6 +43,10 @@ export const Layout = props => {
       .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
       .then(text => setInfoHilfeContent(text));
 
+    fetch('nutzungsbestimmungen.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setNutzungsbestimmungenContent(text));
+
     fetch('quickstart.txt')
       .then(res => res.headers.get('content-type')?.includes('text/plain') && res.text())
       .then(text => setQuickStartContent(text));
@@ -65,6 +70,8 @@ export const Layout = props => {
               validationResult ={validationResult}
               setValidationResult ={setValidationResult}
               clientSettings={clientSettings}
+              nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
+              showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent)}
               quickStartContent={quickStartContent}
               log={log}
               updateLog={updateLog}
@@ -78,6 +85,9 @@ export const Layout = props => {
         </Button>}
         {datenschutzContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => openModalContent(datenschutzContent)}>
           DATENSCHUTZ
+        </Button>}
+        {nutzungsbestimmungenContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => openModalContent(nutzungsbestimmungenContent)}>
+          NUTZUNGSBESTIMMUNGEN
         </Button>}
         {infoHilfeContent && <Button variant="link" className="flex-item footer-button" onClick={() => openModalContent(infoHilfeContent)}>
           INFO & HILFE

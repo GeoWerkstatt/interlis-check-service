@@ -72,3 +72,21 @@ body {
   font-size: 18px;
   color: white;
 }
+
+.terms-of-use {
+  margin: 8px;
+}
+
+.terms-of-use button {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: unset;
+  margin: unset;
+  vertical-align: unset;
+}
+
+.terms-of-use input {
+  margin-right: 8px;
+}

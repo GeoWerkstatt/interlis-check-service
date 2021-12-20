@@ -7,11 +7,12 @@ import Protokoll from './protokoll';
 import InfoCarousel from './infoCarousel';
 
 export const Home = props => {
-  const { connection, closedConnectionId, clientSettings, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
+  const { connection, closedConnectionId, clientSettings, nutzungsbestimmungenAvailable, showNutzungsbestimmungen, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(true);
+  const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
 
   const logUploadLogMessages = () => updateLog(`${fileToCheck.name} wird hochgeladen...`, { disableUploadLogs: false });
   const setIntervalImmediately = (func, interval) => { func(); return setInterval(func, interval); }
@@ -100,12 +101,23 @@ export const Home = props => {
         {quickStartContent && <InfoCarousel content={quickStartContent} />}
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
-          <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}>
+          <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}
+            disabled={nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen}>
             <span className="run-icon">
               {testRunning ? (<span className="spinner-border spinner-border-sm text-light"></span>) : ("Los!")}
             </span>
           </Button>
         </div>
+        {fileToCheck && nutzungsbestimmungenAvailable &&
+          <div className="terms-of-use">
+            <label>
+              <input type="checkbox"
+                defaultChecked={checkedNutzungsbestimmungen}
+                onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
+              />
+            Ich akzeptiere die <Button variant="link" cssClass="terms-of-use link" onClick={() => showNutzungsbestimmungen()}>Nutzungsbestimmungen</Button>.
+          </label>
+        </div>}
       </Container>
       <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />
     </div>
