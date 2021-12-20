@@ -153,6 +153,32 @@ services:
       - 3080:80
 ```
 
+## Individuelle Anpassung
+
+Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene Bedürfnisse angepasst werden. Dies erfolgt entweder über das Setzen von Umgebungsvariablen oder über zusätzliche Dateien beim Starten des Docker-Containers. Eine ausführliche Beschreibung befindet sich in der oben aufgeführten [docker-compose.yml](#docker-composeyml) Beispielkonfiguration.
+
+### ilivalidator
+
+- Einzelne Prüfungen ein oder ausschalten
+- Eigene Fehlermeldungen inkl. Attributwerte definieren
+- Prüfung gegen weitere Modelle
+- Konfiguration der verwendeten ilivalidator Version
+
+### Web-Check-Service
+
+- Konfiguration der Aufbewahrungszeit der XTF Transferdateien und ilivalidator Log-Dateien auf dem Server
+- Eigenes Favicon-Icon
+- Eigenes Anbieter-Logo mit Verlinkung zu eigener Webseite
+- Eigenes Applikations-Logo
+- Eigener Applikationsname
+- Einbinden eines Impressums
+- Einbinden von Datenschutzbestimmungen
+- Einbinden von Nutzungsbestimmungen die vor der Prüfung vom Benutzer akzeptiert werden müssen
+- Einbinden eines Benutzerhandbuchs
+- Einbinden eines Quick-Start-Guides
+
+![Beispiel eines individuell angepassten INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot_customized.png)
+
 ## Einrichten der Entwicklungsumgebung
 
 Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
