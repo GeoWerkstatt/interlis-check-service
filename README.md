@@ -69,7 +69,7 @@ services:
     #               - datenschutz.md (privacy statement as Markdown-formatted document)
     #               - info-hilfe.md (operating instructions as Markdown-formatted document)
     #               - nutzungsbestimmungen.md (terms of use as Markdown-formatted document)
-    #                 Adding this document means the user must agree the terms prior validation
+    #                 Adding this document means the user must agree to the terms prior validation
     #               - quickstart.txt (line-separated brief instructions as plain text document)
     volumes:
       - ./logs:/logs
@@ -161,7 +161,7 @@ Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene
 
 - Einzelne Prüfungen ein oder ausschalten
 - Eigene Fehlermeldungen inkl. Attributwerte definieren
-- Prüfung gegen weitere Modelle
+- Prüfung gegen weitere Interlis-Modelle
 - Konfiguration der verwendeten ilivalidator Version
 
 ### Web-Check-Service
@@ -173,7 +173,7 @@ Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene
 - Eigener Applikationsname
 - Einbinden eines Impressums
 - Einbinden von Datenschutzbestimmungen
-- Einbinden von Nutzungsbestimmungen die vor der Prüfung vom Benutzer akzeptiert werden müssen
+- Einbinden von Nutzungsbestimmungen, die vor der Prüfung vom Benutzer akzeptiert werden müssen
 - Einbinden eines Benutzerhandbuchs
 - Einbinden eines Quick-Start-Guides
 

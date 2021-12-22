@@ -54,7 +54,7 @@ services:
     #               - datenschutz.md (privacy statement as Markdown-formatted document)
     #               - info-hilfe.md (operating instructions as Markdown-formatted document)
     #               - nutzungsbestimmungen.md (terms of use as Markdown-formatted document)
-    #                 Adding this document means the user must agree the terms prior validation
+    #                 Adding this document means the user must agree to the terms prior validation
     #               - quickstart.txt (line-separated brief instructions as plain text document)
     volumes:
       - ./src/ILICheck.Web/Logs:/logs
