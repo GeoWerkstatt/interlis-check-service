@@ -28,8 +28,7 @@ export const Protokoll = props => {
 
   // Autoscroll protokoll log
   const logEndRef = useRef(null);
-  const scrollToBottom = () => logEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  useEffect(() => scrollToBottom(), [log]);
+  useEffect(() => logEndRef.current?.scrollIntoView({ behavior: "smooth" }), [log]);
 
   return (
     <Container>

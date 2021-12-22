@@ -11,7 +11,7 @@ export const Home = props => {
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
-  const [customAppLogoPresent, setCustomAppLogoPresent] = useState(true);
+  const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
 
   const logUploadLogMessages = () => updateLog(`${fileToCheck.name} wird hochgeladen...`, { disableUploadLogs: false });
@@ -96,7 +96,7 @@ export const Home = props => {
   return (
     <div>
       <Container>
-        <img className="app-logo" src="/app.png" alt="App Logo" onError={e => {setCustomAppLogoPresent(false); e.target.style.display='none'}} />
+        <img className="app-logo" src="/app.png" alt="App Logo" onLoad={() => setCustomAppLogoPresent(true)} onError={e => e.target.style.display='none'} />
         {!customAppLogoPresent && <div className="app-title">{clientSettings?.applicationName}</div>}
         {quickStartContent && <InfoCarousel content={quickStartContent} />}
         <div className="dropzone-wrapper">
@@ -115,7 +115,7 @@ export const Home = props => {
                 defaultChecked={checkedNutzungsbestimmungen}
                 onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
               />
-            Ich akzeptiere die <Button variant="link" cssClass="terms-of-use link" onClick={() => showNutzungsbestimmungen()}>Nutzungsbestimmungen</Button>.
+            Ich akzeptiere die <Button variant="link" className="terms-of-use link" onClick={() => showNutzungsbestimmungen()}>Nutzungsbestimmungen</Button>.
           </label>
         </div>}
       </Container>
