@@ -5,13 +5,14 @@ import { Button, Container } from 'react-bootstrap';
 import { FileDropzone } from './dropzone';
 import Protokoll from './protokoll';
 import InfoCarousel from './infoCarousel';
-import appLogo from './img/app.png'
 
 export const Home = props => {
-  const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
+  const { connection, closedConnectionId, clientSettings, nutzungsbestimmungenAvailable, showNutzungsbestimmungen, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
+  const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
+  const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
 
   const logUploadLogMessages = () => updateLog(`${fileToCheck.name} wird hochgeladen...`, { disableUploadLogs: false });
   const setIntervalImmediately = (func, interval) => { func(); return setInterval(func, interval); }
@@ -38,7 +39,7 @@ export const Home = props => {
           downloadAvailable =true;
           className = "valid"
           text = "Keine Fehler!"
-          updateLog("Alles nach Vorschrift, der INTERLIS Web-Check-Service hat nichts zu beanstanden!");
+          updateLog(`Alles nach Vorschrift, der ${clientSettings?.applicationName} hat nichts zu beanstanden!`);
         }
         if(validationResult === "error"|| validationResult === "aborted"){
           className = "errors"
@@ -57,7 +58,7 @@ export const Home = props => {
         })
         setValidationResult("none")
         }
-    }, [validationResult, fileToCheck, setValidationResult,updateLog])
+    }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings])
 
   const checkFile = () => {
     resetLog();
@@ -95,19 +96,28 @@ export const Home = props => {
   return (
     <div>
       <Container>
-        <img src={appLogo} width="200" alt="App Logo" />
-        <div className="title">
-        INTERLIS Web-Check-Service
-        </div>
-        <InfoCarousel />
+        <img className="app-logo" src="/app.png" alt="App Logo" onLoad={() => setCustomAppLogoPresent(true)} onError={e => e.target.style.display='none'} />
+        {!customAppLogoPresent && <div className="app-title">{clientSettings?.applicationName}</div>}
+        {quickStartContent && <InfoCarousel content={quickStartContent} />}
         <div className="dropzone-wrapper">
           <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
-          <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}>
+          <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}
+            disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || testRunning}>
             <span className="run-icon">
               {testRunning ? (<span className="spinner-border spinner-border-sm text-light"></span>) : ("Los!")}
             </span>
           </Button>
         </div>
+        {fileToCheck && nutzungsbestimmungenAvailable &&
+          <div className="terms-of-use">
+            <label>
+              <input type="checkbox"
+                defaultChecked={checkedNutzungsbestimmungen}
+                onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
+              />
+            Ich akzeptiere die <Button variant="link" className="terms-of-use link" onClick={() => showNutzungsbestimmungen()}>Nutzungsbestimmungen</Button>.
+          </label>
+        </div>}
       </Container>
       <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />
     </div>

@@ -21,5 +21,9 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/[Ll]ogs
+**/[Uu]ploads
+**/[Cc]onfig
+**/[Ww]eb-[Aa]ssets
 LICENSE
 README.md

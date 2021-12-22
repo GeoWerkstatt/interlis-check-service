@@ -1,35 +1,78 @@
 import './app.css';
-import React, { useState } from 'react';
-import vendorLogo from './img/vendor.png'
+import React, { useState, useEffect } from 'react';
+import swissMadeSwissHosted from './img/sms-sh.png'
 import githubLogo from './img/github.png'
 import qgisLogo from './img/qgis.png'
 import Home from './home';
-import ImpressumModal from './impressum';
-import DatenschutzModal from './datenschutz';
-import HilfeModal from './hilfe';
+import ModalContent from './modalContent';
 import { Button } from 'react-bootstrap';
 
 export const Layout = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, validationResult, setValidationResult, setUploadLogsEnabled } = props;
-  const [showImpressum, setShowImpressum] = useState(false);
-  const [showDatenschutz, setShowDatenschutz] = useState(false);
-  const [showHilfe, setShowHilfe] = useState(false);
+  const [modalContent, setModalContent] = useState(false);
+  const [showModalContent, setShowModalContent] = useState(false);
+
+  const [clientSettings, setClientSettings] = useState(null);
+  const [datenschutzContent, setDatenschutzContent] = useState(null);
+  const [impressumContent, setImpressumContent] = useState(null);
+  const [infoHilfeContent, setInfoHilfeContent] = useState(null);
+  const [nutzungsbestimmungenContent, setNutzungsbestimmungenContent] = useState(null);
+  const [quickStartContent, setQuickStartContent] = useState(null);
+
+  // Update HTML title property
+  useEffect(() => document.title = clientSettings?.applicationName, [clientSettings])
+
+  // Fetch client settings
+  useEffect(() => {
+    fetch('api/settings')
+      .then(res => res.headers.get('content-type')?.includes('application/json') && res.json())
+      .then(json => setClientSettings(json));
+  }, []);
+
+  // Fetch optional custom content
+  useEffect(() => {
+    fetch('impressum.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setImpressumContent(text));
+
+    fetch('datenschutz.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setDatenschutzContent(text));
+
+    fetch('info-hilfe.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setInfoHilfeContent(text));
+
+    fetch('nutzungsbestimmungen.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setNutzungsbestimmungenContent(text));
+
+    fetch('quickstart.txt')
+      .then(res => res.headers.get('content-type')?.includes('text/plain') && res.text())
+      .then(text => setQuickStartContent(text));
+  }, []);
+
+  const openModalContent = content => setModalContent(content) & setShowModalContent(true);
 
   return (
     <div className="app">
-      <header className="header-style">
-        <div className="icon">
-          <a href="https://www.example.com" title="www.example.com" target="_blank" rel="noreferrer">
-            <img src={vendorLogo} width="150" alt="Vendor Logo" />
-          </a>
+      <header>
+        <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
+          <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
+        </a>
+        <div className="subtitle">{clientSettings?.applicationName} - online&nbsp;
+          <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">ilivalidator</a>
         </div>
-        <div className="subtitle">INTERLIS Web-Check-Service - online <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">Ilivalidator</a></div>
       </header>
       <main>
         <Home connection={connection}
               closedConnectionId={closedConnectionId}
               validationResult ={validationResult}
               setValidationResult ={setValidationResult}
+              clientSettings={clientSettings}
+              nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
+              showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent)}
+              quickStartContent={quickStartContent}
               log={log}
               updateLog={updateLog}
               resetLog={resetLog}
@@ -37,41 +80,38 @@ export const Layout = props => {
               setUploadLogsEnabled={setUploadLogsEnabled} />
       </main>
       <footer className="footer-style">
-        <Button variant="link" className="flex-item footer-button" onClick={() => setShowImpressum(true)}>
+        {impressumContent && <Button variant="link" className="flex-item footer-button" onClick={() => openModalContent(impressumContent) }>
           IMPRESSUM
-        </Button>
-        <Button variant="link" className="flex-item footer-button" onClick={() => setShowDatenschutz(true)}>
+        </Button>}
+        {datenschutzContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => openModalContent(datenschutzContent)}>
           DATENSCHUTZ
-        </Button>
-        <Button variant="link" className="flex-item footer-button" onClick={() => setShowHilfe(true)}>
+        </Button>}
+        {nutzungsbestimmungenContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => openModalContent(nutzungsbestimmungenContent)}>
+          NUTZUNGSBESTIMMUNGEN
+        </Button>}
+        {infoHilfeContent && <Button variant="link" className="flex-item footer-button" onClick={() => openModalContent(infoHilfeContent)}>
           INFO & HILFE
-        </Button>
+        </Button>}
         <div className="flex-item version-info">
-          <span className="version-tag">INTERLIS Web-Check-Service ({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}), ilivalidator (1.11.12), ili2gpkg (4.6.0)</span>
+          <span className="version-tag">{clientSettings?.applicationName} ({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}), ilivalidator ({clientSettings?.ilivalidatorVersion})</span>
         </div>
         <div className="flex-icons">
+          <a href="https://www.swissmadesoftware.org/" title="Link zu Swiss Made Software" target="_blank" rel="noreferrer">
+            <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Made Software Logo" />
+          </a>
           <a href="https://github.com/GeoWerkstatt/interlis-check-service" title="Link zum github reporsitory" target="_blank" rel="noreferrer">
-            <img className="icon" src={githubLogo} color="#c1c1c1" width="40" alt="GitHub Logo" />
+            <img className="footer-icon" src={githubLogo} alt="GitHub Logo" />
           </a>
           <a href="https://plugins.qgis.org/plugins/xtflog_checker/" title="Link zum QGIS Plugin XTFLog Checker" target="_blank" rel="noreferrer">
-            <img className="icon" src={qgisLogo} color="#c1c1c1" width="40" alt="QGIS Logo" />
+            <img className="footer-icon" src={qgisLogo} alt="QGIS Logo" />
           </a>
         </div>
       </footer>
-      < ImpressumModal
+      < ModalContent
         className="modal"
-        show={showImpressum}
-        onHide={() => setShowImpressum(false)}
-      />
-      < DatenschutzModal
-        className="modal"
-        show={showDatenschutz}
-        onHide={() => setShowDatenschutz(false)}
-      />
-      < HilfeModal
-        className="modal"
-        show={showHilfe}
-        onHide={() => setShowHilfe(false)}
+        show={showModalContent}
+        content={modalContent}
+        onHide={() => setShowModalContent(false)}
       />
     </div>
   );

@@ -59,10 +59,23 @@ services:
     #
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
+    #
+    #   - /path/to/web-assets:/web-assets
+    #     Folder containing optional custom web assets
+    #     examples: - favicon.ico
+    #               - app.png (max-height: 200px, max-width: 650px)
+    #               - vendor.png (max-height: 70px, max-width: 200px)
+    #               - impressum.md (imprint as Markdown-formatted document)
+    #               - datenschutz.md (privacy statement as Markdown-formatted document)
+    #               - info-hilfe.md (operating instructions as Markdown-formatted document)
+    #               - nutzungsbestimmungen.md (terms of use as Markdown-formatted document)
+    #                 Adding this document means the user must agree to the terms prior validation
+    #               - quickstart.txt (line-separated brief instructions as plain text document)
     volumes:
       - ./logs:/logs
       - ./uploads:/uploads
       - ./config:/config
+      - ./web-assets:/web-assets
     # Add environment variables
     #
     # environment:
@@ -119,6 +132,14 @@ services:
     #
     #   - NO_PROXY=host.example.com,10.1.0.0/16
     #     Optional, Specifies URLs that should be excluded from proxying
+    #
+    #   - CUSTOM_APP_NAME=ilicop
+    #     Optional custom application name
+    #     Default INTERLIS Web-Check-Service
+    #
+    #   - CUSTOM_VENDOR_LINK=https://www.example.com
+    #     Optional link to the vendors webpage
+    #     The link is only taken into account if there is a corresponding vendor.png
     environment:
       - PUID=1000
       - PGID=1000
@@ -131,6 +152,32 @@ services:
     ports:
       - 3080:80
 ```
+
+## Individuelle Anpassung
+
+Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene Bedürfnisse angepasst werden. Dies erfolgt entweder über das Setzen von Umgebungsvariablen oder über zusätzliche Dateien beim Starten des Docker-Containers. Eine ausführliche Beschreibung befindet sich in der oben aufgeführten [docker-compose.yml](#docker-composeyml) Beispielkonfiguration.
+
+### ilivalidator
+
+- Einzelne Prüfungen ein oder ausschalten
+- Eigene Fehlermeldungen inkl. Attributwerte definieren
+- Prüfung gegen weitere Interlis-Modelle
+- Konfiguration der verwendeten ilivalidator Version
+
+### Web-Check-Service
+
+- Konfiguration der Aufbewahrungszeit der XTF Transferdateien und ilivalidator Log-Dateien auf dem Server
+- Eigenes Favicon-Icon
+- Eigenes Anbieter-Logo mit Verlinkung zu eigener Webseite
+- Eigenes Applikations-Logo
+- Eigener Applikationsname
+- Einbinden eines Impressums
+- Einbinden von Datenschutzbestimmungen
+- Einbinden von Nutzungsbestimmungen, die vor der Prüfung vom Benutzer akzeptiert werden müssen
+- Einbinden eines Benutzerhandbuchs
+- Einbinden eines Quick-Start-Guides
+
+![Beispiel eines individuell angepassten INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot_customized.png)
 
 ## Einrichten der Entwicklungsumgebung
 
