@@ -1,0 +1,35 @@
+@model string
+
+<style>
+    body {
+        font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid";
+        font-weight: 100;
+        line-height: 1.75;
+    }
+    .center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+        margin-top: -15vh;
+    }
+    .logo {
+        max-height: 80px;
+        max-width: 250px;
+        padding-bottom: 20px;
+    }
+    .title {
+        font-size: xxx-large;
+    }
+</style>
+<body>
+    <div class="center">
+        <!-- Show optional application logo -->
+        <img class="logo" src="/app.png" onerror="this.style.visibility='hidden'" />
+        <div class="title">404 - Page Not Found</div>
+        <div>@Model</div>
+        <div><a href="/">Hier</a> geht es zurück zur Applikation.</div>
+    </div>
+</body>
