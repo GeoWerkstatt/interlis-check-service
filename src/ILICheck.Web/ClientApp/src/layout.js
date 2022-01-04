@@ -57,12 +57,12 @@ export const Layout = props => {
   return (
     <div className="app">
       <header>
-        <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
-          <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
-        </a>
         <div className="subtitle">{clientSettings?.applicationName} - online&nbsp;
           <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">ilivalidator</a>
         </div>
+        <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
+          <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
+        </a>
       </header>
       <main>
         <Home connection={connection}
