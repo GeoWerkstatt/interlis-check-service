@@ -90,24 +90,32 @@ input {
   color: black;
 }
 
-.dropzone-text {
-  color: #bdbdbd;
-  border-color: white;
+.dropzone-text-disabled {
+  color: #7c7c7c !important;
 }
 
 .dropzone-text-file {
-  color: black;
-  font-weight: 600;
-  border-color: white;
-  padding-left: 110px !important;
+  color: #313131 !important;
 }
 
 .dropzone-text-error {
-  color: #ff1744;
-  border-color: #ff1744;
+  color: #c10026 !important;
+  border-color: #c10026 !important;
 }
 
-.dropzone-wrapper {
+.dropzone-icon {
+  margin-right: 10px;
+}
+
+.nutzungsbestimmungen-input {
+  font-size: 0.8rem;
+}
+
+.spinner {
+  vertical-align: top;
+  margin-left: 2rem;
+}
+
   display: flex;
 }
 
