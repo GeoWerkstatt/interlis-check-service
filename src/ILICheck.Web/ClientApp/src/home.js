@@ -1,5 +1,4 @@
 import './app.css';
-import './custom.css';
 import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { FileDropzone } from './dropzone';

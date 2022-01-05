@@ -1,5 +1,4 @@
 import './app.css';
-import './custom.css';
 import React, { useState, useRef, useEffect } from 'react';
 import DayJS from 'dayjs'
 import { Card, Container } from 'react-bootstrap';

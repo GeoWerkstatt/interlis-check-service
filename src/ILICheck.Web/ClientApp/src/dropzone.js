@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { MdCancel } from 'react-icons/md';
+import { MdCancel, MdFileDownload } from 'react-icons/md';
 import { Button, Spinner } from 'react-bootstrap';
 import styled from 'styled-components';
 
@@ -98,6 +98,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
                         disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || testRunning}>
                         Validieren
                     </Button>}
+                {!fileAvailable && <p className='drop-icon'><MdFileDownload/></p>}
                 {testRunning && <Spinner className="spinner" animation="border" />}
                 {fileToCheck && nutzungsbestimmungenAvailable &&
                     <div className="terms-of-use">

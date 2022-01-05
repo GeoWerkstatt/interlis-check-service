@@ -1,5 +1,4 @@
 import './app.css';
-import './custom.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import Layout from './layout';
