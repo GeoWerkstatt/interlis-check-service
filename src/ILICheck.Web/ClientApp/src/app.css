@@ -133,14 +133,9 @@ input {
   margin-left: 10px;
 }
 
-.run-icon {
-  margin-left: 10px;
+.download-icon :hover {
+  color:#555;
 }
-
-.copy-icon {
-  margin-left: 5px;
-}
-
 
 /************ Check status ************/
 
@@ -153,31 +148,31 @@ input {
 }
 
 
-/************ Copy to clipboard function ************/
+/************ Tooltips ************/
 
-.copy-tooltip {
+.icon-tooltip {
   position: relative;
   display: inline-block;
 }
 
-.copy-tooltip .copy-tooltip-text {
+.icon-tooltip .icon-tooltip-text {
+  font-size: 0.8rem;
   visibility: hidden;
-  width: 280px;
+  width: 260px; 
   background-color: #555;
   color: #fff;
   text-align: center;
   border-radius: 6px;
   padding: 5px;
-  position: absolute;
+  position: absolute; 
   z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -75px;
+  bottom: 100%;
+  margin-left: -145px;
   opacity: 0;
   transition: opacity 0.3s;
 }
 
-.copy-tooltip .copy-tooltip-text::after {
+.icon-tooltip .icon-tooltip-text::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -188,12 +183,11 @@ input {
   border-color: #555 transparent transparent transparent;
 }
 
-.copy-tooltip:hover .copy-tooltip-text {
+.icon-tooltip:hover .icon-tooltip-text {
   visibility: visible;
   opacity: 1;
 }
 
-.btn-copy-to-clipboard {
   font-size: 1rem;
   margin-top: -4px;
   line-height: 1;

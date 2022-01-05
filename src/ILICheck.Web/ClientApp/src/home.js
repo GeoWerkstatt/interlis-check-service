@@ -119,7 +119,7 @@ export const Home = props => {
           </label>
         </div>}
       </Container>
-      <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />
+      <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} testRunning={testRunning} />
     </div>
   );
 }
