@@ -97,6 +97,7 @@ export const Home = props => {
       <Container className="main-container">
       <div className="title-wrapper">
         <div><img className="app-logo" src="/app.png" alt="App Logo" onLoad={() => setCustomAppLogoPresent(true)} onError={e => e.target.style.display='none'} /></div>
+        {!customAppLogoPresent && <div className="app-title">{clientSettings?.applicationName}</div>}
         {quickStartContent && <InfoCarousel content={quickStartContent} />}
         </div>
         <div className="dropzone-wrapper">
