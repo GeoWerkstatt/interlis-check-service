@@ -37,7 +37,8 @@ namespace ILICheck.Web.Controllers
             }
             catch (Exception)
             {
-                return NotFound("Requested logfile could not be found.");
+                Response.StatusCode = 404;
+                return View("PageNotFound", "Die gesuchte XTF-Log-Datei wurde leider nicht gefunden. Möglicherweise wurde diese bereits gelöscht.");
             }
         }
     }
