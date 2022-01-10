@@ -30,6 +30,10 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
     const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
 
+    const onDrop = useCallback( () => {
+        setUploadLogsEnabled(false);
+    }, [setUploadLogsEnabled]);
+
     const onDropAccepted = useCallback(acceptedFiles => {
         if (acceptedFiles.length === 1) {
             setDropZoneText(acceptedFiles[0].name);
@@ -37,7 +41,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
             setFileToCheck(acceptedFiles[0])
             setFileAvailable(true);
         }
-    }, [setFileToCheck])
+    }, [setFileToCheck]);
 
     const onDropRejected = useCallback(fileRejections => {
         setDropZoneTextClass("dropzone-text-error");
@@ -58,7 +62,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
         }
         setFileToCheck(null)
         setFileAvailable(false);
-    }, [setFileToCheck])
+    }, [setFileToCheck]);
 
     const removeFile = (event) => {
         event.stopPropagation();
@@ -70,7 +74,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
         setDropZoneTextClass("dropzone-text");
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml, .zip" })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml, .zip" })
 
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
