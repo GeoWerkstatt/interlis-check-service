@@ -59,7 +59,8 @@ export const Home = props => {
         }
     }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings])
 
-  const checkFile = () => {
+  const checkFile = e => {
+    e.stopPropagation();
     resetLog();
     setTestRunning(true);
     setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false })
