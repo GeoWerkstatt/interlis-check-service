@@ -331,6 +331,7 @@ footer {
   flex-direction: row;
   flex-wrap: wrap;
   overflow: hidden;
+  align-items: baseline;
 }
 
 .footer-style {
