@@ -70,7 +70,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
         setDropZoneTextClass("dropzone-text");
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml, .zip" })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml, .zip" })
 
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
