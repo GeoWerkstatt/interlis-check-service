@@ -30,10 +30,6 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled 
     const [dropZoneText, setDropZoneText] = useState(".xtf, .xml oder .zip Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone-text");
 
-    const onDrop = useCallback(() => {
-        setUploadLogsEnabled(false);
-    }, [setUploadLogsEnabled]);
-
     const onDropAccepted = useCallback(acceptedFiles => {
         if (acceptedFiles.length === 1) {
             setDropZoneText(acceptedFiles[0].name);
