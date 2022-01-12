@@ -76,7 +76,8 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
         setFileAvailable(false);
     }, [setFileToCheck])
 
-    const removeFile = () => {
+    const removeFile = e => {
+        e.stopPropagation()
         connection.stop();
         setUploadLogsEnabled(false);
         setFileToCheck(null);
@@ -90,7 +91,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
             <input {...getInputProps()} />
-            <div className={dropZoneTextClass} onClick={(e) => e.stopPropagation()}>
+            <div className={dropZoneTextClass}>
                 {fileAvailable && <span onClick={removeFile}><MdCancel className='dropzone-icon' /></span>}
                 {dropZoneText}
                 {fileAvailable &&
@@ -101,7 +102,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
                 {!fileAvailable && <p className='drop-icon'><MdFileDownload/></p>}
                 {testRunning && <Spinner className="spinner" animation="border" />}
                 {fileToCheck && nutzungsbestimmungenAvailable &&
-                    <div className="terms-of-use">
+                    <div onClick={(e) => e.stopPropagation()} className="terms-of-use">
                         <label>
                             <input type="checkbox"
                                 defaultChecked={checkedNutzungsbestimmungen}
