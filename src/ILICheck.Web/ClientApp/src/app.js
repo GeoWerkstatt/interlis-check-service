@@ -1,5 +1,4 @@
 import './app.css';
-import './custom.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import Layout from './layout';
@@ -15,7 +14,12 @@ function App() {
   const resetLog = useCallback(() => setLog([]), [setLog]);
   const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
     if (disableUploadLogs) setUploadLogsEnabled(false);
-    setLog(log => [...log, message]);
+    setLog(log => {
+       if (message === log[log.length -1]) 
+       { return log} 
+       else 
+      { return [...log, message]}
+    });
   }, []);
 
   useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);

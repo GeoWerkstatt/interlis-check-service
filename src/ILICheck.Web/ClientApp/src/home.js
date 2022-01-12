@@ -1,7 +1,6 @@
 import './app.css';
-import './custom.css';
 import React, { useState, useEffect } from 'react';
-import { Button, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { FileDropzone } from './dropzone';
 import Protokoll from './protokoll';
 import InfoCarousel from './infoCarousel';
@@ -60,7 +59,8 @@ export const Home = props => {
         }
     }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings])
 
-  const checkFile = () => {
+  const checkFile = e => {
+    e.stopPropagation();
     resetLog();
     setTestRunning(true);
     setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false })
@@ -95,31 +95,28 @@ export const Home = props => {
 
   return (
     <div>
-      <Container>
-        <img className="app-logo" src="/app.png" alt="App Logo" onLoad={() => setCustomAppLogoPresent(true)} onError={e => e.target.style.display='none'} />
+      <Container className="main-container">
+      <div className="title-wrapper">
+        <div><img className="app-logo" src="/app.png" alt="App Logo" onLoad={() => setCustomAppLogoPresent(true)} onError={e => e.target.style.display='none'} /></div>
         {!customAppLogoPresent && <div className="app-title">{clientSettings?.applicationName}</div>}
         {quickStartContent && <InfoCarousel content={quickStartContent} />}
-        <div className="dropzone-wrapper">
-          <FileDropzone setUploadLogsEnabled= {setUploadLogsEnabled} setFileToCheck={setFileToCheck} connection={connection} />
-          <Button className={fileToCheck ? "check-button btn-color" : "invisible-check-button"} onClick={checkFile}
-            disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || testRunning}>
-            <span className="run-icon">
-              {testRunning ? (<span className="spinner-border spinner-border-sm text-light"></span>) : ("Los!")}
-            </span>
-          </Button>
         </div>
-        {fileToCheck && nutzungsbestimmungenAvailable &&
-          <div className="terms-of-use">
-            <label>
-              <input type="checkbox"
-                defaultChecked={checkedNutzungsbestimmungen}
-                onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
+        <div className="dropzone-wrapper">
+          <FileDropzone 
+              setUploadLogsEnabled={setUploadLogsEnabled} 
+              setFileToCheck={setFileToCheck} 
+              connection={connection} 
+              fileToCheck={fileToCheck} 
+              nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable} 
+              checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
+              checkFile={checkFile}
+              testRunning={testRunning}
+              setCheckedNutzungsbestimmungen = {setCheckedNutzungsbestimmungen}
+              showNutzungsbestimmungen = {showNutzungsbestimmungen}
               />
-            Ich akzeptiere die <Button variant="link" className="terms-of-use link" onClick={() => showNutzungsbestimmungen()}>Nutzungsbestimmungen</Button>.
-          </label>
-        </div>}
+        </div>
       </Container>
-      <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} />
+      <Protokoll log={log} fileCheckStatus={fileCheckStatus} closedConnectionId={closedConnectionId} connection={connection} testRunning={testRunning} />
     </div>
   );
 }

@@ -1,20 +1,41 @@
 /************ Base Layout ************/
+body {
+  text-align: center;
+  background: #eaeff27a;
+}
 
 .app {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   min-height: 100vh;
+}
+
+main {
+  min-height: 72vh;
+  flex: 1 0 auto;
+}
+
+main a {
+  color: #007cc3;
+}
+
+header a {
+  color: #007cc3;
+  text-decoration: none;
 }
 
 .app-logo {
   max-height: 200px;
   max-width: 650px;
-  padding: 30px;
+  padding: 0px;
+  margin-bottom: 5px;
+  flex: 0;
 }
 
-.vendor-logo {
-  max-height: 70px;
-  max-width: 200px;
+.vendor-logo:hover {
+  -webkit-transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 header {
@@ -25,22 +46,17 @@ header {
   padding-top: 20px;
 }
 
-.carousel {
-  margin: 15px 50px;
+.app-title {
+  font-family: "Dosis", sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  padding: 30px;
 }
 
-main {
-  min-height: 72vh;
-  flex: 1 0 auto;
-}
-
-footer {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  height: 44px;
-  overflow: hidden;
+.subtitle {
+  font-family: "Dosis", sans-serif;
+  font-size: 15px;
+  color: #007cc3;
 }
 
 .flex-item {
@@ -57,30 +73,50 @@ footer {
 }
 
 .flex-icons {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  padding-top: 10px;
   display: flex;
   align-items: center;
   flex-grow: 1;
 }
 
-
 /************ Protokoll ************/
 
 .protokoll {
-  max-height: 20vh;
   overflow-y: auto;
   text-align: left;
-  height: 15vh;
 }
 
 .protokoll-card {
   color: black;
   margin-top: 30px;
+  max-width: 95vw;
 }
 
 .card-body {
   text-align: left;
 }
 
+/************ Carousel ************/
+
+.carousel {
+  color: rgb(111, 111, 111);
+  width: 100%;
+  font-size: 20px;
+  margin-bottom: 1rem;
+}
+
+.carousel-inner {
+  padding-right: 50px;
+  padding-left: 50px;
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+  filter: invert(100%);
+}
 
 /************ Dropzone ************/
 
@@ -90,42 +126,147 @@ input {
   color: black;
 }
 
-.dropzone-text {
-  color: #bdbdbd;
-  border-color: white;
+.dropzone-text-disabled {
+  color: #7c7c7c !important;
 }
 
 .dropzone-text-file {
-  color: black;
-  font-weight: 600;
-  border-color: white;
-  padding-left: 110px !important;
+  color: #313131 !important;
 }
 
 .dropzone-text-error {
-  color: #ff1744;
-  border-color: #ff1744;
+  color: #c10026 !important;
+  border-color: #c10026 !important;
 }
 
-.dropzone-wrapper {
+.dropzone-icon {
+  margin-right: 10px;
+}
+
+.nutzungsbestimmungen-input {
+  font-size: 0.8rem;
+}
+
+.drop-icon {
+  font-size: 35px;
+}
+
+.spinner {
+  position: fixed;
+  vertical-align: top;
+  margin-left: -4rem;
+  margin-top: 1rem;
+}
+
+/************ Title and logo ************/
+
+.title-wrapper {
   display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
 }
 
+/************ Media queries ************/
+
+@media screen and (max-width: 10000px) {
+  .title-wrapper {
+    margin-top: 12vh;
+  }
+  .dropzone {
+    margin-top: 3vh;
+    font-size: 1rem;
+  }
+  .carousel {
+    font-size: 20px;
+  }
+  .vendor-logo {
+    max-height: 70px;
+    max-width: 200px;
+  }
+  .protokoll {
+    height: 20vh;
+  }
+  .app-logo {
+    max-height: 200px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .title-wrapper {
+    margin-top: 12vh;
+  }
+  .dropzone {
+    margin-top: 3vh;
+    font-size: 1rem;
+  }
+  .carousel {
+    font-size: 18px;
+  }
+  .vendor-logo {
+    margin-left: 2rem;
+    max-height: 50px;
+    max-width: 150px;
+  }
+  .app-logo {
+    max-height: 150px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .title-wrapper {
+    margin-top: 5vh;
+  }
+  .dropzone {
+    margin-top: 1vh;
+    font-size: 0.8rem;
+  }
+  .carousel {
+    font-size: 14px;
+  }
+  .protokoll {
+    height: 10vh;
+  }
+  .app-logo {
+    max-height: 100px;
+  }
+}
 
 /************ Buttons & Icons ************/
 
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 .btn {
   margin-left: 10px;
-  font-size: 20px;
+  margin-top: 10px;
+  font-size: 1.2rem;
 }
 
 .check-button {
-  width: 110px;
   border: none;
+  background-color: #007cc3;
+  border-color: #007cc3;
+  margin-left: 15px;
+  vertical-align: baseline;
+}
+
+.check-button:disabled {
+  background-color: #007cc396;
+  border-color: #007cc396;
+}
+
+.check-button:hover {
+  background-color: #005485;
+  border-color: #005485;
 }
 
 .invisible-check-button {
-  display: none;
+  visibility: hidden;
+  margin-left: 15px;
+  vertical-align: baseline;
 }
 
 .download-icon {
@@ -133,14 +274,9 @@ input {
   margin-left: 10px;
 }
 
-.run-icon {
-  margin-left: 10px;
+.download-icon :hover {
+  color: #555;
 }
-
-.copy-icon {
-  margin-left: 5px;
-}
-
 
 /************ Check status ************/
 
@@ -149,20 +285,20 @@ input {
 }
 
 .errors {
-  color: #ff1744;
+  color: #c10026;
 }
 
+/************ Tooltips ************/
 
-/************ Copy to clipboard function ************/
-
-.copy-tooltip {
+.icon-tooltip {
   position: relative;
   display: inline-block;
 }
 
-.copy-tooltip .copy-tooltip-text {
+.icon-tooltip .icon-tooltip-text {
+  font-size: 0.8rem;
   visibility: hidden;
-  width: 280px;
+  width: 260px;
   background-color: #555;
   color: #fff;
   text-align: center;
@@ -170,14 +306,13 @@ input {
   padding: 5px;
   position: absolute;
   z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -75px;
+  bottom: 100%;
+  margin-left: -145px;
   opacity: 0;
   transition: opacity 0.3s;
 }
 
-.copy-tooltip .copy-tooltip-text::after {
+.icon-tooltip .icon-tooltip-text::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -188,13 +323,90 @@ input {
   border-color: #555 transparent transparent transparent;
 }
 
-.copy-tooltip:hover .copy-tooltip-text {
+.icon-tooltip:hover .icon-tooltip-text {
   visibility: visible;
   opacity: 1;
 }
 
-.btn-copy-to-clipboard {
+/************ Footer ************/
+footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow: hidden;
+  align-items: baseline;
+}
+
+.footer-style {
+  font-family: "Dosis", sans-serif;
+  background: #007cc3;
+  padding: 15px;
+  font-stretch: expanded;
+}
+
+.footer-button {
+  color: white;
+  border: none;
+  text-decoration-line: none;
+}
+
+.footer-button:hover {
+  color: #005485;
+}
+
+.version-tag {
+  margin-top: 2px;
+  font-size: 0.75em;
+}
+
+.footer-icon {
+  height: 30px;
+  margin-right: 1.5rem;
+}
+
+/************ Modals ************/
+
+.modal {
+  color: black;
+  font-size: 14px;
+  text-align: left;
+}
+
+.modal-content h1 {
+  padding-top: 0.25em;
+  font-size: 1.75rem;
+}
+
+.modal-content h2 {
+  padding-top: 0.3em;
+  font-size: 1.25rem;
+}
+
+.modal-content h3 {
+  padding-top: 0.25em;
   font-size: 1rem;
-  margin-top: -4px;
-  line-height: 1;
+}
+
+.terms-of-use {
+  margin: 8px;
+  margin-left: 35px;
+}
+
+.terms-of-use button {
+  color: #007cc3;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: unset;
+  margin: unset;
+  vertical-align: unset;
+}
+
+.terms-of-use button:hover {
+  color: #005485;
+}
+
+.terms-of-use input {
+  margin-right: 8px;
 }
