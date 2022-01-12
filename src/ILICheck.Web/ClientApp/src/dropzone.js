@@ -34,7 +34,7 @@ const Container = styled.div`
 
 export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled, fileToCheck, nutzungsbestimmungenAvailable, checkedNutzungsbestimmungen, checkFile, testRunning, setCheckedNutzungsbestimmungen, showNutzungsbestimmungen }) => {
     const [fileAvailable, setFileAvailable] = useState(false);
-    const [dropZoneText, setDropZoneText] = useState("Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
+    const [dropZoneText, setDropZoneText] = useState("Datei (.xtf, .zip) hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone dropzone-text-disabled");
 
     const updateDropZoneClass = () => {
@@ -82,7 +82,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
         setUploadLogsEnabled(false);
         setFileToCheck(null);
         setFileAvailable(false);
-        setDropZoneText("Datei hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
+        setDropZoneText("Datei (.xtf, .zip) hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
         setDropZoneTextClass("dropzone dropzone-text-disabled");
     }
 
