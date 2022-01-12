@@ -152,8 +152,10 @@ input {
 }
 
 .spinner {
+  position: fixed;
   vertical-align: top;
-  margin-left: 2rem;
+  margin-left: -4rem;
+  margin-top: 1rem;
 }
 
 /************ Title and logo ************/
@@ -262,7 +264,9 @@ input {
 }
 
 .invisible-check-button {
-  display: none;
+  visibility: hidden;
+  margin-left: 15px;
+  vertical-align: baseline;
 }
 
 .download-icon {
