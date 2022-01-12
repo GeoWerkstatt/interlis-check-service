@@ -7,7 +7,7 @@ export const ModalContent = props => {
   return (
     <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Body>
-        <ReactMarkdown children={content || ''} />
+        <ReactMarkdown linkTarget="_blank" children={content || ''} />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-dark" onClick={props.onHide}>Schliessen</Button>
