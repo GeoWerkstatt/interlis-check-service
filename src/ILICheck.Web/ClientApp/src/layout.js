@@ -1,7 +1,6 @@
 import './app.css';
 import React, { useState, useEffect } from 'react';
 import swissMadeSwissHosted from './img/sms-sh.png';
-import githubLogo from './img/github.png';
 import qgisLogo from './img/qgis.png';
 import interlisLogo from './img/interlis.svg'
 import Home from './home';
@@ -57,56 +56,58 @@ export const Layout = props => {
   return (
     <div className="app">
       <header>
-        <div className="subtitle">{clientSettings?.applicationName} - online&nbsp;
-          <a href="https://www.interlis.ch/downloads/ilivalidator" title="Zum ilivalidator" target="_blank" rel="noreferrer">ilivalidator</a>
-        </div>
         <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
-          <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display='none'}} />
+          <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display = 'none' }} />
         </a>
       </header>
       <main>
         <Home connection={connection}
-              closedConnectionId={closedConnectionId}
-              validationResult ={validationResult}
-              setValidationResult ={setValidationResult}
-              clientSettings={clientSettings}
-              nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
-              showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent)}
-              quickStartContent={quickStartContent}
-              log={log}
-              updateLog={updateLog}
-              resetLog={resetLog}
-              setUploadLogsInterval={setUploadLogsInterval}
-              setUploadLogsEnabled={setUploadLogsEnabled} />
+          closedConnectionId={closedConnectionId}
+          validationResult={validationResult}
+          setValidationResult={setValidationResult}
+          clientSettings={clientSettings}
+          nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
+          showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent)}
+          quickStartContent={quickStartContent}
+          log={log}
+          updateLog={updateLog}
+          resetLog={resetLog}
+          setUploadLogsInterval={setUploadLogsInterval}
+          setUploadLogsEnabled={setUploadLogsEnabled} />
       </main>
       <footer className="footer-style">
-        {impressumContent && <Button variant="link" className="flex-item footer-button" onClick={() => openModalContent(impressumContent) }>
-          IMPRESSUM
-        </Button>}
-        {datenschutzContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => openModalContent(datenschutzContent)}>
-          DATENSCHUTZ
-        </Button>}
-        {nutzungsbestimmungenContent && <Button variant="link" className="flex-item footer-button no-outline-on-focus" onClick={() => openModalContent(nutzungsbestimmungenContent)}>
-          NUTZUNGSBESTIMMUNGEN
-        </Button>}
-        {infoHilfeContent && <Button variant="link" className="flex-item footer-button" onClick={() => openModalContent(infoHilfeContent)}>
-          INFO & HILFE
-        </Button>}
-        <div className="flex-item version-info">
-          <span className="version-tag">{clientSettings?.applicationName} ({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}), ilivalidator ({clientSettings?.ilivalidatorVersion})</span>
+        <div className='footer-links'>
+          {infoHilfeContent && <Button variant="link" className="footer-button" onClick={() => openModalContent(infoHilfeContent)}>
+            INFO & HILFE
+          </Button>}
+          {nutzungsbestimmungenContent && <Button variant="link" className="footer-button no-outline-on-focus" onClick={() => openModalContent(nutzungsbestimmungenContent)}>
+            NUTZUNGSBESTIMMUNGEN
+          </Button>}
+          {datenschutzContent && <Button variant="link" className="footer-button no-outline-on-focus" onClick={() => openModalContent(datenschutzContent)}>
+            DATENSCHUTZ
+          </Button>}
+          {impressumContent && <Button variant="link" className="footer-button" onClick={() => openModalContent(impressumContent)}>
+            IMPRESSUM
+          </Button>}
         </div>
-        <div className="flex-icons">
+        <div className="version-info">
+            <a href="https://github.com/GeoWerkstatt/interlis-check-service/" title="Link zum Interlis-Web-Check-Service Github repository" target="_blank" rel="noreferrer">
+              {clientSettings?.applicationName}
+            </a>
+            &nbsp;({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}),&nbsp;
+            <a href="https://www.interlis.ch/downloads/ilivalidator/" title="Link zum ilivalidator" target="_blank" rel="noreferrer">
+              ilivalidator
+            </a>
+            &nbsp;({clientSettings?.ilivalidatorVersion})</div>
+        <div className='footer-icons'>
           <a href="https://interlis.ch/" title="Link zu interlis" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={interlisLogo} alt="Interlis Logo" />
-          </a>
-          <a href="https://github.com/GeoWerkstatt/interlis-check-service" title="Link zum github reporsitory" target="_blank" rel="noreferrer">
-            <img className="footer-icon" src={githubLogo} alt="GitHub Logo" />
           </a>
           <a href="https://plugins.qgis.org/plugins/xtflog_checker/" title="Link zum QGIS Plugin XTFLog Checker" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={qgisLogo} alt="QGIS Logo" />
           </a>
-          <a href="https://www.swissmadesoftware.org/" title="Link zu Swiss Made Software" target="_blank" rel="noreferrer">
-            <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Made Software Logo" />
+          <a href="https://www.swissmadesoftware.org/en/home/swiss-hosting.html" title="Link zu Swiss Hosting" target="_blank" rel="noreferrer">
+            <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
           </a>
         </div>
       </footer>
