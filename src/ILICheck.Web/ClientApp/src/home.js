@@ -13,7 +13,7 @@ export const Home = props => {
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
 
-  const logUploadLogMessages = () => updateLog(`${fileToCheck.name} wird hochgeladen...`, { disableUploadLogs: false });
+  const logUploadLogMessages = () => updateLog(`${fileToCheck.name} hochladen...`, { disableUploadLogs: false });
   const setIntervalImmediately = (func, interval) => { func(); return setInterval(func, interval); }
 
   // Reset log and abort upload on file change
@@ -38,11 +38,12 @@ export const Home = props => {
           downloadAvailable =true;
           className = "valid"
           text = "Keine Fehler!"
-          updateLog(`Alles nach Vorschrift, der ${clientSettings?.applicationName} hat nichts zu beanstanden!`);
+          updateLog('Die Daten sind modellkonform!');
         }
         if(validationResult === "error"|| validationResult === "aborted"){
           className = "errors"
           text = "Fehler!"
+          updateLog('Die Daten sind nicht modellkonform! Für Fehlermeldungen siehe XTF-Log-Datei.');
           if(validationResult === "error"){
             downloadAvailable =true;
           }

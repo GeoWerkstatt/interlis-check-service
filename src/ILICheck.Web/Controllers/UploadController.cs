@@ -90,7 +90,7 @@ namespace ILICheck.Web.Controllers
                     await Task.Run(async () =>
                     {
                         var unzipTask = UnzipFileAsync(UploadFilePath, validationTokenSource, connectionId);
-                        await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei wird entzipped...");
+                        await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei entpacken...");
                         if (unzipTask.IsFaulted) throw unzipTask.Exception;
                     }, validationTokenSource.Token);
                 }
