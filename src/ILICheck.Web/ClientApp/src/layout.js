@@ -105,8 +105,8 @@ export const Layout = props => {
           <a href="https://plugins.qgis.org/plugins/xtflog_checker/" title="Link zum QGIS Plugin XTFLog Checker" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={qgisLogo} alt="QGIS Logo" />
           </a>
-          <a href="https://www.swissmadesoftware.org/" title="Link zu Swiss Made Software" target="_blank" rel="noreferrer">
-            <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Made Software Logo" />
+          <a href="https://www.swissmadesoftware.org/en/home/swiss-hosting.html" title="Link zu Swiss Hosting" target="_blank" rel="noreferrer">
+            <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
           </a>
         </div>
       </footer>
