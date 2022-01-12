@@ -1,7 +1,6 @@
 import './app.css';
 import React, { useState, useEffect } from 'react';
 import swissMadeSwissHosted from './img/sms-sh.png';
-import githubLogo from './img/github.png';
 import qgisLogo from './img/qgis.png';
 import interlisLogo from './img/interlis.svg'
 import Home from './home';
@@ -95,9 +94,6 @@ export const Layout = props => {
         <div className="flex-icons">
           <a href="https://interlis.ch/" title="Link zu interlis" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={interlisLogo} alt="Interlis Logo" />
-          </a>
-          <a href="https://github.com/GeoWerkstatt/interlis-check-service" title="Link zum github reporsitory" target="_blank" rel="noreferrer">
-            <img className="footer-icon" src={githubLogo} alt="GitHub Logo" />
           </a>
           <a href="https://plugins.qgis.org/plugins/xtflog_checker/" title="Link zum QGIS Plugin XTFLog Checker" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={qgisLogo} alt="QGIS Logo" />
