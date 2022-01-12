@@ -28,6 +28,8 @@ header a {
 .app-logo {
   max-height: 200px;
   max-width: 650px;
+  width: 95%;
+  height: auto;
   padding: 0px;
   margin-bottom: 5px;
   flex: 0;
@@ -53,33 +55,25 @@ header {
   padding: 30px;
 }
 
-.subtitle {
+.app-subtitle {
   font-family: "Dosis", sans-serif;
-  font-size: 15px;
   color: #007cc3;
-}
-
-.flex-item {
-  flex-grow: 1;
-  text-align: left;
+  font-weight: 100;
+  font-size: 1rem;
+  margin-bottom: 4rem;
 }
 
 .version-info {
-  display: flex;
-  align-items: center;
-  flex-grow: 100;
-  margin-left: 20px;
-  color: #acc4db;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.75em;
+  flex: 0 0 auto;
+  color: #c9e2fa;
+  min-width: 500px;
 }
 
-.flex-icons {
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 10px;
-  padding-top: 10px;
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
+.version-info a {
+  color: #c9e2fa;
 }
 
 /************ Protokoll ************/
@@ -126,6 +120,11 @@ input {
   color: black;
 }
 
+.dropzone-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 .dropzone-text-disabled {
   color: #7c7c7c !important;
 }
@@ -152,13 +151,11 @@ input {
 }
 
 .spinner {
-  position: fixed;
-  vertical-align: top;
-  margin-left: -4rem;
   margin-top: 1rem;
+  align-self: center;
 }
 
-/************ Title and logo ************/
+/************ Title ************/
 
 .title-wrapper {
   display: flex;
@@ -174,6 +171,7 @@ input {
     margin-top: 12vh;
   }
   .dropzone {
+    min-height: 12vh !important;
     margin-top: 3vh;
     font-size: 1rem;
   }
@@ -190,13 +188,31 @@ input {
   .app-logo {
     max-height: 200px;
   }
+
+  .footer-icons {
+    display: flex;
+    justify-content: flex-end;
+    min-width: 500px;
+  }
+
+  .footer-links {
+    min-width: 500px;
+  }
 }
 
+@media screen and (max-width: 1600px) {
+  .footer-icons {
+    display: flex;
+    justify-content: center;
+    min-width: 500px;
+  }
+}
 @media screen and (max-width: 1200px) {
   .title-wrapper {
     margin-top: 12vh;
   }
   .dropzone {
+    min-height: 12vh !important;
     margin-top: 3vh;
     font-size: 1rem;
   }
@@ -218,6 +234,7 @@ input {
     margin-top: 5vh;
   }
   .dropzone {
+    min-height: 10vh !important;
     margin-top: 1vh;
     font-size: 0.8rem;
   }
@@ -229,6 +246,15 @@ input {
   }
   .app-logo {
     max-height: 100px;
+  }
+  .footer-icons {
+    min-width: 0px;
+  }
+  .version-info {
+    min-width: 0px;
+  }
+  .footer-links {
+    min-width: 0px;
   }
 }
 
@@ -246,11 +272,12 @@ input {
 }
 
 .check-button {
+  font-family: "Dosis", sans-serif;
   border: none;
   background-color: #007cc3;
   border-color: #007cc3;
-  margin-left: 15px;
   vertical-align: baseline;
+  margin-top: 1rem;
 }
 
 .check-button:disabled {
@@ -264,9 +291,11 @@ input {
 }
 
 .invisible-check-button {
-  visibility: hidden;
-  margin-left: 15px;
-  vertical-align: baseline;
+  display: none;
+}
+
+.added-margin {
+  margin-top: 2rem;
 }
 
 .download-icon {
@@ -333,9 +362,10 @@ footer {
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   flex-wrap: wrap;
   overflow: hidden;
-  align-items: baseline;
+  align-items: center;
 }
 
 .footer-style {
@@ -355,14 +385,10 @@ footer {
   color: #005485;
 }
 
-.version-tag {
-  margin-top: 2px;
-  font-size: 0.75em;
-}
-
 .footer-icon {
   height: 30px;
   margin-right: 1.5rem;
+  margin-left: 1.5rem;
 }
 
 /************ Modals ************/

@@ -94,12 +94,6 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
             <div className={dropZoneTextClass}>
                 {fileAvailable && <span onClick={removeFile}><MdCancel className='dropzone-icon' /></span>}
                 {dropZoneText}
-                {fileAvailable &&
-                    <Button className={fileToCheck && !testRunning ? "check-button" : "invisible-check-button"} onClick={checkFile}
-                        disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || testRunning}>
-                        Validieren
-                    </Button>}
-                {testRunning && <Spinner className="spinner" animation="border" />}
                 {!fileAvailable && <p className='drop-icon'><MdFileUpload /></p>}
                 {fileToCheck && nutzungsbestimmungenAvailable &&
                     <div onClick={(e) => e.stopPropagation()} className="terms-of-use">
@@ -111,6 +105,12 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
                             <span className="nutzungsbestimmungen-input">Ich akzeptiere die <Button variant="link" className="terms-of-use link" onClick={() => { showNutzungsbestimmungen() }}>Nutzungsbestimmungen</Button>.</span>
                         </label>
                     </div>}
+                {testRunning && <p><Spinner className="spinner" animation="border" /></p>}
+                {fileAvailable &&
+                    <p className = {!nutzungsbestimmungenAvailable && "added-margin"}><Button className={fileToCheck && !testRunning ? "check-button" : "invisible-check-button"} onClick={checkFile}
+                        disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || testRunning}>
+                        Validieren
+                    </Button></p>}
             </div>
         </Container>
     )
