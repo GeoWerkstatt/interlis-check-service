@@ -64,12 +64,9 @@ header {
 }
 
 .version-info {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-top: 5px;
   font-size: 0.75em;
-  flex: 0 0 auto;
   color: #c9e2fa;
-  min-width: 500px;
 }
 
 .version-info a {
@@ -192,11 +189,7 @@ input {
   .footer-icons {
     display: flex;
     justify-content: flex-end;
-    min-width: 500px;
-  }
-
-  .footer-links {
-    min-width: 500px;
+    flex-wrap: wrap;
   }
 }
 
@@ -204,7 +197,6 @@ input {
   .footer-icons {
     display: flex;
     justify-content: center;
-    min-width: 500px;
   }
 }
 @media screen and (max-width: 1200px) {
@@ -247,15 +239,6 @@ input {
   .app-logo {
     max-height: 100px;
   }
-  .footer-icons {
-    min-width: 0px;
-  }
-  .version-info {
-    min-width: 0px;
-  }
-  .footer-links {
-    min-width: 0px;
-  }
 }
 
 /************ Buttons & Icons ************/
@@ -266,8 +249,8 @@ input {
 }
 
 .btn {
-  margin-left: 10px;
-  margin-top: 10px;
+  /* margin-left: 10px;
+  margin-top: 10px; */
   font-size: 1.2rem;
 }
 
@@ -371,7 +354,7 @@ footer {
 .footer-style {
   font-family: "Dosis", sans-serif;
   background: #007cc3;
-  padding: 15px;
+  padding: 12px;
   font-stretch: expanded;
 }
 

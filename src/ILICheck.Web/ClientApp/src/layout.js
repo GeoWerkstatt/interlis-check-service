@@ -90,15 +90,6 @@ export const Layout = props => {
             IMPRESSUM
           </Button>}
         </div>
-        <div className="version-info">
-            <a href="https://github.com/GeoWerkstatt/interlis-check-service/" title="Link zum Interlis-Web-Check-Service Github repository" target="_blank" rel="noreferrer">
-              {clientSettings?.applicationName}
-            </a>
-            &nbsp;({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}),&nbsp;
-            <a href="https://www.interlis.ch/downloads/ilivalidator/" title="Link zum ilivalidator" target="_blank" rel="noreferrer">
-              ilivalidator
-            </a>
-            &nbsp;({clientSettings?.ilivalidatorVersion})</div>
         <div className='footer-icons'>
           <a href="https://interlis.ch/" title="Link zu interlis" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={interlisLogo} alt="Interlis Logo" />
@@ -109,6 +100,15 @@ export const Layout = props => {
           <a href="https://www.swissmadesoftware.org/en/home/swiss-hosting.html" title="Link zu Swiss Hosting" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
           </a>
+        <div className="version-info">
+            <a href="https://github.com/GeoWerkstatt/interlis-check-service/" title="Link zum Interlis-Web-Check-Service Github repository" target="_blank" rel="noreferrer">
+              {clientSettings?.applicationName || "INTERLIS Web-Check-Service"} 
+            </a>
+            &nbsp;({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}),&nbsp;
+            <a href="https://www.interlis.ch/downloads/ilivalidator/" title="Link zum ilivalidator" target="_blank" rel="noreferrer">
+              ilivalidator
+            </a>
+            &nbsp;({clientSettings?.ilivalidatorVersion})</div>
         </div>
       </footer>
       < ModalContent
