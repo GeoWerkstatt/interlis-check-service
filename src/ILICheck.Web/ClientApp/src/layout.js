@@ -101,9 +101,7 @@ export const Layout = props => {
             <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
           </a>
         <div className="version-info">
-            <a href="https://github.com/GeoWerkstatt/interlis-check-service/" title="Link zum Interlis-Web-Check-Service Github repository" target="_blank" rel="noreferrer">
-              {clientSettings?.applicationName || "INTERLIS Web-Check-Service"} 
-            </a>
+            {clientSettings?.applicationName || "INTERLIS Web-Check-Service"} 
             &nbsp;({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}),&nbsp;
             <a href="https://www.interlis.ch/downloads/ilivalidator/" title="Link zum ilivalidator" target="_blank" rel="noreferrer">
               ilivalidator
