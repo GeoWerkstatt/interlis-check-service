@@ -310,7 +310,7 @@ namespace ILICheck.Web.Controllers
             var xtfLogPath = uploadPath + "/ilivalidator_output.xtf";
 
             var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
-            var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} {filePath}";
+            var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} \"{filePath}\"";
 
             var startInfo = new ProcessStartInfo()
             {
