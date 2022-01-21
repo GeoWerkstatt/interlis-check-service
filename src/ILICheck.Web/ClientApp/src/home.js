@@ -40,13 +40,18 @@ export const Home = props => {
         text = "Keine Fehler!"
         updateLog('Die Daten sind modellkonform!');
       }
-      if (validationResult === "error" || validationResult === "aborted") {
+
+      if (validationResult === "error") {
+        downloadAvailable = true;
         className = "errors"
         text = "Fehler!"
         updateLog('Die Daten sind nicht modellkonform! Für Fehlermeldungen siehe XTF-Log-Datei.');
-        if (validationResult === "error") {
-          downloadAvailable = true;
-        }
+      }
+
+      if (validationResult === "aborted") {
+        className = "errors"
+        text = "Fehler!"
+        updateLog('Die Validierung wurde abgebrochen.');
       }
 
       setFileCheckStatus({

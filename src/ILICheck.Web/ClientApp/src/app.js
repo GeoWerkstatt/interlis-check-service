@@ -65,7 +65,7 @@ function App() {
     });
 
     connection.on('validationAborted', (message) => {
-      updateLog(message)
+      message && updateLog(message)
       setValidationResult("aborted")
     });
 
