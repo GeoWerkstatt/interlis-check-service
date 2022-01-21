@@ -15,10 +15,8 @@ function App() {
   const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
     if (disableUploadLogs) setUploadLogsEnabled(false);
     setLog(log => {
-       if (message === log[log.length -1]) 
-       { return log} 
-       else 
-      { return [...log, message]}
+       if (message === log[log.length -1]) return log
+       else return [...log, message]
     });
   }, []);
 
@@ -67,7 +65,7 @@ function App() {
     });
 
     connection.on('validationAborted', (message) => {
-      updateLog(message)
+      message && updateLog(message)
       setValidationResult("aborted")
     });
 
