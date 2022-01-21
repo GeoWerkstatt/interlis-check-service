@@ -53,7 +53,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
             setFileToCheck(acceptedFiles[0])
             setFileAvailable(true);
         }
-    }, [setFileToCheck])
+    }, [setFileToCheck]);
 
     const onDropRejected = useCallback(fileRejections => {
         setDropZoneTextClass("dropzone dropzone-text-error");
@@ -74,7 +74,7 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
         }
         setFileToCheck(null)
         setFileAvailable(false);
-    }, [setFileToCheck])
+    }, [setFileToCheck]);
 
     const removeFile = e => {
         e.stopPropagation()

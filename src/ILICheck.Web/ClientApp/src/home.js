@@ -20,6 +20,7 @@ export const Home = props => {
   useEffect(() => {
     resetLog();
     setTestRunning(false);
+    setUploadLogsEnabled(false);
     if (connection?.connectionId) {
       connection.stop();
     }
