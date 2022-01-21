@@ -27,38 +27,39 @@ export const Home = props => {
   }, [fileToCheck, resetLog])
 
 
-    useEffect(() => {
-      if(validationResult !== "none")
-      {
+  useEffect(() => {
+    if (validationResult !== "none") {
       let className;
       let text;
       let downloadAvailable = false;
       setTestRunning(false);
-        if(validationResult === "ok"){
-          downloadAvailable =true;
-          className = "valid"
-          text = "Keine Fehler!"
-          updateLog('Die Daten sind modellkonform!');
-        }
-        if(validationResult === "error"|| validationResult === "aborted"){
-          className = "errors"
-          text = "Fehler!"
-          updateLog('Die Daten sind nicht modellkonform! Für Fehlermeldungen siehe XTF-Log-Datei.');
-          if(validationResult === "error"){
-            downloadAvailable =true;
-          }
-        }
 
-        setFileCheckStatus({
-          text: text,
-          class: className,
-          testRunTime: new Date(),
-          fileName: fileToCheck? fileToCheck.name : "",
-          fileDownloadAvailable: downloadAvailable
-        })
-        setValidationResult("none")
+      if (validationResult === "ok") {
+        downloadAvailable = true;
+        className = "valid"
+        text = "Keine Fehler!"
+        updateLog('Die Daten sind modellkonform!');
+      }
+      if (validationResult === "error" || validationResult === "aborted") {
+        className = "errors"
+        text = "Fehler!"
+        updateLog('Die Daten sind nicht modellkonform! Für Fehlermeldungen siehe XTF-Log-Datei.');
+        if (validationResult === "error") {
+          downloadAvailable = true;
         }
-    }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings])
+      }
+
+      setFileCheckStatus({
+        text: text,
+        class: className,
+        testRunTime: new Date(),
+        fileName: fileToCheck ? fileToCheck.name : "",
+        fileDownloadAvailable: downloadAvailable
+      })
+
+      setValidationResult("none")
+    }
+  }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings])
 
   const checkFile = e => {
     e.stopPropagation();
@@ -104,12 +105,12 @@ export const Home = props => {
         {quickStartContent && <InfoCarousel content={quickStartContent} />}
         </div>
         <div className="dropzone-wrapper">
-          <FileDropzone 
-              setUploadLogsEnabled={setUploadLogsEnabled} 
-              setFileToCheck={setFileToCheck} 
-              connection={connection} 
-              fileToCheck={fileToCheck} 
-              nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable} 
+          <FileDropzone
+              setUploadLogsEnabled={setUploadLogsEnabled}
+              setFileToCheck={setFileToCheck}
+              connection={connection}
+              fileToCheck={fileToCheck}
+              nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
               checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
               checkFile={checkFile}
               testRunning={testRunning}
