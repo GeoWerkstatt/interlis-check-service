@@ -33,10 +33,8 @@ function App() {
     async function start() {
       try {
         await connection.start().then(() => {
-          if (connection.connectionId) {
-            connection.invoke('SendConnectionId', connection.connectionId);
-          }
-        }).catch((e) => console.log('Error: ', e));
+          if (connection.connectionId) connection.invoke('SendConnectionId', connection.connectionId);
+        });
       } catch (err) {
         console.log(err);
         setTimeout(start, 5000);
