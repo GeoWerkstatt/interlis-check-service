@@ -24,7 +24,7 @@ version: '3'
 services:
   web:
     # Docker image (NAME:TAG)
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v2
     #     Stable tag for a specific major version
     #
     #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1.2.3
@@ -45,7 +45,7 @@ services:
     #     Reflects the last commit on the default branch (main)
     #     May contain breaking changes and incompatibilities
     #     NOT RECOMMENDED!
-    image: ghcr.io/geowerkstatt/interlis-check-service:v1
+    image: ghcr.io/geowerkstatt/interlis-check-service:v2
     # Docker container restart behavior
     restart: unless-stopped
     # Mount paths as volumes
