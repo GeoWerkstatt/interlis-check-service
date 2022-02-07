@@ -37,13 +37,15 @@ ENV ILIVALIDATOR_HOME_DIR=/ilivalidator
 ENV ILIVALIDATOR_CONFIG_DIR=/config
 WORKDIR ${ILICHECK_APP_HOME_DIR}
 
-# Install missing packages (curl unzip jre sudo vim htop cron)
+# Install missing packages (git curl unzip jre sudo vim htop cron parse_yaml)
 RUN \
   DEBIAN_FRONTEND=noninteractive && \
   mkdir -p /usr/share/man/man1 /usr/share/man/man2 && \
   apt-get update && \
-  apt-get install -y curl unzip default-jre-headless sudo vim htop cron && \
-  rm -rf /var/lib/apt/lists/*
+  apt-get install -y git curl unzip default-jre-headless sudo vim htop cron && \
+  rm -rf /var/lib/apt/lists/* && \
+  git clone https://github.com/jasperes/bash-yaml.git && \
+  source bash-yaml/script/yaml.sh
 
 # Add non-root user and create our folders
 RUN \

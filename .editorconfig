@@ -46,7 +46,7 @@ end_of_line = lf
 [*.svg]
 indent_size = 2
 
-[*.css]
+[*.{css,html}]
 indent_size = 2
 
 [VERSION]

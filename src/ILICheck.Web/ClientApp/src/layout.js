@@ -19,7 +19,7 @@ export const Layout = props => {
   const [quickStartContent, setQuickStartContent] = useState(null);
 
   // Update HTML title property
-  useEffect(() => document.title = clientSettings?.applicationName, [clientSettings])
+  useEffect(() => document.title = `${clientSettings?.applicationName} - ${clientSettings?.applicationTagline}`, [clientSettings])
 
   // Fetch client settings
   useEffect(() => {
@@ -101,7 +101,7 @@ export const Layout = props => {
             <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
           </a>
         <div className="version-info">
-            {clientSettings?.applicationName || "INTERLIS Web-Check-Service"} 
+            {clientSettings?.applicationName}
             &nbsp;({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}),&nbsp;
             <a href="https://www.interlis.ch/downloads/ilivalidator/" title="Link zum ilivalidator" target="_blank" rel="noreferrer">
               ilivalidator

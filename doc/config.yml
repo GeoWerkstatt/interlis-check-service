@@ -1,0 +1,33 @@
+---
+# INTERLIS Web-Check-Service configuration
+
+# Title, links, sections and HTML meta tags can be configured in a config.yml file using yaml format.
+# The config.yml file must be part of a mounted /web-assets volume when the Docker container gets fired up.
+
+app:
+  name: INTERLIS Web-Check-Service
+  tagline: Online-Validierung von INTERLIS Daten
+  logo: app.png # max-height: 200px, max-width: 650px
+  favicon: favicon.ico
+
+# Optional link to the vendors webpage
+# The link is only taken into account if there is a corresponding vendor logo defined.
+vendor:
+  link: https://www.geowerkstatt.ch/
+  logo: vendor.png # max-height: 70px, max-width: 200px
+
+# The following options dynamically create a menu item in the footer section
+imprint: impressum.md
+privacy: datenschutz.md
+guide: info-hilfe.md
+# Adding the following document means the user must agree to the terms prior validation
+terms-of-use: nutzungsbestimmungen.md
+quickstart: quickstart.txt # brief instructions, line-separated
+
+# Search Engine Optimization (SEO)
+html:
+  meta:
+    description: ""
+    keywords: ""
+    author: ""
+    robots: "index, follow"

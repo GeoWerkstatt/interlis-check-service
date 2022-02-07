@@ -21,6 +21,18 @@ curl https://downloads.interlis.ch/ilivalidator/ilivalidator-$ILIVALIDATOR_VERSI
   rm ilivalidator-$ILIVALIDATOR_VERSION.zip && \
   echo "done!" || exit 1
 
+# Read and setup custom web assets
+# Todo: Convert yaml config to env variables using parse_yaml
+# Uppercase env names, export each concatenated key
+parse_yaml config.yml ilicheck_ | && \
+  xargs -d '\n' -L 1 -I{} bash -c 'env=$(echo "{}"); key=${env%%=*}; echo export ${key^^}=${env#*=}'
+# export ILICHECK_APP_NAME=(INTERLIS Web-Check-Service)
+# export ILICHECK_APP_TAGLINE=(Online-Validierung von INTERLIS Daten)
+# export ILICHECK_APP_LOGO=(app.png)
+# export ILICHECK_APP_FAVICON=(favicon.ico)
+# export ILICHECK_VENDOR_LINK=(https://www.geowerkstatt.ch/)
+# export ILICHECK_VENDOR_LOGO=(vendor.png)
+
 # Copy custom web assets to the web app public folder
 [[ "$(ls -A $ILICHECK_WEB_ASSETS_DIR)" ]] && \
   echo -n "Copy custom web assets ..." && \
