@@ -27,6 +27,7 @@ namespace ILICheck.Web.Controllers
                 applicationVersion = Environment.GetEnvironmentVariable("ILICHECK_APP_VERSION", EnvironmentVariableTarget.Process) ?? "undefined",
                 vendorLink = Environment.GetEnvironmentVariable("CUSTOM_VENDOR_LINK", EnvironmentVariableTarget.Process),
                 ilivalidatorVersion = Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION", EnvironmentVariableTarget.Process) ?? "undefined",
+                acceptedFileTypes = ".xtf, .xml, .zip",
             });
         }
     }
