@@ -3,23 +3,28 @@ set -e
 
 [[ $# -ne 0 ]] && \
   transfer_file_name=${@: -1} && \
-  options=${@%"$transfer_file_name"}
+  options=${@%"$transfer_file_name"} && \
+  is_gpkg=$([[ $transfer_file_name == *.gpkg ]] && echo true || echo false )
 
 proxy_port=$(echo $PROXY | grep -Eo '[0-9]+' | tail -1)
 proxy_host=${PROXY%":$(echo ${PROXY##*:})"} # remove port
 proxy_host=${proxy_host#*://} # remove protocol
 
-
-[[ -n $ILIVALIDATOR_CONFIG_NAME ]] && options+=" --config $ILIVALIDATOR_CONFIG_DIR/$ILIVALIDATOR_CONFIG_NAME"
+[[ -n $ILIVALIDATOR_CONFIG_NAME ]] && [[ is_gpkg = false ]] && options+=" --config $ILITOOLS_CONFIG_DIR/$ILIVALIDATOR_CONFIG_NAME"
 [[ -n $ILIVALIDATOR_MODEL_DIR ]] && options+=" --modeldir $ILIVALIDATOR_MODEL_DIR"
 [[ -n $proxy_host ]] && options+=" --proxy $proxy_host"
 [[ -n $proxy_port ]] && options+=" --proxyPort $proxy_port"
 [[ $ILIVALIDATOR_ENABLE_TRACE = true ]] && options+=" --trace"
 
-
 # Print executed commands to the Docker container log output
 exec {BASH_XTRACEFD}> >(sudo tee /proc/1/fd/2)
-set -x #echo on
 
-# Execute ilivalidator with the given options
-java -jar $ILIVALIDATOR_HOME_DIR/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar $options "$transfer_file_name"
+# Execute ilivalidator/ili2gpkg with the given options
+if [[ $ENABLE_GPKG_VALIDATION = true && $is_gpkg = true ]]
+then
+  set -x #echo on
+  java -jar $ILITOOLS_HOME_DIR/ili2gpkg/$ILI2GPKG_VERSION/ili2gpkg-$ILI2GPKG_VERSION.jar --validate $options --dbfile "$transfer_file_name"
+else
+  set -x #echo on
+  java -jar $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar $options "$transfer_file_name"
+fi

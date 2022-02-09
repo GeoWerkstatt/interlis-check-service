@@ -9,17 +9,29 @@ set -e
   HTTPS_PROXY=$PROXY
 
 # Set default values (if not specified in docker-compose)
-ILIVALIDATOR_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ilivalidator --silent | grep -Po '(?<=ilivalidator-)\d+.\d+.\d+' | head -n 1)
-export ILIVALIDATOR_VERSION=${ILIVALIDATOR_VERSION:-$ILIVALIDATOR_LATEST_VERSION}
 export ILIVALIDATOR_MODEL_DIR=${ILIVALIDATOR_MODEL_DIR:-http://models.interlis.ch/}
 export DELETE_TRANSFER_FILES=${DELETE_TRANSFER_FILES:-false}
 
-# Download and configure ilivalidator
-echo -n "Download and configure ilivalidator-$ILIVALIDATOR_VERSION ..."
-curl https://downloads.interlis.ch/ilivalidator/ilivalidator-$ILIVALIDATOR_VERSION.zip -LO --silent --show-error && \
-  unzip -o -q ilivalidator-$ILIVALIDATOR_VERSION.zip -d $ILIVALIDATOR_HOME_DIR/$ILIVALIDATOR_VERSION && \
-  rm ilivalidator-$ILIVALIDATOR_VERSION.zip && \
-  echo "done!" || exit 1
+# Download and configure ilivalidator and optional ili2pgkg
+download_and_configure_ilitool () {
+  ilitool=$1
+  version=$2
+  installDir=$3/$ilitool/$version
+  echo -n "Download and configure $ilitool-$version ..."
+  curl https://downloads.interlis.ch/$ilitool/$ilitool-$version.zip -LO --silent --show-error && \
+    mkdir -p $installDir && unzip -o -q $ilitool-$version.zip -d $installDir && \
+    rm $ilitool-$version.zip && \
+    echo "done!" || exit 1
+}
+
+ILIVALIDATOR_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ilivalidator --silent | grep -Po '(?<=ilivalidator-)\d+.\d+.\d+' | head -n 1)
+export ILIVALIDATOR_VERSION=${ILIVALIDATOR_VERSION:-$ILIVALIDATOR_LATEST_VERSION}
+download_and_configure_ilitool ilivalidator $ILIVALIDATOR_VERSION $ILITOOLS_HOME_DIR
+
+[[ $ENABLE_GPKG_VALIDATION = true ]] && \
+  ILI2GPKG_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ili2db --silent | grep -Po '(?<=ili2gpkg-)\d+.\d+.\d+' | head -n 1) && \
+  export ILI2GPKG_VERSION=${ILI2GPKG_VERSION:-$ILI2GPKG_LATEST_VERSION} && \
+  download_and_configure_ilitool ili2gpkg $ILI2GPKG_VERSION $ILITOOLS_HOME_DIR
 
 # Copy custom web assets to the web app public folder
 [[ "$(ls -A $ILICHECK_WEB_ASSETS_DIR)" ]] && \
@@ -39,8 +51,8 @@ echo -n "Fix permissions for mounted volumes ..." && \
   chown -R abc:abc $ILICHECK_APP_LOG_DIR && \
   chown -R abc:abc $ILICHECK_UPLOADS_DIR && \
   chown -R abc:abc $ILICHECK_WEB_ASSETS_DIR && \
-  chown -R abc:abc $ILIVALIDATOR_HOME_DIR && \
-  chown -R abc:abc $ILIVALIDATOR_CONFIG_DIR && \
+  chown -R abc:abc $ILITOOLS_HOME_DIR && \
+  chown -R abc:abc $ILITOOLS_CONFIG_DIR && \
   echo "done!"
 
 # Export current environment for all users and cron jobs
@@ -60,6 +72,7 @@ ilicheck version:                 $ILICHECK_APP_VERSION
 delete transfer files:            $([[ $DELETE_TRANSFER_FILES = true ]] && echo enabled || echo disabled)
 transfer and log data retention:  $([[ -n $TRANSFER_AND_LOG_DATA_RETENTION ]] && echo $TRANSFER_AND_LOG_DATA_RETENTION || echo unset)
 ilivalidator version:             $ILIVALIDATOR_VERSION `[[ $ILIVALIDATOR_VERSION != $ILIVALIDATOR_LATEST_VERSION ]] && echo "(new version $ILIVALIDATOR_LATEST_VERSION available!)"`
+ili2gpkg version:                 $([[ $ENABLE_GPKG_VALIDATION = false ]] && echo disabled || echo $ILI2GPKG_VERSION `[[ $ILI2GPKG_VERSION != $ILI2GPKG_LATEST_VERSION ]] && echo "(new version $ILI2GPKG_LATEST_VERSION available!)"`)
 ilivalidator config file name:    $([[ -n $ILIVALIDATOR_CONFIG_NAME ]] && echo $ILIVALIDATOR_CONFIG_NAME || echo disabled)
 ilivalidator model repositories:  $ILIVALIDATOR_MODEL_DIR
 ilivalidator trace messages:      $([[ $ILIVALIDATOR_ENABLE_TRACE = true ]] && echo enabled || echo disabled)
