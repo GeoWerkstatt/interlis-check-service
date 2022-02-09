@@ -40,7 +40,7 @@ namespace ILICheck.Web.Controllers
             this.configuration = configuration;
 
             validationTokenSource = new CancellationTokenSource();
-            signalRConnectionHelper.Disconnected += SignalRConnectionDisconnected;
+            this.signalRConnectionHelper.Disconnected += SignalRConnectionDisconnected;
         }
 
         /// <summary>
