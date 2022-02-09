@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     # Docker image (NAME:TAG)
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v2
     #     Stable tag for a specific major version
     #
     #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1.2.3
@@ -44,10 +44,23 @@ services:
     #
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
+    #
+    #   - /path/to/web-assets:/web-assets
+    #     Folder containing optional custom web assets
+    #     examples: - favicon.ico
+    #               - app.png (max-height: 200px, max-width: 650px)
+    #               - vendor.png (max-height: 70px, max-width: 200px)
+    #               - impressum.md (imprint as Markdown-formatted document)
+    #               - datenschutz.md (privacy statement as Markdown-formatted document)
+    #               - info-hilfe.md (operating instructions as Markdown-formatted document)
+    #               - nutzungsbestimmungen.md (terms of use as Markdown-formatted document)
+    #                 Adding this document means the user must agree to the terms prior validation
+    #               - quickstart.txt (line-separated brief instructions as plain text document)
     volumes:
       - ./src/ILICheck.Web/Logs:/logs
       - ./src/ILICheck.Web/Uploads:/uploads
       - ./src/ILICheck.Web/Config:/config
+      - ./src/ILICheck.Web/Web-Assets:/web-assets
     # Add environment variables
     #
     # environment:
@@ -104,6 +117,14 @@ services:
     #
     #   - NO_PROXY=host.example.com,10.1.0.0/16
     #     Optional, Specifies URLs that should be excluded from proxying
+    #
+    #   - CUSTOM_APP_NAME=ilicop
+    #     Optional custom application name
+    #     Default INTERLIS Web-Check-Service
+    #
+    #   - CUSTOM_VENDOR_LINK=https://www.example.com
+    #     Optional link to the vendors webpage
+    #     The link is only taken into account if there is a corresponding vendor.png
     environment:
       - PUID=1000
       - PGID=1000

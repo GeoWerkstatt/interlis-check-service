@@ -22,4 +22,4 @@ exec {BASH_XTRACEFD}> >(sudo tee /proc/1/fd/2)
 set -x #echo on
 
 # Execute ilivalidator with the given options
-java -jar $ILIVALIDATOR_HOME_DIR/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar $OPTIONS $TRANSFER_FILE_NAME
+java -jar $ILIVALIDATOR_HOME_DIR/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar $OPTIONS "$TRANSFER_FILE_NAME"

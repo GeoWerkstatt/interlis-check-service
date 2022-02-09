@@ -90,7 +90,7 @@ namespace ILICheck.Web.Controllers
                     await Task.Run(async () =>
                     {
                         var unzipTask = UnzipFileAsync(UploadFilePath, validationTokenSource, connectionId);
-                        await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei wird entzipped...");
+                        await DoTaskWhileSendingUpdatesAsync(unzipTask, connectionId, "Datei entpacken...");
                         if (unzipTask.IsFaulted) throw unzipTask.Exception;
                     }, validationTokenSource.Token);
                 }
@@ -310,7 +310,7 @@ namespace ILICheck.Web.Controllers
             var xtfLogPath = uploadPath + "/ilivalidator_output.xtf";
 
             var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
-            var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} {filePath}";
+            var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} \"{filePath}\"";
 
             var startInfo = new ProcessStartInfo()
             {
@@ -330,12 +330,12 @@ namespace ILICheck.Web.Controllers
             if (process.ExitCode != 0)
             {
                 LogInfo("The ilivalidator found errors in the file. Validation failed.");
-                await hubContext.Clients.Client(connectionId).SendAsync("validatedWithErrors", "Der Ilivalidator hat Fehler in der Datei gefunden.");
+                await hubContext.Clients.Client(connectionId).SendAsync("validatedWithErrors", "Der ilivalidator hat Fehler in der Datei gefunden.");
             }
             else
             {
                 LogInfo("The ilivalidator found no errors in the file. Validation successfull!");
-                await hubContext.Clients.Client(connectionId).SendAsync("validatedWithoutErrors", "Der Ilivalidator hat keine Fehler in der Datei gefunden.");
+                await hubContext.Clients.Client(connectionId).SendAsync("validatedWithoutErrors", "Der ilivalidator hat keine Fehler in der Datei gefunden.");
             }
 
             LogInfo($"Validation completed: {DateTime.Now}");

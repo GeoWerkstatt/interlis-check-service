@@ -1,0 +1,419 @@
+/************ Base Layout ************/
+body {
+  text-align: center;
+  background: #eaeff27a;
+}
+
+.app {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  min-height: 72vh;
+  flex: 1 0 auto;
+}
+
+main a {
+  color: #007cc3;
+}
+
+header a {
+  color: #007cc3;
+  text-decoration: none;
+}
+
+.app-logo {
+  max-height: 200px;
+  max-width: 650px;
+  width: 95%;
+  height: auto;
+  padding: 0px;
+  margin-bottom: 5px;
+  flex: 0;
+}
+
+.vendor-logo:hover {
+  -webkit-transform: scale(1.05);
+  transform: scale(1.05);
+}
+
+header {
+  justify-content: space-between;
+  display: flex;
+  padding-left: 35px;
+  padding-right: 35px;
+  padding-top: 20px;
+}
+
+.app-title {
+  font-family: "Dosis", sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  padding: 30px;
+}
+
+.app-subtitle {
+  font-family: "Dosis", sans-serif;
+  color: #007cc3;
+  font-weight: 100;
+  font-size: 1rem;
+  margin-bottom: 4rem;
+}
+
+.version-info {
+  margin-top: 5px;
+  font-size: 0.75em;
+  color: #c9e2fa;
+}
+
+.version-info a {
+  color: #c9e2fa;
+}
+
+/************ Protokoll ************/
+
+.protokoll {
+  overflow-y: auto;
+  text-align: left;
+}
+
+.protokoll-card {
+  color: black;
+  margin-top: 30px;
+  max-width: 95vw;
+}
+
+.card-body {
+  text-align: left;
+}
+
+/************ Carousel ************/
+
+.carousel {
+  color: rgb(111, 111, 111);
+  width: 100%;
+  font-size: 20px;
+  margin-bottom: 1rem;
+}
+
+.carousel-inner {
+  padding-right: 50px;
+  padding-left: 50px;
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+  filter: invert(100%);
+}
+
+/************ Dropzone ************/
+
+input {
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+}
+
+.dropzone-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.dropzone-text-disabled {
+  color: #7c7c7c !important;
+}
+
+.dropzone-text-file {
+  color: #313131 !important;
+}
+
+.dropzone-text-error {
+  color: #c10026 !important;
+  border-color: #c10026 !important;
+}
+
+.dropzone-icon {
+  margin-right: 10px;
+}
+
+.nutzungsbestimmungen-input {
+  font-size: 0.8rem;
+}
+
+.drop-icon {
+  font-size: 35px;
+}
+
+.spinner {
+  margin-top: 1rem;
+  align-self: center;
+}
+
+/************ Title ************/
+
+.title-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+}
+
+/************ Media queries ************/
+
+@media screen and (max-width: 10000px) {
+  .title-wrapper {
+    margin-top: 12vh;
+  }
+  .dropzone {
+    min-height: 12vh !important;
+    margin-top: 3vh;
+    font-size: 1rem;
+  }
+  .carousel {
+    font-size: 20px;
+  }
+  .vendor-logo {
+    max-height: 70px;
+    max-width: 200px;
+  }
+  .protokoll {
+    height: 20vh;
+  }
+  .app-logo {
+    max-height: 200px;
+  }
+
+  .footer-icons {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  .footer-icons {
+    display: flex;
+    justify-content: center;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .title-wrapper {
+    margin-top: 12vh;
+  }
+  .dropzone {
+    min-height: 12vh !important;
+    margin-top: 3vh;
+    font-size: 1rem;
+  }
+  .carousel {
+    font-size: 18px;
+  }
+  .vendor-logo {
+    margin-left: 2rem;
+    max-height: 50px;
+    max-width: 150px;
+  }
+  .app-logo {
+    max-height: 150px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .title-wrapper {
+    margin-top: 5vh;
+  }
+  .dropzone {
+    min-height: 10vh !important;
+    margin-top: 1vh;
+    font-size: 0.8rem;
+  }
+  .carousel {
+    font-size: 14px;
+  }
+  .protokoll {
+    height: 10vh;
+  }
+  .app-logo {
+    max-height: 100px;
+  }
+}
+
+/************ Buttons & Icons ************/
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  font-size: 1.2rem;
+}
+
+.check-button {
+  font-family: "Dosis", sans-serif;
+  border: none;
+  background-color: #007cc3;
+  border-color: #007cc3;
+  vertical-align: baseline;
+  margin-top: 1rem;
+}
+
+.check-button:disabled {
+  background-color: #007cc396;
+  border-color: #007cc396;
+}
+
+.check-button:hover {
+  background-color: #005485;
+  border-color: #005485;
+}
+
+.invisible-check-button {
+  display: none;
+}
+
+.added-margin {
+  margin-top: 2rem;
+}
+
+.download-icon {
+  font-size: 30px;
+  margin-left: 10px;
+}
+
+.download-icon :hover {
+  color: #555;
+}
+
+/************ Check status ************/
+
+.valid {
+  color: #198754;
+}
+
+.errors {
+  color: #c10026;
+}
+
+/************ Tooltips ************/
+
+.icon-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.icon-tooltip .icon-tooltip-text {
+  font-size: 0.8rem;
+  visibility: hidden;
+  width: 260px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  margin-left: -145px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.icon-tooltip .icon-tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.icon-tooltip:hover .icon-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/************ Footer ************/
+footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  overflow: hidden;
+  align-items: center;
+}
+
+.footer-style {
+  font-family: "Dosis", sans-serif;
+  background: #007cc3;
+  padding: 12px;
+  font-stretch: expanded;
+}
+
+.footer-button {
+  color: white;
+  border: none;
+  text-decoration-line: none;
+}
+
+.footer-button:hover {
+  color: #005485;
+}
+
+.footer-icon {
+  height: 30px;
+  margin-right: 1.5rem;
+  margin-left: 1.5rem;
+}
+
+/************ Modals ************/
+
+.modal {
+  color: black;
+  font-size: 14px;
+  text-align: left;
+}
+
+.modal-content h1 {
+  padding-top: 0.25em;
+  font-size: 1.75rem;
+}
+
+.modal-content h2 {
+  padding-top: 0.3em;
+  font-size: 1.25rem;
+}
+
+.modal-content h3 {
+  padding-top: 0.25em;
+  font-size: 1rem;
+}
+
+.terms-of-use {
+  margin: 8px;
+  margin-left: 35px;
+}
+
+.terms-of-use button {
+  color: #007cc3;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: unset;
+  margin: unset;
+  vertical-align: unset;
+}
+
+.terms-of-use button:hover {
+  color: #005485;
+}
+
+.terms-of-use input {
+  margin-right: 8px;
+}

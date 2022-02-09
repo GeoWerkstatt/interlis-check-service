@@ -1,7 +1,7 @@
-import './App.css';
+import './app.css';
 import React, { useState, useEffect, useCallback } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import Layout from './Layout';
+import Layout from './layout';
 
 function App() {
   const [connection, setConnection] = useState(null);
@@ -14,7 +14,10 @@ function App() {
   const resetLog = useCallback(() => setLog([]), [setLog]);
   const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
     if (disableUploadLogs) setUploadLogsEnabled(false);
-    setLog(log => [...log, message]);
+    setLog(log => {
+       if (message === log[log.length -1]) return log
+       else return [...log, message]
+    });
   }, []);
 
   useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
@@ -30,10 +33,8 @@ function App() {
     async function start() {
       try {
         await connection.start().then(() => {
-          if (connection.connectionId) {
-            connection.invoke('SendConnectionId', connection.connectionId);
-          }
-        }).catch((e) => console.log('Error: ', e));
+          if (connection.connectionId) connection.invoke('SendConnectionId', connection.connectionId);
+        });
       } catch (err) {
         console.log(err);
         setTimeout(start, 5000);
@@ -62,7 +63,7 @@ function App() {
     });
 
     connection.on('validationAborted', (message) => {
-      updateLog(message)
+      message && updateLog(message)
       setValidationResult("aborted")
     });
 

@@ -21,6 +21,12 @@ curl https://downloads.interlis.ch/ilivalidator/ilivalidator-$ILIVALIDATOR_VERSI
   rm ilivalidator-$ILIVALIDATOR_VERSION.zip && \
   echo "done!" || exit 1
 
+# Copy custom web assets to the web app public folder
+[[ "$(ls -A $ILICHECK_WEB_ASSETS_DIR)" ]] && \
+  echo -n "Copy custom web assets ..." && \
+  cp -f $ILICHECK_WEB_ASSETS_DIR/* $ILICHECK_APP_HOME_DIR/ClientApp/build/ && \
+  echo "done!"
+
 # Use default user:group if no $PUID and/or $PGID is provided.
 groupmod -o -g ${PUID:-941} abc && \
   usermod -o -u ${PGID:-941} abc &> /dev/null && \
@@ -32,6 +38,7 @@ echo -n "Fix permissions for mounted volumes ..." && \
   chown -R abc:abc $ILICHECK_APP_HOME_DIR && \
   chown -R abc:abc $ILICHECK_APP_LOG_DIR && \
   chown -R abc:abc $ILICHECK_UPLOADS_DIR && \
+  chown -R abc:abc $ILICHECK_WEB_ASSETS_DIR && \
   chown -R abc:abc $ILIVALIDATOR_HOME_DIR && \
   chown -R abc:abc $ILIVALIDATOR_CONFIG_DIR && \
   echo "done!"
