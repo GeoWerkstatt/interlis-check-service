@@ -6,7 +6,6 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -25,7 +24,6 @@ namespace ILICheck.Web.Controllers
         private readonly SignalRConnectionHelper signalRConnectionHelper;
         private readonly ILogger<UploadController> applicationLogger;
         private readonly IConfiguration configuration;
-        private readonly IWebHostEnvironment environment;
         private readonly CancellationTokenSource validationTokenSource;
         private Serilog.ILogger sessionLogger;
 
@@ -34,13 +32,12 @@ namespace ILICheck.Web.Controllers
         public string UploadFolderPath { get; set; }
         public string UploadFilePath { get; set; }
 
-        public UploadController(IHubContext<SignalRHub> hubContext, SignalRConnectionHelper signalRConnectionHelper, ILogger<UploadController> applicationLogger, IConfiguration configuration, IWebHostEnvironment environment)
+        public UploadController(IHubContext<SignalRHub> hubContext, SignalRConnectionHelper signalRConnectionHelper, ILogger<UploadController> applicationLogger, IConfiguration configuration)
         {
             this.hubContext = hubContext;
             this.signalRConnectionHelper = signalRConnectionHelper;
             this.applicationLogger = applicationLogger;
             this.configuration = configuration;
-            this.environment = environment;
 
             validationTokenSource = new CancellationTokenSource();
             signalRConnectionHelper.Disconnected += SignalRConnectionDisconnected;
