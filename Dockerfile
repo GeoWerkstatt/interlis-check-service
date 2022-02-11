@@ -1,10 +1,10 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 ARG VERSION
 ARG REVISION
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 
 # Restore dependencies and tools
@@ -21,7 +21,7 @@ RUN dotnet publish "src/ILICheck.Web/ILICheck.Web.csproj" \
   -p:SourceRevisionId=${REVISION} \
   -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 ARG VERSION
 ARG REVISION
 ENV HOME=/app
