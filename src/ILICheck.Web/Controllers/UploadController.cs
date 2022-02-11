@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Serilog;
 using SignalR.Hubs;
+using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -26,6 +27,9 @@ namespace ILICheck.Web.Controllers
         private readonly IConfiguration configuration;
         private readonly CancellationTokenSource validationTokenSource;
         private Serilog.ILogger sessionLogger;
+        private string gpkgModels;
+        private bool isGpkg;
+        private bool isZipFile;
 
         public string CurrentConnectionId { get; set; }
 
@@ -82,7 +86,7 @@ namespace ILICheck.Web.Controllers
         {
             try
             {
-                if (Path.GetExtension(UploadFilePath) == ".zip")
+                if (isZipFile)
                 {
                     await Task.Run(async () =>
                     {
@@ -92,12 +96,25 @@ namespace ILICheck.Web.Controllers
                     }, validationTokenSource.Token);
                 }
 
-                await Task.Run(async () =>
+                if (!isGpkg)
                 {
-                    var parseTask = ParseXmlAsync(UploadFilePath, validationTokenSource, connectionId);
-                    await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
-                    if (parseTask.IsFaulted) throw parseTask.Exception;
-                }, validationTokenSource.Token);
+                    await Task.Run(async () =>
+                    {
+                        var parseTask = ParseXmlAsync(UploadFilePath, validationTokenSource, connectionId);
+                        await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
+                        if (parseTask.IsFaulted) throw parseTask.Exception;
+                    }, validationTokenSource.Token);
+                }
+
+                if (isGpkg)
+                {
+                    await Task.Run(async () =>
+                    {
+                        var readModelNamesTask = ReadGpkgModelNamesAsync(UploadFilePath, validationTokenSource, connectionId);
+                        await DoTaskWhileSendingUpdatesAsync(readModelNamesTask, connectionId, "Dateistruktur validieren...");
+                        if (readModelNamesTask.IsFaulted) throw readModelNamesTask.Exception;
+                    }, validationTokenSource.Token);
+                }
 
                 await Task.Run(async () =>
                 {
@@ -112,7 +129,7 @@ namespace ILICheck.Web.Controllers
                 await hubContext.Clients.Client(connectionId).SendAsync("validationAborted");
             }
 
-            if (deleteXtfTransferFile || validationTokenSource.Token.IsCancellationRequested)
+            if (deleteXtfTransferFile || validationTokenSource.Token.IsCancellationRequested || isGpkg)
             {
                 if (!string.IsNullOrEmpty(UploadFilePath))
                 {
@@ -186,6 +203,9 @@ namespace ILICheck.Web.Controllers
                     {
                         await section.Body.CopyToAsync(targetStream);
                     }
+
+                    isZipFile = Path.GetExtension(UploadFilePath) == ".zip";
+                    isGpkg = Path.GetExtension(UploadFilePath) == ".gpkg";
 
                     return Ok();
                 }
@@ -296,6 +316,25 @@ namespace ILICheck.Web.Controllers
             return;
         }
 
+        private async Task ReadGpkgModelNamesAsync(string filePath, CancellationTokenSource mainCts, string connectionId)
+        {
+            LogInfo("Read model names from GeoPackage");
+            try
+            {
+                var connectionString = $"Data Source={filePath}";
+                gpkgModels = ReadGpkgModelNameEntries(connectionString).CleanupGpkgModelNames(configuration);
+            }
+            catch (Exception e)
+            {
+                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Fehler beim Auslesen der Modellnamen aus dem GeoPackage.");
+                LogInfo($"Upload aborted, could not read model names from the given GeoPackage SQLite database: {e.Message}");
+                mainCts.Cancel();
+                return;
+            }
+
+            return;
+        }
+
         private async Task ValidateAsync(string connectionId)
         {
             LogInfo("Validating file");
@@ -307,12 +346,14 @@ namespace ILICheck.Web.Controllers
             var xtfLogPath = uploadPath + "/ilivalidator_output.xtf";
 
             var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
-            var command = $"ilivalidator --log {logPath} --xtflog {xtfLogPath} \"{filePath}\"";
+            var options = $"--log {logPath} --xtflog {xtfLogPath}";
+            if (isGpkg) options = $"{options} --models \"{gpkgModels}\"";
+            var command = $"{commandPrefix}ilivalidator {options} \"{filePath}\"";
 
             var startInfo = new ProcessStartInfo()
             {
                 FileName = configuration.GetShellExecutable(),
-                Arguments = $"{commandPrefix}{command}",
+                Arguments = command,
                 UseShellExecute = true,
             };
 
