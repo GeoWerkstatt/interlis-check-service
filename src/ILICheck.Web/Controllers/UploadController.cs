@@ -96,16 +96,6 @@ namespace ILICheck.Web.Controllers
                     }, validationTokenSource.Token);
                 }
 
-                if (!isGpkg)
-                {
-                    await Task.Run(async () =>
-                    {
-                        var parseTask = ParseXmlAsync(UploadFilePath, validationTokenSource, connectionId);
-                        await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
-                        if (parseTask.IsFaulted) throw parseTask.Exception;
-                    }, validationTokenSource.Token);
-                }
-
                 if (isGpkg)
                 {
                     await Task.Run(async () =>
@@ -113,6 +103,15 @@ namespace ILICheck.Web.Controllers
                         var readModelNamesTask = ReadGpkgModelNamesAsync(UploadFilePath, validationTokenSource, connectionId);
                         await DoTaskWhileSendingUpdatesAsync(readModelNamesTask, connectionId, "Dateistruktur validieren...");
                         if (readModelNamesTask.IsFaulted) throw readModelNamesTask.Exception;
+                    }, validationTokenSource.Token);
+                }
+                else
+                {
+                    await Task.Run(async () =>
+                    {
+                        var parseTask = ParseXmlAsync(UploadFilePath, validationTokenSource, connectionId);
+                        await DoTaskWhileSendingUpdatesAsync(parseTask, connectionId, "Dateistruktur validieren...");
+                        if (parseTask.IsFaulted) throw parseTask.Exception;
                     }, validationTokenSource.Token);
                 }
 
@@ -278,14 +277,12 @@ namespace ILICheck.Web.Controllers
                 {
                     System.IO.File.Delete(zipFilePath);
                     UploadFilePath = unzippedFilePath;
-                    return;
                 }
                 else
                 {
                     await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Unbekannter Fehler.");
                     LogInfo("Upload aborted, unknown error.");
                     mainCts.Cancel();
-                    return;
                 }
             });
         }
@@ -310,10 +307,7 @@ namespace ILICheck.Web.Controllers
                 await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Datei hat keine gültige XML-Struktur.");
                 LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
                 mainCts.Cancel();
-                return;
             }
-
-            return;
         }
 
         private async Task ReadGpkgModelNamesAsync(string filePath, CancellationTokenSource mainCts, string connectionId)
@@ -329,10 +323,7 @@ namespace ILICheck.Web.Controllers
                 await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Fehler beim Auslesen der Modellnamen aus dem GeoPackage.");
                 LogInfo($"Upload aborted, could not read model names from the given GeoPackage SQLite database: {e.Message}");
                 mainCts.Cancel();
-                return;
             }
-
-            return;
         }
 
         private async Task ValidateAsync(string connectionId)
