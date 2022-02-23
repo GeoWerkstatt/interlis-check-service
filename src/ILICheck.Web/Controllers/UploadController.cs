@@ -101,7 +101,7 @@ namespace ILICheck.Web.Controllers
                     await Task.Run(async () =>
                     {
                         var readModelNamesTask = ReadGpkgModelNamesAsync(UploadFilePath, validationTokenSource, connectionId);
-                        await DoTaskWhileSendingUpdatesAsync(readModelNamesTask, connectionId, "Dateistruktur validieren...");
+                        await DoTaskWhileSendingUpdatesAsync(readModelNamesTask, connectionId, "Modelle auslesen...");
                         if (readModelNamesTask.IsFaulted) throw readModelNamesTask.Exception;
                     }, validationTokenSource.Token);
                 }
