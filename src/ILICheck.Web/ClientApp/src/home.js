@@ -122,6 +122,7 @@ export const Home = props => {
               testRunning={testRunning}
               setCheckedNutzungsbestimmungen = {setCheckedNutzungsbestimmungen}
               showNutzungsbestimmungen = {showNutzungsbestimmungen}
+              acceptedFileTypes = {clientSettings?.acceptedFileTypes}
               />
         </div>
       </Container>

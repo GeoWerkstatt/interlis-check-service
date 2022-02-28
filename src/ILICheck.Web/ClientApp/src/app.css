@@ -64,13 +64,7 @@ header {
 }
 
 .version-info {
-  margin-top: 5px;
-  font-size: 0.75em;
-  color: #c9e2fa;
-}
-
-.version-info a {
-  color: #c9e2fa;
+  visibility: hidden;
 }
 
 /************ Protokoll ************/

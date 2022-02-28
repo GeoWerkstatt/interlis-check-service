@@ -55,6 +55,11 @@ export const Layout = props => {
 
   return (
     <div className="app">
+      <div className="version-info">
+        <p>{clientSettings?.applicationName}{process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}</p>
+        <p>ilivalidator{clientSettings?.ilivalidatorVersion}</p>
+        <p>ili2gpkg{clientSettings?.ili2gpkgVersion}</p>
+      </div>
       <header>
         <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
           <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display = 'none' }} />
@@ -100,13 +105,6 @@ export const Layout = props => {
           <a href="https://www.swissmadesoftware.org/en/home/swiss-hosting.html" title="Link zu Swiss Hosting" target="_blank" rel="noreferrer">
             <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
           </a>
-        <div className="version-info">
-            {clientSettings?.applicationName || "INTERLIS Web-Check-Service"} 
-            &nbsp;({process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}),&nbsp;
-            <a href="https://www.interlis.ch/downloads/ilivalidator/" title="Link zum ilivalidator" target="_blank" rel="noreferrer">
-              ilivalidator
-            </a>
-            &nbsp;({clientSettings?.ilivalidatorVersion})</div>
         </div>
       </footer>
       < ModalContent

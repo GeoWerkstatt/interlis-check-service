@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MdCancel, MdFileUpload } from 'react-icons/md';
 import { Button, Spinner } from 'react-bootstrap';
@@ -32,10 +32,14 @@ const Container = styled.div`
   transition: border .24s ease-in-out;
 `;
 
-export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled, fileToCheck, nutzungsbestimmungenAvailable, checkedNutzungsbestimmungen, checkFile, testRunning, setCheckedNutzungsbestimmungen, showNutzungsbestimmungen }) => {
+export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled, fileToCheck, nutzungsbestimmungenAvailable, checkedNutzungsbestimmungen, checkFile, testRunning, setCheckedNutzungsbestimmungen, showNutzungsbestimmungen, acceptedFileTypes }) => {
     const [fileAvailable, setFileAvailable] = useState(false);
-    const [dropZoneText, setDropZoneText] = useState("Datei (.xtf, .zip) hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
+    const [dropZoneDefaultText, setDropZoneDefaultText] = useState();
+    const [dropZoneText, setDropZoneText] = useState(dropZoneDefaultText);
     const [dropZoneTextClass, setDropZoneTextClass] = useState("dropzone dropzone-text-disabled");
+
+    useEffect(() => setDropZoneDefaultText(`Datei (${acceptedFileTypes}) hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.`), [acceptedFileTypes]);
+    useEffect(() => setDropZoneText(dropZoneDefaultText), [dropZoneDefaultText]);
 
     const updateDropZoneClass = () => {
         if (!checkFile || (nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen)) {
@@ -61,16 +65,16 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
 
         switch (errorCode) {
             case "file-invalid-type":
-                setDropZoneText("Fehler: Nicht unterstütze Datei. Bitte wähle eine .xtf Datei aus.");
+                setDropZoneText(`Bitte wähle eine Datei (max. 200MB) mit folgender Dateiendung: ${acceptedFileTypes}`);
                 break;
             case "too-many-files":
-                setDropZoneText("Fehler: Es kann nur eine Datei aufs mal geprüft werden.");
+                setDropZoneText("Es kann nur eine Datei aufs Mal geprüft werden.");
                 break;
             case "file-too-large":
-                setDropZoneText("Fehler: Die ausgewählte Datei ist über 200MB gross. Bitte wähle eine kleinere Datei oder erstelle eine .zip Datei.");
+                setDropZoneText("Die ausgewählte Datei ist über 200MB gross. Bitte wähle eine kleinere Datei oder erstelle eine ZIP-Datei.");
                 break;
             default:
-                setDropZoneText("Fehler: Bitte wähle eine Datei des Typs .xtf oder .zip mit maximal 200MB aus.");
+                setDropZoneText(`Bitte wähle eine Datei (max. 200MB) mit folgender Dateiendung: ${acceptedFileTypes}`);
         }
         setFileToCheck(null)
         setFileAvailable(false);
@@ -82,11 +86,11 @@ export const FileDropzone = ({ setFileToCheck, connection, setUploadLogsEnabled,
         setUploadLogsEnabled(false);
         setFileToCheck(null);
         setFileAvailable(false);
-        setDropZoneText("Datei (.xtf, .zip) hier ablegen oder klicken um vom lokalen Dateisystem auszuwählen.");
+        setDropZoneText(dropZoneDefaultText);
         setDropZoneTextClass("dropzone dropzone-text-disabled");
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: ".xtf, .xml, .zip" })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDropAccepted, onDropRejected, maxFiles: 1, maxSize: 209715200, accept: acceptedFileTypes })
 
     return (
         <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>

@@ -108,8 +108,7 @@ services:
     #               - 1 year
     #
     #   - ILIVALIDATOR_VERSION=1.11.10
-    #     Optional, Default latest version available from
-    #     https://www.interlis.ch/downloads/ilivalidator
+    #     Optional, Default latest version available from https://interlis.ch/downloads/ilivalidator
     #
     #   - ILIVALIDATOR_CONFIG_NAME=Beispiel1.TOML
     #     Optional TOML config file name in mounted /config volume
@@ -120,6 +119,13 @@ services:
     #   - ILIVALIDATOR_MODEL_DIR=https://models.example.com;http://models.interlis.ch/
     #     Optional semicolon-separated list of repositories with ili-files
     #     Default http://models.interlis.ch/
+    #
+    #   - ENABLE_GPKG_VALIDATION=true
+    #     Optional, Default false
+    #
+    #   - ILI2GPKG_VERSION=4.7.0
+    #     Optional, Default latest version available from https://interlis.ch/downloads/ili2db
+    #     The ili2gpkg version is only taken into account if ENABLE_GPKG_VALIDATION is set to true
     #
     #   - PROXY=http://USER:PASSWORD@example.com:8080
     #     Optional, Configuring proxy settings for all apps in the container
