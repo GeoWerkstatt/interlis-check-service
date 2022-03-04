@@ -64,7 +64,7 @@ header {
 }
 
 .version-info {
-  visibility: hidden;
+  display: none;
 }
 
 /************ Protokoll ************/
