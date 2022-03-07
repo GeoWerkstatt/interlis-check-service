@@ -6,12 +6,13 @@ import Protokoll from './protokoll';
 import InfoCarousel from './infoCarousel';
 
 export const Home = props => {
-  const { connection, closedConnectionId, clientSettings, nutzungsbestimmungenAvailable, showNutzungsbestimmungen, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult } = props;
+  const { connection, closedConnectionId, clientSettings, nutzungsbestimmungenAvailable, showNutzungsbestimmungen, quickStartContent, log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled, validationResult, setValidationResult, setShowBannerContent} = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [fileCheckStatus, setFileCheckStatus] = useState({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
+  const [isFirstValidation, setIsFirstValidation] = useState(true);
 
   const logUploadLogMessages = () => updateLog(`${fileToCheck.name} hochladen...`, { disableUploadLogs: false });
   const setIntervalImmediately = (func, interval) => { func(); return setInterval(func, interval); }
@@ -27,6 +28,15 @@ export const Home = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, resetLog])
 
+  useEffect(() => {
+    if (testRunning && isFirstValidation)
+    {
+     setTimeout(()=>{
+       setShowBannerContent(true);
+       setIsFirstValidation(false);
+      }, 2000);
+    }
+  }, [testRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation])
 
   useEffect(() => {
     if (validationResult !== "none") {
