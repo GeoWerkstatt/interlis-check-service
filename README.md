@@ -68,7 +68,7 @@ services:
     #               - impressum.md (imprint as Markdown-formatted document)
     #               - datenschutz.md (privacy statement as Markdown-formatted document)
     #               - info-hilfe.md (operating instructions as Markdown-formatted document)
-    #               - banner.md (info banner appearing when the first validation starts, as Markdown-formatted document)
+    #               - banner.md (info banner appearing on first validation, as Markdown-formatted document)
     #               - nutzungsbestimmungen.md (terms of use as Markdown-formatted document)
     #                 Adding this document means the user must agree to the terms prior validation
     #               - quickstart.txt (line-separated brief instructions as plain text document)
