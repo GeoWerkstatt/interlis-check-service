@@ -431,10 +431,15 @@ footer {
   color: white;
 }
 
-.banner h3 {
+.banner p {
+  font-size: 1.3rem;
+}
+
+.banner h1 {
   flex-shrink: 0;
   padding-left: 15px;
   padding-right: 25px;
+  font-size: 2rem;
 }
 
 .banner .close-icon {
