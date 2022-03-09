@@ -48,7 +48,7 @@ export const Layout = props => {
     fetch('nutzungsbestimmungen.md')
       .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
       .then(text => setNutzungsbestimmungenContent(text));
-    
+
       fetch('banner.md')
       .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
       .then(text => setBannerContent(text));
@@ -85,8 +85,8 @@ export const Layout = props => {
           updateLog={updateLog}
           resetLog={resetLog}
           setUploadLogsInterval={setUploadLogsInterval}
-          setUploadLogsEnabled={setUploadLogsEnabled} 
-          setShowBannerContent ={setShowBannerContent}/>
+          setUploadLogsEnabled={setUploadLogsEnabled}
+          setShowBannerContent={setShowBannerContent}/>
       </main>
       <footer className="footer-style">
         <div className='footer-links'>
@@ -121,7 +121,7 @@ export const Layout = props => {
         content={modalContent}
         onHide={() => setShowModalContent(false)}
       />
-      {bannerContent && showBannerContent && < BannerContent
+      {bannerContent && showBannerContent && <BannerContent
         className="banner"
         content={bannerContent}
         onHide={() => setShowBannerContent(false)}
