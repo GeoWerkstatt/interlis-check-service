@@ -49,7 +49,7 @@ export const Layout = props => {
       .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
       .then(text => setNutzungsbestimmungenContent(text));
 
-      fetch('banner.md')
+    fetch('banner.md')
       .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
       .then(text => setBannerContent(text));
 
