@@ -4,12 +4,14 @@ import swissMadeSwissHosted from './img/sms-sh.png';
 import qgisLogo from './img/qgis.png';
 import interlisLogo from './img/interlis.svg'
 import Home from './home';
+import About from './about';
 import ModalContent from './modalContent';
 import { Button } from 'react-bootstrap';
 
 export const Layout = props => {
   const { connection, closedConnectionId, log, updateLog, resetLog, setUploadLogsInterval, validationResult, setValidationResult, setUploadLogsEnabled } = props;
   const [modalContent, setModalContent] = useState(false);
+  const [modalContentType, setModalContentType] = useState(null);
   const [showModalContent, setShowModalContent] = useState(false);
   const [clientSettings, setClientSettings] = useState(null);
   const [datenschutzContent, setDatenschutzContent] = useState(null);
@@ -17,6 +19,7 @@ export const Layout = props => {
   const [infoHilfeContent, setInfoHilfeContent] = useState(null);
   const [nutzungsbestimmungenContent, setNutzungsbestimmungenContent] = useState(null);
   const [quickStartContent, setQuickStartContent] = useState(null);
+  const [licenseInfo, setLicenseInfo] = useState(null);
 
   // Update HTML title property
   useEffect(() => document.title = clientSettings?.applicationName, [clientSettings])
@@ -49,17 +52,17 @@ export const Layout = props => {
     fetch('quickstart.txt')
       .then(res => res.headers.get('content-type')?.includes('text/plain') && res.text())
       .then(text => setQuickStartContent(text));
+
+    fetch('license.json')
+      .then(res => res.headers.get('content-type')?.includes('application/json') && res.json())
+      .then(json => setLicenseInfo(json));
   }, []);
 
-  const openModalContent = content => setModalContent(content) & setShowModalContent(true);
+  const openModalContent = (content, type) =>
+    setModalContent(content) & setModalContentType(type) & setShowModalContent(true);
 
   return (
     <div className="app">
-      <div className="version-info">
-        <p>{clientSettings?.applicationName}{clientSettings?.applicationVersion}</p>
-        <p>ilivalidator{clientSettings?.ilivalidatorVersion}</p>
-        <p>ili2gpkg{clientSettings?.ili2gpkgVersion}</p>
-      </div>
       <header>
         <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
           <img className="vendor-logo" src="/vendor.png" alt="Vendor Logo" onError={(e) => { e.target.style.display = 'none' }} />
@@ -72,7 +75,7 @@ export const Layout = props => {
           setValidationResult={setValidationResult}
           clientSettings={clientSettings}
           nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
-          showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent)}
+          showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent, 'markdown')}
           quickStartContent={quickStartContent}
           log={log}
           updateLog={updateLog}
@@ -81,19 +84,22 @@ export const Layout = props => {
           setUploadLogsEnabled={setUploadLogsEnabled} />
       </main>
       <footer className="footer-style">
-        <div className='footer-links'>
-          {infoHilfeContent && <Button variant="link" className="footer-button" onClick={() => openModalContent(infoHilfeContent)}>
+        <div>
+          {infoHilfeContent && <Button variant="link" className="footer-button" onClick={() => openModalContent(infoHilfeContent, 'markdown')}>
             INFO & HILFE
           </Button>}
-          {nutzungsbestimmungenContent && <Button variant="link" className="footer-button no-outline-on-focus" onClick={() => openModalContent(nutzungsbestimmungenContent)}>
+          {nutzungsbestimmungenContent && <Button variant="link" className="footer-button no-outline-on-focus" onClick={() => openModalContent(nutzungsbestimmungenContent, 'markdown')}>
             NUTZUNGSBESTIMMUNGEN
           </Button>}
-          {datenschutzContent && <Button variant="link" className="footer-button no-outline-on-focus" onClick={() => openModalContent(datenschutzContent)}>
+          {datenschutzContent && <Button variant="link" className="footer-button no-outline-on-focus" onClick={() => openModalContent(datenschutzContent, 'markdown')}>
             DATENSCHUTZ
           </Button>}
-          {impressumContent && <Button variant="link" className="footer-button" onClick={() => openModalContent(impressumContent)}>
+          {impressumContent && <Button variant="link" className="footer-button" onClick={() => openModalContent(impressumContent, 'markdown')}>
             IMPRESSUM
           </Button>}
+          <Button variant="link" className="footer-button" onClick={() => openModalContent(<About clientSettings={clientSettings} licenseInfo={licenseInfo} />, 'raw')}>
+            ABOUT
+          </Button>
         </div>
         <div className='footer-icons'>
           <a href="https://interlis.ch/" title="Link zu interlis" target="_blank" rel="noreferrer">
@@ -111,6 +117,7 @@ export const Layout = props => {
         className="modal"
         show={showModalContent}
         content={modalContent}
+        type={modalContentType}
         onHide={() => setShowModalContent(false)}
       />
     </div>

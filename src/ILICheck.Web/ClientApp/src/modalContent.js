@@ -1,13 +1,14 @@
-import { Modal, Button } from 'react-bootstrap';
 import ReactMarkdown from "react-markdown";
+import { Modal, Button } from 'react-bootstrap';
 
 export const ModalContent = props => {
-  const { content } = props;
+  const { content, type } = props;
 
   return (
     <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Body>
-        <ReactMarkdown linkTarget="_blank" children={content || ''} />
+        {type === 'markdown' && <ReactMarkdown linkTarget="_blank" children={content || ''} />}
+        {type === 'raw' && content}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-dark" onClick={props.onHide}>Schliessen</Button>

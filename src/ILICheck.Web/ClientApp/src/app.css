@@ -63,10 +63,6 @@ header {
   margin-bottom: 4rem;
 }
 
-.version-info {
-  display: none;
-}
-
 /************ Protokoll ************/
 
 .protokoll {
@@ -410,4 +406,12 @@ footer {
 
 .terms-of-use input {
   margin-right: 8px;
+}
+
+.about-licenses p {
+  margin-bottom: 0.4rem;
+}
+
+.about-licenses h3 {
+  padding-top: 1em;
 }
