@@ -56,7 +56,7 @@ export const Layout = props => {
   return (
     <div className="app">
       <div className="version-info">
-        <p>{clientSettings?.applicationName}{process.env.REACT_APP_VERSION ? 'v' + process.env.REACT_APP_VERSION + '+' : ''}{process.env.REACT_APP_REVISION ?? process.env.NODE_ENV}</p>
+        <p>{clientSettings?.applicationName}{clientSettings?.applicationVersion}</p>
         <p>ilivalidator{clientSettings?.ilivalidatorVersion}</p>
         <p>ili2gpkg{clientSettings?.ili2gpkgVersion}</p>
       </div>

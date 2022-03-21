@@ -14,7 +14,6 @@ RUN dotnet restore "src/ILICheck.Web/ILICheck.Web.csproj"
 # Create optimized production build
 COPY ["src/ILICheck.Web/", "src/ILICheck.Web/"]
 ENV GENERATE_SOURCEMAP=false
-RUN env | xargs -L 1 -I {} echo 'REACT_APP_{}' > src/ILICheck.Web/ClientApp/.env.production
 RUN dotnet publish "src/ILICheck.Web/ILICheck.Web.csproj" \
   -c Release \
   -p:VersionPrefix=${VERSION} \
