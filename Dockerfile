@@ -8,13 +8,13 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 
 # Restore dependencies and tools
-COPY ["src/ILICheck.Web/ILICheck.Web.csproj", "src/ILICheck.Web/"]
-RUN dotnet restore "src/ILICheck.Web/ILICheck.Web.csproj"
+COPY ["src/ILICheck.Web/ILICheck.Web.csproj", "ILICheck.Web/"]
+RUN dotnet restore "ILICheck.Web/ILICheck.Web.csproj"
 
 # Create optimized production build
-COPY ["src/ILICheck.Web/", "src/ILICheck.Web/"]
+COPY ["src/ILICheck.Web/", "ILICheck.Web/"]
 ENV GENERATE_SOURCEMAP=false
-RUN dotnet publish "src/ILICheck.Web/ILICheck.Web.csproj" \
+RUN dotnet publish "ILICheck.Web/ILICheck.Web.csproj" \
   -c Release \
   -p:VersionPrefix=${VERSION} \
   -p:SourceRevisionId=${REVISION} \
