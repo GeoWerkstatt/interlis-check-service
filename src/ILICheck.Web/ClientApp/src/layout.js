@@ -20,6 +20,7 @@ export const Layout = props => {
   const [nutzungsbestimmungenContent, setNutzungsbestimmungenContent] = useState(null);
   const [quickStartContent, setQuickStartContent] = useState(null);
   const [licenseInfo, setLicenseInfo] = useState(null);
+  const [licenseInfoCustom, setLicenseInfoCustom] = useState(null);
 
   // Update HTML title property
   useEffect(() => document.title = clientSettings?.applicationName, [clientSettings])
@@ -56,6 +57,10 @@ export const Layout = props => {
     fetch('license.json')
       .then(res => res.headers.get('content-type')?.includes('application/json') && res.json())
       .then(json => setLicenseInfo(json));
+
+    fetch('license.custom.json')
+      .then(res => res.headers.get('content-type')?.includes('application/json') && res.json())
+      .then(json => setLicenseInfoCustom(json));
   }, []);
 
   const openModalContent = (content, type) =>
@@ -97,7 +102,7 @@ export const Layout = props => {
           {impressumContent && <Button variant="link" className="footer-button" onClick={() => openModalContent(impressumContent, 'markdown')}>
             IMPRESSUM
           </Button>}
-          <Button variant="link" className="footer-button" onClick={() => openModalContent(<About clientSettings={clientSettings} licenseInfo={licenseInfo} />, 'raw')}>
+          <Button variant="link" className="footer-button" onClick={() => openModalContent(<About clientSettings={clientSettings} licenseInfo={{...licenseInfoCustom, ...licenseInfo}} />, 'raw')}>
             ABOUT
           </Button>
         </div>
