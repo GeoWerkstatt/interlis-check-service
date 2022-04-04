@@ -62,6 +62,10 @@ VOLUME $ILICHECK_APP_LOG_DIR
 VOLUME $ILICHECK_UPLOADS_DIR
 VOLUME $ILITOOLS_CONFIG_DIR
 
+# Set default locale
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 COPY --from=build /app/publish $ILICHECK_APP_HOME_DIR
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY ilivalidator-wrapper.sh /usr/local/bin/ilivalidator
