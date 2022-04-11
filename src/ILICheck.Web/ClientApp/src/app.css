@@ -411,3 +411,55 @@ footer {
 .terms-of-use input {
   margin-right: 8px;
 }
+
+
+/************ Banner ************/
+
+.banner {
+  font-family: "Dosis", sans-serif;
+  color: white;
+  position: fixed;
+  background-color: #007cc3;
+  display: flex;
+  padding-right: 10px;
+  padding-left: 10px;
+  text-align:left;
+}
+
+.banner a {
+  color: white;
+}
+
+.banner p {
+  font-size: 1.3rem;
+}
+
+.banner h1 {
+  flex-shrink: 0;
+  padding-left: 15px;
+  padding-right: 25px;
+  font-size: 2rem;
+}
+
+.banner .close-icon {
+   margin-left: 20px;
+   margin-right: 15px;
+}
+
+.banner {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
