@@ -32,6 +32,7 @@ namespace ILICheck.Web.Controllers
         private bool isGpkg;
         private bool isZipFile;
         private bool isInterlis2;
+        private const string UploadInstructionMessage = " Für eine Interlis 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und eine .ili-Datei mit dem passendem Interlis Modell enthält. Für eine Interlis 2 Validierung laden Sie eine .xtf-Datei hoch (Interlis-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen Interlismodellen (.ili) und Katalogdateien (.xml) hoch.";
 
         public string CurrentConnectionId { get; set; }
 
@@ -238,53 +239,56 @@ namespace ILICheck.Web.Controllers
                     extractPath += Path.DirectorySeparatorChar;
                 }
 
-                string unzippedTranferFilePath = "";
+                string unzippedTransferfilePath = "";
                 using (var archive = ZipFile.OpenRead(zipFilePath))
                 {
-                    if (archive.Entries.Count is >= 1 and <= 2)
+                    if (archive.Entries.Count > 0)
                     {
-                        string tranferfileExtension;
-                        var extensions = archive.Entries.Select(entry => Path.GetExtension(entry.FullName));
-                        if (archive.Entries.Count > 1)
+                        string transferfileExtension = null;
+                        var extensions = archive.Entries.Select(entry => Path.GetExtension(entry.FullName).ToLower());
+
+                        if (extensions.Contains(".ili") && extensions.Contains(".itf"))
                         {
-                            if (extensions.Contains(".ili") && extensions.Contains(".itf"))
-                            {
-                                tranferfileExtension = ".itf";
-                            }
-                            else
-                            {
-                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nicht unterstützte Dateiendungen.");
-                                LogInfo("Validation aborted, for Interlis 1 validation the.zip-archive must contain exactly one .itf and one .ili file.");
-                                mainCts.Cancel();
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            if (extensions.Contains(".xtf"))
-                            {
-                                tranferfileExtension = Path.GetExtension(archive.Entries[0].FullName);
-                            }
-                            else
-                            {
-                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Ungültige Datei(en)! Laden Sie für Interlis 1 laden eine .zip-Datei mit einer .xtf-Datei und einer passenden .ili-Datei hoch. Für Interlis 2 eine einzelne .xtf-Datei.");
-                                LogInfo(".zip-archive does not contain required files.");
-                                mainCts.Cancel();
-                                return;
-                            }
+                            transferfileExtension = ".itf";
                         }
 
-                        isInterlis2 = tranferfileExtension == ".xtf";
+                        if (extensions.Contains(".xtf"))
+                        {
+                            transferfileExtension = ".xtf";
+                        }
+
+                        isInterlis2 = transferfileExtension == ".xtf";
+
+                        if (string.IsNullOrEmpty(transferfileExtension))
+                        {
+                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Ungültige Datei(en)!" + UploadInstructionMessage);
+                            LogInfo(".zip-archive does not contain required files.");
+                            mainCts.Cancel();
+                            return;
+                        }
 
                         if (Path.GetFullPath(zipFilePath).StartsWith(extractPath, StringComparison.Ordinal))
                         {
                             var parentDirectory = Directory.GetParent(zipFilePath).FullName;
                             archive.Entries.ToList().ForEach(entry => entry.ExtractToFile(Path.Combine(parentDirectory, entry.Name)));
-                            unzippedTranferFilePath = Directory.GetFiles(parentDirectory).Single(file => Path.GetExtension(file) == tranferfileExtension);
+
+                            // check if multiple transferfiles exsist in directory
+                            var transferfiles = Directory.GetFiles(parentDirectory).Where(file => Path.GetExtension(file).ToLower() == transferfileExtension);
+                            if (transferfiles.Count() == 1)
+                            {
+                                unzippedTransferfilePath = transferfiles.Single(file => Path.GetExtension(file).ToLower() == transferfileExtension);
+                            }
+                            else
+                            {
+                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Mehrere Transferdateien gefunden!" + UploadInstructionMessage);
+                                LogInfo("Validation aborted, .zip-archive contains several transfer files.");
+                                mainCts.Cancel();
+                                return;
+                            }
                         }
                         else
                         {
-                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Dateipfad konnte nicht aufgelöst werden.");
+                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Dateipfad konnte nicht aufgelöst werden!" + UploadInstructionMessage);
                             LogInfo("Upload aborted, cannot get extraction path.");
                             mainCts.Cancel();
                             return;
@@ -292,17 +296,17 @@ namespace ILICheck.Web.Controllers
                     }
                     else
                     {
-                        await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Ungültige Datei Anzahl! Laden Sie für Interlis 1 laden eine .zip-Datei mit einer .xtf-Datei und einer passenden .ili-Datei hoch. Für Interlis 2 eine einzelne .xtf-Datei.");
-                        LogInfo("Validation aborted, .zip-archive does not contain required files.");
+                        await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Keine Datei! " + UploadInstructionMessage);
+                        LogInfo("Validation aborted, .zip-archive contains no files.");
                         mainCts.Cancel();
                         return;
                     }
                 }
 
-                if (!string.IsNullOrEmpty(unzippedTranferFilePath))
+                if (!string.IsNullOrEmpty(unzippedTransferfilePath))
                 {
                     System.IO.File.Delete(zipFilePath);
-                    UploadFilePath = unzippedTranferFilePath;
+                    UploadFilePath = unzippedTransferfilePath;
                 }
                 else
                 {
