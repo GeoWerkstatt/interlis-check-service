@@ -11,7 +11,7 @@ export const About = props => {
         <b>ili2gpkg</b>: {clientSettings?.ili2gpkgVersion}
       </p>
       <h2>Entwicklung und Bugtracking</h2>
-      <p>ILICOP wurde von <a href="https://www.geowerkstatt.ch/" target="_blank" rel="noreferrer">GeoWerkstatt GmbH</a> in Zusammenarbeit mit der <a href="https://agi.sh.ch/" target="_blank" rel="noreferrer">GIS Fachstelle des Kanton Zug</a> als Open Source Projekt entwickelt. Der Code steht unter der <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noreferrer">GNU General Public License Version 3 (GPLv3)</a> im <a href="https://github.com/GeoWerkstatt/interlis-check-service" target="_blank" rel="noreferrer">GitHub Repository</a> zur Verfügung. Falls Ihnen Bugs begegnen, können Sie dort ein <a href="https://github.com/GeoWerkstatt/interlis-check-service/issues" target="_blank" rel="noreferrer">Issue</a> eröffnen.</p>
+      <p>Der Code steht unter der <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU General Public License (GPL)</a> Version 3 im <a href="https://github.com/GeoWerkstatt/interlis-check-service" target="_blank" rel="noopener noreferrer">GitHub Repository</a> zur Verfügung. Falls Ihnen Bugs begegnen, können Sie dort ein <a href="https://github.com/GeoWerkstatt/interlis-check-service/issues" target="_blank" rel="noopener noreferrer">Issue</a> eröffnen.</p>
       <h2>Lizenzinformationen</h2>
       {Object.keys(licenseInfo).map(key =>
         <div key={key} className="about-licenses">
