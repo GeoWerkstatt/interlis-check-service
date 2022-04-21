@@ -11,7 +11,6 @@ set -e
 # Set default values (if not specified in docker-compose)
 export ILIVALIDATOR_MODEL_DIR=${ILIVALIDATOR_MODEL_DIR:-http://models.interlis.ch/}
 export DELETE_TRANSFER_FILES=${DELETE_TRANSFER_FILES:-false}
-export ENABLE_GPKG_VALIDATION=${ENABLE_GPKG_VALIDATION:-false}
 
 # Download and configure ilivalidator and optional ili2pgkg
 download_and_configure_ilitool () {
@@ -73,7 +72,7 @@ ilicheck version:                 $ILICHECK_APP_VERSION
 delete transfer files:            $([[ $DELETE_TRANSFER_FILES = true ]] && echo enabled || echo disabled)
 transfer and log data retention:  $([[ -n $TRANSFER_AND_LOG_DATA_RETENTION ]] && echo $TRANSFER_AND_LOG_DATA_RETENTION || echo unset)
 ilivalidator version:             $ILIVALIDATOR_VERSION `[[ $ILIVALIDATOR_VERSION != $ILIVALIDATOR_LATEST_VERSION ]] && echo "(new version $ILIVALIDATOR_LATEST_VERSION available!)"`
-ili2gpkg version:                 $([[ $ENABLE_GPKG_VALIDATION = false ]] && echo "not configured" || echo $ILI2GPKG_VERSION `[[ $ILI2GPKG_VERSION != $ILI2GPKG_LATEST_VERSION ]] && echo "(new version $ILI2GPKG_LATEST_VERSION available!)"`)
+ili2gpkg version:                 $([[ $ENABLE_GPKG_VALIDATION = false ]] && echo disabled || echo $ILI2GPKG_VERSION `[[ $ILI2GPKG_VERSION != $ILI2GPKG_LATEST_VERSION ]] && echo "(new version $ILI2GPKG_LATEST_VERSION available!)"`)
 ilivalidator config file name:    $([[ -n $ILIVALIDATOR_CONFIG_NAME ]] && echo $ILIVALIDATOR_CONFIG_NAME || echo disabled)
 ilivalidator model repositories:  $ILIVALIDATOR_MODEL_DIR
 ilivalidator trace messages:      $([[ $ILIVALIDATOR_ENABLE_TRACE = true ]] && echo enabled || echo disabled)
