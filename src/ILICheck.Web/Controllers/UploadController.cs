@@ -137,6 +137,18 @@ namespace ILICheck.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(UploadFilePath))
                 {
+                    if (isZipFile)
+                    {
+                        var parentDirectory = Directory.GetParent(UploadFilePath).FullName;
+
+                        // Keep log files with .log and .xtf extension.
+                        var filesToDelete = Directory.GetFiles(parentDirectory).Where(file => Path.GetExtension(file).ToLower() != ".log" && Path.GetExtension(file).ToLower() != ".xtf");
+                        foreach (var file in filesToDelete)
+                        {
+                            System.IO.File.Delete(file);
+                        }
+                    }
+
                     LogInfo($"Deleting {UploadFilePath}...");
                     System.IO.File.Delete(UploadFilePath);
                 }
