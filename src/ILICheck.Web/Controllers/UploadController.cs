@@ -32,7 +32,6 @@ namespace ILICheck.Web.Controllers
         private bool isGpkg;
         private bool isZipFile;
         private bool isInterlis2;
-        private const string UploadInstructionMessage = " Für eine Interlis 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und eine .ili-Datei mit dem passendem Interlis Modell enthält. Für eine Interlis 2 Validierung laden Sie eine .xtf-Datei hoch (Interlis-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen Interlismodellen (.ili) und Katalogdateien (.xml) hoch.";
 
         public string CurrentConnectionId { get; set; }
 
@@ -224,6 +223,7 @@ namespace ILICheck.Web.Controllers
 
         private async Task UnzipFileAsync(string zipFilePath, CancellationTokenSource mainCts, string connectionId)
         {
+            string uploadInstructionMessage = " Für eine INTERLIS 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und eine .ili-Datei mit dem passendem INTERLIS Modell enthält. Für eine INTERLIS 2 Validierung laden Sie eine .xtf-Datei hoch (INTERLIS-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen INTERLIS-Modellen (.ili) und Katalogdateien (.xml) hoch.";
             await Task.Run(async () =>
             {
                 LogInfo("Unzipping file");
