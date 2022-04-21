@@ -30,5 +30,22 @@ namespace ILICheck.Web
 
             Assert.AreEqual("ANGRYCHEF;IRATENIGHT;MAESTROTRAWL;SLEEPYGOPHER;AUTOMAESTRO;VIOLENTTOTE", result);
         }
+
+        [TestMethod]
+        public void GetSaveFileExtensionForFileName()
+        {
+            // Supported file extensions
+            Assert.AreEqual(".xml", "VIOLETNIGHT.xml".GetSaveFileExtensionForFileName());
+            Assert.AreEqual(".zip", "SLIMYSOURCE.zip".GetSaveFileExtensionForFileName());
+            Assert.AreEqual(".xtf", "TRAWLMASTER.xtf".GetSaveFileExtensionForFileName());
+            Assert.AreEqual(".xml", "TRAWLMASTER.FARMARTIST.XML".GetSaveFileExtensionForFileName());
+            Assert.AreEqual(".zip", "GOPHERFELONY SCANWAFFLE .zIP".GetSaveFileExtensionForFileName());
+
+            // Not supported file extensions
+            Assert.IsNull("TRAWLBOUNCE.ini".GetSaveFileExtensionForFileName());
+            Assert.IsNull("BIZARREPENGUIN.sh".GetSaveFileExtensionForFileName());
+            Assert.IsNull("LATENTNET-HX.exe".GetSaveFileExtensionForFileName());
+            Assert.IsNull("IRATEMONKEY.cmd".GetSaveFileExtensionForFileName());
+        }
     }
 }

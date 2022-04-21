@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -21,10 +22,6 @@ namespace ILICheck.Web.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var acceptedFileTypes = ".xtf, .xml, .zip";
-            var gpkgSupportEnabled = Environment.GetEnvironmentVariable("ENABLE_GPKG_VALIDATION", EnvironmentVariableTarget.Process) == "true";
-            if (gpkgSupportEnabled) acceptedFileTypes += ", .gpkg";
-
             return new JsonResult(new
             {
                 applicationName = Environment.GetEnvironmentVariable("CUSTOM_APP_NAME", EnvironmentVariableTarget.Process) ?? "INTERLIS Web-Check-Service",
@@ -32,7 +29,7 @@ namespace ILICheck.Web.Controllers
                 vendorLink = Environment.GetEnvironmentVariable("CUSTOM_VENDOR_LINK", EnvironmentVariableTarget.Process),
                 ilivalidatorVersion = Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION", EnvironmentVariableTarget.Process) ?? "undefined",
                 ili2gpkgVersion = Environment.GetEnvironmentVariable("ILI2GPKG_VERSION", EnvironmentVariableTarget.Process) ?? "undefined/not configured",
-                acceptedFileTypes = acceptedFileTypes,
+                acceptedFileTypes = GetAcceptedFileExtensions(),
             });
         }
     }

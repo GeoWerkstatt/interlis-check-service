@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -20,13 +21,16 @@ namespace ILICheck.Web
             configuration.GetSection("Upload")["PathFormat"];
 
         /// <summary>
-        /// Gets the Upload Path for the specified <paramref name="connectionId"/>.
+        /// Returns a random folder path for the specified environment <paramref name="configuration"/>.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="connectionId">The connection id.</param>
-        /// <returns>The Upload Path for the specified <paramref name="connectionId"/>.</returns>
-        public static string GetUploadPathForSession(this IConfiguration configuration, string connectionId) =>
-            configuration.GetUploadPathFormat().Replace("{Name}", connectionId);
+        /// <returns>Returns a random folder path.</returns>
+        public static string GetRandomFolderPath(this IConfiguration configuration)
+        {
+            var folderPath = configuration.GetUploadPathFormat().Replace("{Name}", Path.GetRandomFileName());
+            Directory.CreateDirectory(folderPath);
+            return folderPath;
+        }
 
         /// <summary>
         /// Shorthand for GetSection("Validation")["ShellExecutable"].
@@ -73,6 +77,23 @@ namespace ILICheck.Web
 
             return string.Join(';', result.Distinct());
         }
+
+        /// <summary>
+        /// Gets the acceppted file extensions for any user uploads.
+        /// </summary>
+        public static IEnumerable<string> GetAcceptedFileExtensions()
+        {
+            var acceptedFileExtensions = new List<string> { ".xtf", ".xml", ".zip" };
+            var gpkgSupportEnabled = Environment.GetEnvironmentVariable("ENABLE_GPKG_VALIDATION", EnvironmentVariableTarget.Process) == "true";
+            if (gpkgSupportEnabled) acceptedFileExtensions.Add(".gpkg");
+            return acceptedFileExtensions;
+        }
+
+        /// <summary>
+        /// Gets a save file extension for the specified <paramref name="unsaveFileName"/>.
+        /// </summary>
+        public static string GetSaveFileExtensionForFileName(this string unsaveFileName) =>
+            GetAcceptedFileExtensions().SingleOrDefault(extension => extension == Path.GetExtension(unsaveFileName).ToLower());
 
         private static string RemoveReferencedModels(this string models) =>
             removeReferencedModelsRegex.Replace(models.Trim(), string.Empty);

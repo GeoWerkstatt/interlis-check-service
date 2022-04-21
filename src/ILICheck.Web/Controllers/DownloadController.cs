@@ -25,7 +25,9 @@ namespace ILICheck.Web.Controllers
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
             var fileExtension = request.Query["fileExtension"][0];
-            var directoryPath = configuration.GetUploadPathForSession(connectionId);
+
+            // This won't work (respectively breaks downloads) because currently there is no common identifier to properly identify a validation job.
+            var directoryPath = configuration.GetRandomFolderPath();
             try
             {
                 var logFiles = Directory.EnumerateFiles(directoryPath, "ilivalidator_*", SearchOption.TopDirectoryOnly);

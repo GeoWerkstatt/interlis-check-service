@@ -64,7 +64,7 @@ namespace ILICheck.Web.Controllers
                 "true",
                 StringComparison.InvariantCultureIgnoreCase);
 
-            MakeUploadFolder(connectionId);
+            UploadFolderPath = configuration.GetRandomFolderPath();
 
             sessionLogger = GetLogger(fileName);
             LogInfo($"Start uploading: {fileName}");
@@ -138,12 +138,6 @@ namespace ILICheck.Web.Controllers
             }
         }
 
-        private void MakeUploadFolder(string connectionId)
-        {
-            UploadFolderPath = configuration.GetUploadPathForSession(connectionId);
-            Directory.CreateDirectory(UploadFolderPath);
-        }
-
         private async Task DoTaskWhileSendingUpdatesAsync(Task taskToRun, string connectionId, string updateMessage)
         {
             using var cts = new CancellationTokenSource();
@@ -194,9 +188,7 @@ namespace ILICheck.Web.Controllers
                 if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
                     !string.IsNullOrEmpty(contentDisposition.FileName.Value))
                 {
-                    var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
-                    var uploadFileName = $"{timestamp}_{contentDisposition.FileName.Value}";
-                    UploadFilePath = Path.Combine(UploadFolderPath, uploadFileName);
+                    UploadFilePath = Path.Combine(UploadFolderPath, string.Concat(Path.GetRandomFileName(), contentDisposition.FileName.Value.GetSaveFileExtensionForFileName()));
 
                     using (var targetStream = System.IO.File.Create(UploadFilePath))
                     {
@@ -250,7 +242,7 @@ namespace ILICheck.Web.Controllers
                         var supportedExtension = new List<string>() { ".xtf", ".xml" };
                         if (supportedExtension.Contains(extention.ToLower()))
                         {
-                            unzippedFilePath = Path.GetFullPath(Path.ChangeExtension(zipFilePath, Path.GetExtension(archive.Entries[0].FullName)));
+                            unzippedFilePath = Path.GetFullPath(Path.ChangeExtension(zipFilePath, archive.Entries[0].FullName.GetSaveFileExtensionForFileName()));
                             if (unzippedFilePath.StartsWith(extractPath, StringComparison.Ordinal))
                             {
                                 archive.Entries[0].ExtractToFile(unzippedFilePath);
@@ -329,7 +321,10 @@ namespace ILICheck.Web.Controllers
         private async Task ValidateAsync(string connectionId)
         {
             LogInfo("Validating file");
-            var uploadPath = configuration.GetSection("Validation")["UploadFolderInContainer"].Replace("{Name}", connectionId);
+
+            // This won't work (respectively breaks validation) because currently there is no common identifier to properly identify a validation job.
+            // var uploadPath = configuration.GetSection("Validation")["UploadFolderInContainer"].Replace("{Name}", connectionId);
+            var uploadPath = UploadFolderPath;
             var fileName = Path.GetFileName(UploadFilePath);
 
             var filePath = uploadPath + $"/{fileName}";
