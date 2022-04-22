@@ -6,6 +6,7 @@ import interlisLogo from './img/interlis.svg'
 import Home from './home';
 import About from './about';
 import ModalContent from './modalContent';
+import BannerContent from './bannerContent';
 import { Button } from 'react-bootstrap';
 
 export const Layout = props => {
@@ -13,10 +14,12 @@ export const Layout = props => {
   const [modalContent, setModalContent] = useState(false);
   const [modalContentType, setModalContentType] = useState(null);
   const [showModalContent, setShowModalContent] = useState(false);
+  const [showBannerContent, setShowBannerContent] = useState(false);
   const [clientSettings, setClientSettings] = useState(null);
   const [datenschutzContent, setDatenschutzContent] = useState(null);
   const [impressumContent, setImpressumContent] = useState(null);
   const [infoHilfeContent, setInfoHilfeContent] = useState(null);
+  const [bannerContent, setBannerContent] = useState(null);
   const [nutzungsbestimmungenContent, setNutzungsbestimmungenContent] = useState(null);
   const [quickStartContent, setQuickStartContent] = useState(null);
   const [licenseInfo, setLicenseInfo] = useState(null);
@@ -49,6 +52,10 @@ export const Layout = props => {
     fetch('nutzungsbestimmungen.md')
       .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
       .then(text => setNutzungsbestimmungenContent(text));
+
+    fetch('banner.md')
+      .then(res => res.headers.get('content-type')?.includes('ext/markdown') && res.text())
+      .then(text => setBannerContent(text));
 
     fetch('quickstart.txt')
       .then(res => res.headers.get('content-type')?.includes('text/plain') && res.text())
@@ -86,7 +93,8 @@ export const Layout = props => {
           updateLog={updateLog}
           resetLog={resetLog}
           setUploadLogsInterval={setUploadLogsInterval}
-          setUploadLogsEnabled={setUploadLogsEnabled} />
+          setUploadLogsEnabled={setUploadLogsEnabled}
+          setShowBannerContent={setShowBannerContent}/>
       </main>
       <footer className="footer-style">
         <div>
@@ -125,6 +133,11 @@ export const Layout = props => {
         type={modalContentType}
         onHide={() => setShowModalContent(false)}
       />
+      {bannerContent && showBannerContent && <BannerContent
+        className="banner"
+        content={bannerContent}
+        onHide={() => setShowBannerContent(false)}
+      />}
     </div>
   );
 }

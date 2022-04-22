@@ -11,14 +11,14 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 
 # Restore dependencies and tools
-COPY ["src/ILICheck.Web/ILICheck.Web.csproj", "src/ILICheck.Web/"]
-RUN dotnet restore "src/ILICheck.Web/ILICheck.Web.csproj"
+COPY ["src/ILICheck.Web/ILICheck.Web.csproj", "ILICheck.Web/"]
+RUN dotnet restore "ILICheck.Web/ILICheck.Web.csproj"
 
 # Create optimized production build
-COPY ["src/ILICheck.Web/", "src/ILICheck.Web/"]
+COPY ["src/ILICheck.Web/", "ILICheck.Web/"]
 ENV GENERATE_SOURCEMAP=false
 ENV PUBLISH_DIR=/app/publish
-RUN dotnet publish "src/ILICheck.Web/ILICheck.Web.csproj" \
+RUN dotnet publish "ILICheck.Web/ILICheck.Web.csproj" \
   -c Release \
   -p:VersionPrefix=${VERSION} \
   -p:SourceRevisionId=${REVISION} \
@@ -71,6 +71,10 @@ EXPOSE 80
 VOLUME $ILICHECK_APP_LOG_DIR
 VOLUME $ILICHECK_UPLOADS_DIR
 VOLUME $ILITOOLS_CONFIG_DIR
+
+# Set default locale
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 COPY --from=build /app/publish $ILICHECK_APP_HOME_DIR
 COPY docker-entrypoint.sh /entrypoint.sh

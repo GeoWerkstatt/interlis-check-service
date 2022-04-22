@@ -68,6 +68,7 @@ services:
     #               - impressum.md (imprint as Markdown-formatted document)
     #               - datenschutz.md (privacy statement as Markdown-formatted document)
     #               - info-hilfe.md (operating instructions as Markdown-formatted document)
+    #               - banner.md (info banner appearing on first validation, as Markdown-formatted document)
     #               - nutzungsbestimmungen.md (terms of use as Markdown-formatted document)
     #                 Adding this document means the user must agree to the terms prior validation
     #               - quickstart.txt (line-separated brief instructions as plain text document)
@@ -179,6 +180,7 @@ Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene
 - Eigener Applikationsname
 - Einbinden eines Impressums
 - Einbinden von Datenschutzbestimmungen
+- Einbinden eines Banners
 - Einbinden von Nutzungsbestimmungen, die vor der Prüfung vom Benutzer akzeptiert werden müssen
 - Einbinden eines Benutzerhandbuchs
 - Einbinden eines Quick-Start-Guides
