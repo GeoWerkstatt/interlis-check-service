@@ -58,7 +58,6 @@ namespace ILICheck.Web.Controllers
             var request = HttpContext.Request;
             var connectionId = request.Query["connectionId"][0];
             CurrentConnectionId = connectionId;
-            var fileName = request.Query["fileName"][0];
             var deleteXtfTransferFile = string.Equals(
                 Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
                 "true",
@@ -66,8 +65,10 @@ namespace ILICheck.Web.Controllers
 
             UploadFolderPath = configuration.GetRandomFolderPath();
 
-            sessionLogger = GetLogger(fileName);
-            LogInfo($"Start uploading: {fileName}");
+            sessionLogger = GetLogger();
+
+            var sanitizedFileName = string.Join("_", request.Query["fileName"][0].Split(Path.GetInvalidFileNameChars()));
+            LogInfo($"Start uploading: {sanitizedFileName}");
             LogInfo($"File size: {request.ContentLength}");
             LogInfo($"Start time: {DateTime.Now}");
             LogInfo($"Delete XTF transfer file after validation: {deleteXtfTransferFile}");
@@ -381,14 +382,10 @@ namespace ILICheck.Web.Controllers
             applicationLogger.LogInformation(logMessage);
         }
 
-        private Serilog.ILogger GetLogger(string uploadedFileName)
+        private Serilog.ILogger GetLogger()
         {
-            var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
-            var logFileName = $"Session_{timestamp}_{uploadedFileName}.log";
-            var logFilePath = Path.Combine(UploadFolderPath, logFileName);
-
             return new LoggerConfiguration()
-                .WriteTo.File(logFilePath)
+                .WriteTo.File(Path.Combine(UploadFolderPath, "session.log"))
                 .CreateLogger();
         }
     }
