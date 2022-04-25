@@ -271,6 +271,7 @@ namespace ILICheck.Web.Controllers
                                     if (extensions.Where(extension => extension == ".xtf").Count() == 1)
                                     {
                                         transferfileExtension = ".xtf";
+                                        isInterlis2 = true;
                                     }
                                     else
                                     {
@@ -280,8 +281,6 @@ namespace ILICheck.Web.Controllers
                                         return;
                                     }
                                 }
-
-                                isInterlis2 = transferfileExtension == ".xtf";
 
                                 if (string.IsNullOrEmpty(transferfileExtension))
                                 {
