@@ -293,7 +293,10 @@ namespace ILICheck.Web.Controllers
                                 if (Path.GetFullPath(zipFilePath).StartsWith(extractPath, StringComparison.Ordinal))
                                 {
                                     var parentDirectory = Directory.GetParent(zipFilePath).FullName;
-                                    archive.Entries.ToList().ForEach(entry => entry.ExtractToFile(Path.Combine(parentDirectory, entry.Name)));
+                                    foreach (var entry in archive.Entries)
+                                    {
+                                        entry.ExtractToFile(Path.Combine(parentDirectory, entry.Name));
+                                    }
 
                                     // check if multiple transferfiles exsist in directory
                                     var transferfiles = Directory.GetFiles(parentDirectory).Where(file => Path.GetExtension(file).ToLower() == transferfileExtension);
