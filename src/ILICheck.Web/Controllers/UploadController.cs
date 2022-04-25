@@ -298,9 +298,7 @@ namespace ILICheck.Web.Controllers
                                         entry.ExtractToFile(Path.Combine(parentDirectory, entry.Name));
                                     }
 
-                                    // check if multiple transferfiles exsist in directory
-                                    var transferfiles = Directory.GetFiles(parentDirectory).Where(file => Path.GetExtension(file).ToLower() == transferfileExtension);
-                                    unzippedTransferfilePath = transferfiles.Single(file => Path.GetExtension(file).ToLower() == transferfileExtension);
+                                    unzippedTransferfilePath = Directory.GetFiles(parentDirectory).Single(file => Path.GetExtension(file).ToLower() == transferfileExtension);
                                 }
                                 else
                                 {
