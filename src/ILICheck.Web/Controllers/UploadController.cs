@@ -261,7 +261,7 @@ namespace ILICheck.Web.Controllers
                             var supportedExtensions = new List<string> { ".xtf", ".xml", ".itf", ".ili" };
                             if (extensions.All(extension => supportedExtensions.Contains(extension)))
                             {
-                                if (extensions.Count() == 2 & extensions.Contains(".ili") && extensions.Contains(".itf"))
+                                if (extensions.Count() == 2 && extensions.Contains(".ili") && extensions.Contains(".itf"))
                                 {
                                     transferfileExtension = ".itf";
                                 }
@@ -309,7 +309,7 @@ namespace ILICheck.Web.Controllers
                             }
                             else
                             {
-                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nicht unterstützte Dateien, bitte laden Sie ausschliesslich .xtf, .ift und .xml hoch! " + uploadInstructionMessage);
+                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nicht unterstützte Dateien, bitte laden Sie ausschliesslich .xtf, .ift, .ili und .xml hoch! " + uploadInstructionMessage);
                                 LogInfo("Validation aborted, .zip-archive contains unsupported file types.");
                                 mainCts.Cancel();
                                 return;
