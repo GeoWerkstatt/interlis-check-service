@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SignalR.Hubs;
 
 namespace ILICheck.Web
 {
@@ -35,8 +34,6 @@ namespace ILICheck.Web
                         .WithOrigins("https://localhost:44302");
                 });
             });
-            services.AddSignalR();
-            services.AddSingleton(typeof(SignalRConnectionHelper));
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 209715200;
@@ -83,7 +80,6 @@ namespace ILICheck.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<SignalRHub>("/hub");
             });
 
             app.UseSpa(spa =>

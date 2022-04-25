@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
 using static ILICheck.Web.Extensions;
 
@@ -9,10 +8,8 @@ namespace ILICheck.Web.Controllers
     [Route("api/[controller]")]
     public class SettingsController : Controller
     {
-        private readonly IConfiguration configuration;
-        public SettingsController(IConfiguration configuration)
+        public SettingsController()
         {
-            this.configuration = configuration;
         }
 
         /// <summary>

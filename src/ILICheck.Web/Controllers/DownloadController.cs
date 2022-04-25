@@ -23,8 +23,11 @@ namespace ILICheck.Web.Controllers
         public IActionResult Download()
         {
             var request = HttpContext.Request;
-            var connectionId = request.Query["connectionId"][0];
             var fileExtension = request.Query["fileExtension"][0];
+
+            // Attention! This breaks downloading logs!
+            // TODO use job id to identify assets for download
+            var connectionId = Guid.NewGuid().ToString();
             var directoryPath = configuration.GetUploadPathForSession(connectionId);
             try
             {
