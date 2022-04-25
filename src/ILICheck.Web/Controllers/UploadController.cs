@@ -261,7 +261,7 @@ namespace ILICheck.Web.Controllers
                             var supportedExtensions = new List<string> { ".xtf", ".xml", ".itf", ".ili" };
                             if (extensions.All(extension => supportedExtensions.Contains(extension)))
                             {
-                                if (extensions.Count() == 2 & extensions.Contains(".ili") && extensions.Contains(".itf"))
+                                if (extensions.Count() == 2 && extensions.Contains(".ili") && extensions.Contains(".itf"))
                                 {
                                     transferfileExtension = ".itf";
                                 }
