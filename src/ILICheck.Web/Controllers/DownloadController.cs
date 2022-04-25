@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,9 +9,12 @@ namespace ILICheck.Web.Controllers
 {
     public class DownloadController : Controller
     {
+        private readonly ILogger<DownloadController> logger;
         private readonly IConfiguration configuration;
-        public DownloadController(IConfiguration configuration)
+
+        public DownloadController(ILogger<DownloadController> logger, IConfiguration configuration)
         {
+            this.logger = logger;
             this.configuration = configuration;
         }
 
@@ -36,6 +40,7 @@ namespace ILICheck.Web.Controllers
                     .Where(file => Path.GetExtension(file) == fileExtension)
                     .Single();
 
+                logger.LogInformation("XTF log file for connection id <{connectionId}> requested.", connectionId);
                 return File(System.IO.File.ReadAllBytes(logFile), "text/xml; charset=utf-8");
             }
             catch (Exception)

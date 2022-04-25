@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using static ILICheck.Web.Extensions;
 
@@ -8,8 +9,11 @@ namespace ILICheck.Web.Controllers
     [Route("api/[controller]")]
     public class SettingsController : Controller
     {
-        public SettingsController()
+        private readonly ILogger<SettingsController> logger;
+
+        public SettingsController(ILogger<SettingsController> logger)
         {
+            this.logger = logger;
         }
 
         /// <summary>
@@ -19,6 +23,8 @@ namespace ILICheck.Web.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            logger.LogTrace("Application configuration requested.");
+
             return new JsonResult(new
             {
                 applicationName = Environment.GetEnvironmentVariable("CUSTOM_APP_NAME", EnvironmentVariableTarget.Process) ?? "INTERLIS Web-Check-Service",

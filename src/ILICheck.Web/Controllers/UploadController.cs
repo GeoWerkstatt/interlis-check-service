@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using Serilog;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -18,9 +17,9 @@ namespace ILICheck.Web.Controllers
 {
     public class UploadController : Controller
     {
-        private readonly ILogger<UploadController> applicationLogger;
+        private readonly ILogger<UploadController> logger;
         private readonly IConfiguration configuration;
-        private Serilog.ILogger sessionLogger;
+
         private string gpkgModels;
         private bool isGpkg;
         private bool isZipFile;
@@ -28,9 +27,9 @@ namespace ILICheck.Web.Controllers
         public string UploadFolderPath { get; set; }
         public string UploadFilePath { get; set; }
 
-        public UploadController(ILogger<UploadController> applicationLogger, IConfiguration configuration)
+        public UploadController(ILogger<UploadController> logger, IConfiguration configuration)
         {
-            this.applicationLogger = applicationLogger;
+            this.logger = logger;
             this.configuration = configuration;
         }
 
@@ -52,18 +51,17 @@ namespace ILICheck.Web.Controllers
 
             MakeUploadFolder(connectionId);
 
-            sessionLogger = GetLogger(fileName);
-            LogInfo($"Start uploading: {fileName}");
-            LogInfo($"File size: {request.ContentLength}");
-            LogInfo($"Start time: {DateTime.Now}");
-            LogInfo($"Delete transfer file after validation: {deleteTransferFile}");
+            logger.LogInformation("Start uploading: {fileName}", fileName);
+            logger.LogInformation("File size: {contentLength}", request.ContentLength);
+            logger.LogInformation("Start time: {timestamp}", DateTime.Now);
+            logger.LogInformation("Delete transfer file(s) after validation: {deleteTransferFile}", deleteTransferFile);
 
             // TODO: Handle exception while uploading file...
             await UploadToDirectoryAsync(request);
 
             _ = DoValidationAsync(connectionId, deleteTransferFile);
 
-            LogInfo($"Successfully received file: {DateTime.Now}");
+            logger.LogInformation("Successfully received file: {timestamp}", DateTime.Now);
 
             // TODO: Return upload result, default HTTP 201
             return new JsonResult(new
@@ -101,7 +99,7 @@ namespace ILICheck.Web.Controllers
             catch (Exception e)
             {
                 // TODO: Add log/set state -> validationAborted
-                LogInfo($"Unexpected error: {e.Message}");
+                logger.LogError("Unexpected error <{exceptionMessage}>", e.Message);
             }
 
             if (deleteTransferFile || isGpkg)
@@ -120,7 +118,7 @@ namespace ILICheck.Web.Controllers
                         }
                     }
 
-                    LogInfo($"Deleting {UploadFilePath}...");
+                    logger.LogInformation("Deleting {uploadFilePath}...", UploadFilePath);
                     System.IO.File.Delete(UploadFilePath);
                 }
             }
@@ -134,12 +132,12 @@ namespace ILICheck.Web.Controllers
 
         private async Task<IActionResult> UploadToDirectoryAsync(HttpRequest request)
         {
-            LogInfo("Uploading file");
+            logger.LogInformation("Uploading file");
             if (!request.HasFormContentType ||
                 !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
                 string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
             {
-                LogInfo("Upload aborted, unsupported media type.");
+                logger.LogWarning("Upload aborted, unsupported media type.");
                 return new UnsupportedMediaTypeResult();
             }
 
@@ -172,7 +170,7 @@ namespace ILICheck.Web.Controllers
                 section = await reader.ReadNextSectionAsync();
             }
 
-            LogInfo("Upload aborted, no files data in the request.");
+            logger.LogWarning("Upload aborted, no files data in the request.");
             return BadRequest("Es wurde keine Datei hochgeladen.");
         }
 
@@ -182,7 +180,7 @@ namespace ILICheck.Web.Controllers
             // string uploadInstructionMessage = "Für eine INTERLIS 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und optional eine .ili-Datei mit dem passendem INTERLIS Modell enthält. Für eine INTERLIS 2 Validierung laden Sie eine .xtf-Datei hoch (INTERLIS-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen INTERLIS-Modellen (.ili) und Katalogdateien (.xml) hoch.";
             await Task.Run(() =>
             {
-                LogInfo("Unzipping file");
+                logger.LogInformation("Unzipping file");
                 var uploadPath = Path.GetFullPath(configuration.GetSection("Upload")["PathFormat"]);
                 var extractPath = Path.GetDirectoryName(uploadPath);
 
@@ -214,7 +212,7 @@ namespace ILICheck.Web.Controllers
                         else
                         {
                             // TODO: Add log/set state -> validationAborted, Dateipfad konnte nicht aufgelöst werden! {uploadInstructionMessage}
-                            LogInfo("Upload aborted, cannot get extraction path.");
+                            logger.LogWarning("Upload aborted, cannot get extraction path.");
                             return;
                         }
                     }
@@ -224,29 +222,29 @@ namespace ILICheck.Web.Controllers
                 catch (UnknownExtensionException ex)
                 {
                     // TODO: Add log/set state -> validationAborted, Nicht unterstützte Dateien, bitte laden Sie ausschliesslich {string.Join(", ", GetAcceptedFileExtensionsForZipContent())} Dateien hoch! {uploadInstructionMessage}
-                    LogInfo(ex.Message);
+                    logger.LogInformation(ex.Message);
                 }
                 catch (TransferFileNotFoundException ex)
                 {
                     // TODO: Add log/set state -> validationAborted, Die hochgeladene .zip-Datei enthält keine Transferdatei(en)! {uploadInstructionMessage}
-                    LogInfo(ex.Message);
+                    logger.LogInformation(ex.Message);
                 }
                 catch (MultipleTransferFileFoundException ex)
                 {
                     // TODO: Add log/set state -> validationAborted, Mehrere Transferdateien gefunden! {uploadInstructionMessage}
-                    LogInfo(ex.Message);
+                    logger.LogInformation(ex.Message);
                 }
                 catch (Exception ex)
                 {
                     // TODO: Add log/set state -> validationAborted, Unbekannter Fehler
-                    LogInfo(ex.Message);
+                    logger.LogWarning(ex.Message);
                 }
             });
         }
 
         private async Task ParseXmlAsync(string filePath, string connectionId)
         {
-            LogInfo("Parsing file");
+            logger.LogInformation("Parsing file");
             var settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = true;
             settings.Async = true;
@@ -262,13 +260,13 @@ namespace ILICheck.Web.Controllers
             catch (XmlException e)
             {
                 // TODO: Add log/set state -> validationAborted, Datei hat keine gültige XML-Struktur
-                LogInfo($"Upload aborted, could not parse XTF File: {e.Message}");
+                logger.LogWarning("Upload aborted, could not parse XTF File: {errorMessage}", e.Message);
             }
         }
 
         private async Task ReadGpkgModelNamesAsync(string filePath)
         {
-            LogInfo("Read model names from GeoPackage");
+            logger.LogInformation("Read model names from GeoPackage");
             try
             {
                 var connectionString = $"Data Source={filePath}";
@@ -277,13 +275,13 @@ namespace ILICheck.Web.Controllers
             catch (Exception e)
             {
                 // TODO: Add log/set state -> validationAborted, Fehler beim Auslesen der Modellnamen aus dem GeoPackage
-                LogInfo($"Upload aborted, could not read model names from the given GeoPackage SQLite database: {e.Message}");
+                logger.LogWarning("Upload aborted, could not read model names from the given GeoPackage SQLite database: {errorMessage}", e.Message);
             }
         }
 
         private async Task ValidateAsync(string connectionId)
         {
-            LogInfo("Validating file");
+            logger.LogInformation("Validating file");
             var uploadPath = configuration.GetSection("Validation")["UploadFolderInContainer"].Replace("{Name}", connectionId);
             var fileName = Path.GetFileName(UploadFilePath);
 
@@ -314,33 +312,16 @@ namespace ILICheck.Web.Controllers
             if (process.ExitCode != 0)
             {
                 // TODO: Add log/set state -> validatedWithErrors, Der ilivalidator hat Fehler in der Datei gefunden
-                LogInfo("The ilivalidator found errors in the file. Validation failed.");
+                logger.LogWarning("The ilivalidator found errors in the file. Validation failed.");
             }
             else
             {
                 // TODO: Add log/set state -> validatedWithoutErrors, Der ilivalidator hat keine Fehler in der Datei gefunden
-                LogInfo("The ilivalidator found no errors in the file. Validation successfull!");
+                logger.LogInformation("The ilivalidator found no errors in the file. Validation successfull!");
             }
 
             // TODO: Add log/set state -> stopConnection
-            LogInfo($"Validation completed: {DateTime.Now}");
-        }
-
-        private void LogInfo(string logMessage)
-        {
-            sessionLogger.Information(logMessage);
-            applicationLogger.LogInformation(logMessage);
-        }
-
-        private Serilog.ILogger GetLogger(string uploadedFileName)
-        {
-            var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
-            var logFileName = $"Session_{timestamp}_{uploadedFileName}.log";
-            var logFilePath = Path.Combine(UploadFolderPath, logFileName);
-
-            return new LoggerConfiguration()
-                .WriteTo.File(logFilePath)
-                .CreateLogger();
+            logger.LogInformation("Validation completed: {timestamp}", DateTime.Now);
         }
     }
 }
