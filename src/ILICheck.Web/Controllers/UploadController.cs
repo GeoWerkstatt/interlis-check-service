@@ -284,7 +284,7 @@ namespace ILICheck.Web.Controllers
 
                                 if (string.IsNullOrEmpty(transferfileExtension))
                                 {
-                                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Fehlende Datei(en)!" + uploadInstructionMessage);
+                                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Die hochgeladene .zip-Datei enthält keine Transferdatei(en)!" + uploadInstructionMessage);
                                     LogInfo(".zip-archive does not contain required files.");
                                     mainCts.Cancel();
                                     return;
