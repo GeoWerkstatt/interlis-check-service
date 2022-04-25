@@ -310,7 +310,7 @@ namespace ILICheck.Web.Controllers
                             }
                             else
                             {
-                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nicht unterstützte Dateien, bitte laden Sie ausschliesslich .xtf, .ift und .xml hoch! " + uploadInstructionMessage);
+                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nicht unterstützte Dateien, bitte laden Sie ausschliesslich .xtf, .ift, .ili und .xml hoch! " + uploadInstructionMessage);
                                 LogInfo("Validation aborted, .zip-archive contains unsupported file types.");
                                 mainCts.Cancel();
                                 return;
