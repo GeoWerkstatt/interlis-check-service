@@ -36,6 +36,10 @@ indent_size = 2
 [*.{json,js}]
 indent_size = 2
 
+# license-checker config file
+[licenseCustomFormat.json]
+end_of_line = lf
+
 [*.{ps1,psm1}]
 indent_size = 4
 

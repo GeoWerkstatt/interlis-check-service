@@ -3,6 +3,9 @@ WORKDIR /src
 ARG VERSION
 ARG REVISION
 
+# Set default shell
+SHELL ["/bin/bash", "-c"]
+
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
@@ -14,12 +17,19 @@ RUN dotnet restore "ILICheck.Web/ILICheck.Web.csproj"
 # Create optimized production build
 COPY ["src/ILICheck.Web/", "ILICheck.Web/"]
 ENV GENERATE_SOURCEMAP=false
-RUN env | xargs -L 1 -I {} echo 'REACT_APP_{}' > ILICheck.Web/ClientApp/.env.production
+ENV PUBLISH_DIR=/app/publish
 RUN dotnet publish "ILICheck.Web/ILICheck.Web.csproj" \
   -c Release \
   -p:VersionPrefix=${VERSION} \
   -p:SourceRevisionId=${REVISION} \
-  -o /app/publish
+  -o ${PUBLISH_DIR}
+
+# Generate license and copyright notice for Node.js packages
+WORKDIR /src/ILICheck.Web/ClientApp
+COPY ["licenseCustomFormat.json", "/src/ILICheck.Web/ClientApp/"]
+RUN npx license-checker --json --production \
+  --customPath licenseCustomFormat.json \
+  --out ${PUBLISH_DIR}/ClientApp/build/license.json
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 ARG VERSION

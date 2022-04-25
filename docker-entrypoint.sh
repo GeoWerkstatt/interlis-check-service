@@ -58,7 +58,7 @@ echo -n "Fix permissions for mounted volumes ..." && \
 
 # Export current environment for all users and cron jobs
 echo -n "Configure environment ..." && \
-  env | xargs -L 1 -I {} echo 'export "{}"' > /etc/profile.d/env.sh && \
+  env | xargs -I {} echo 'export "{}"' > /etc/profile.d/env.sh && \
   env >> /etc/environment && echo "done!"
 
 # Setup and run cron jobs
