@@ -31,7 +31,6 @@ namespace ILICheck.Web.Controllers
         private string gpkgModels;
         private bool isGpkg;
         private bool isZipFile;
-        private bool isInterlis2;
 
         public string CurrentConnectionId { get; set; }
 
@@ -109,7 +108,9 @@ namespace ILICheck.Web.Controllers
                 }
                 else
                 {
-                    if (isInterlis2)
+                    // Supported file extensions for additional xml validation
+                    var supportedExtensions = new[] { ".xml", ".xtf" };
+                    if (supportedExtensions.Contains(Path.GetExtension(UploadFilePath).ToLower()))
                     {
                         await Task.Run(async () =>
                         {
@@ -271,7 +272,6 @@ namespace ILICheck.Web.Controllers
                                     if (extensions.Where(extension => extension == ".xtf").Count() == 1)
                                     {
                                         transferfileExtension = ".xtf";
-                                        isInterlis2 = true;
                                     }
                                     else
                                     {
