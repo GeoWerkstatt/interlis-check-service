@@ -236,7 +236,7 @@ namespace ILICheck.Web.Controllers
 
         private async Task UnzipFileAsync(string zipFilePath, CancellationTokenSource mainCts, string connectionId)
         {
-            string uploadInstructionMessage = " Für eine INTERLIS 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und optional eine .ili-Datei mit dem passendem INTERLIS Modell enthält. Für eine INTERLIS 2 Validierung laden Sie eine .xtf-Datei hoch (INTERLIS-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen INTERLIS-Modellen (.ili) und Katalogdateien (.xml) hoch.";
+            string uploadInstructionMessage = "Für eine INTERLIS 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und optional eine .ili-Datei mit dem passendem INTERLIS Modell enthält. Für eine INTERLIS 2 Validierung laden Sie eine .xtf-Datei hoch (INTERLIS-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen INTERLIS-Modellen (.ili) und Katalogdateien (.xml) hoch.";
             await Task.Run(async () =>
             {
                 LogInfo("Unzipping file");
@@ -270,7 +270,7 @@ namespace ILICheck.Web.Controllers
                         }
                         else
                         {
-                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Dateipfad konnte nicht aufgelöst werden!" + uploadInstructionMessage);
+                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", $"Dateipfad konnte nicht aufgelöst werden! {uploadInstructionMessage}");
                             LogInfo("Upload aborted, cannot get extraction path.");
                             mainCts.Cancel();
                             return;
@@ -281,19 +281,19 @@ namespace ILICheck.Web.Controllers
                 }
                 catch (UnknownExtensionException ex)
                 {
-                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", $"Nicht unterstützte Dateien, bitte laden Sie ausschliesslich {string.Join(", ", GetAcceptedFileExtensionsForZipContent())} Dateien hoch! " + uploadInstructionMessage);
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", $"Nicht unterstützte Dateien, bitte laden Sie ausschliesslich {string.Join(", ", GetAcceptedFileExtensionsForZipContent())} Dateien hoch! {uploadInstructionMessage}");
                     LogInfo(ex.Message);
                     mainCts.Cancel();
                 }
                 catch (TransferFileNotFoundException ex)
                 {
-                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Die hochgeladene .zip-Datei enthält keine Transferdatei(en)!" + uploadInstructionMessage);
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", $"Die hochgeladene .zip-Datei enthält keine Transferdatei(en)! {uploadInstructionMessage}");
                     LogInfo(ex.Message);
                     mainCts.Cancel();
                 }
                 catch (MultipleTransferFileFoundException ex)
                 {
-                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Mehrere Transferdateien gefunden!" + uploadInstructionMessage);
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", $"Mehrere Transferdateien gefunden! {uploadInstructionMessage}");
                     LogInfo(ex.Message);
                     mainCts.Cancel();
                 }

@@ -80,10 +80,7 @@ namespace ILICheck.Web
         public static IEnumerable<string> GetAcceptedFileExtensionsForUserUploads()
         {
             var additionalExtensions = new[] { ".zip" };
-            foreach (var extension in GetOrderedTransferFileExtensions().Concat(additionalExtensions))
-            {
-                yield return extension;
-            }
+            return GetOrderedTransferFileExtensions().Concat(additionalExtensions);
         }
 
         /// <summary>
@@ -92,10 +89,7 @@ namespace ILICheck.Web
         public static IEnumerable<string> GetAcceptedFileExtensionsForZipContent()
         {
             var additionalExtensions = new[] { ".ili" };
-            foreach (var extension in GetOrderedTransferFileExtensions().Concat(additionalExtensions))
-            {
-                yield return extension;
-            }
+            return GetOrderedTransferFileExtensions().Concat(additionalExtensions);
         }
 
         /// <summary>
@@ -124,8 +118,8 @@ namespace ILICheck.Web
             // Find transfer file among the given extensions.
             var customOrder = GetOrderedTransferFileExtensions();
             string transferFileExtension = extensions
-                .OrderBy(x => Array.FindIndex(customOrder.ToArray(), t => t.Equals(x, StringComparison.OrdinalIgnoreCase)))
                 .Where(x => customOrder.Contains(x, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(x => Array.FindIndex(customOrder.ToArray(), t => t.Equals(x, StringComparison.OrdinalIgnoreCase)))
                 .FirstOrDefault();
 
             if (string.IsNullOrEmpty(transferFileExtension))
@@ -153,12 +147,13 @@ namespace ILICheck.Web
         /// </summary>
         private static IEnumerable<string> GetOrderedTransferFileExtensions()
         {
-            var acceptedFileExtensions = new List<string> { ".xtf", ".itf", ".xml" };
-            var gpkgSupportEnabled = Environment
-                .GetEnvironmentVariable("ENABLE_GPKG_VALIDATION", EnvironmentVariableTarget.Process) == "true";
+            foreach (var extension in new[] { ".xtf", ".itf", ".xml" })
+            {
+                yield return extension;
+            }
 
-            if (gpkgSupportEnabled) acceptedFileExtensions.Add(".gpkg");
-            return acceptedFileExtensions;
+            var gpkgSupportEnabled = Environment.GetEnvironmentVariable("ENABLE_GPKG_VALIDATION", EnvironmentVariableTarget.Process) == "true";
+            if (gpkgSupportEnabled) yield return ".gpkg";
         }
 
         private static string RemoveReferencedModels(this string models) =>

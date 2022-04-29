@@ -38,7 +38,7 @@ namespace ILICheck.Web
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".zip" };
             Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "false");
-            Assert.IsTrue(expected.SequenceEqual(Extensions.GetAcceptedFileExtensionsForUserUploads()));
+            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForUserUploads().ToList());
         }
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace ILICheck.Web
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".gpkg", ".zip" };
             Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "true");
-            Assert.IsTrue(expected.SequenceEqual(Extensions.GetAcceptedFileExtensionsForUserUploads()));
+            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForUserUploads().ToList());
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace ILICheck.Web
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".ili" };
             Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "false");
-            Assert.IsTrue(expected.SequenceEqual(Extensions.GetAcceptedFileExtensionsForZipContent()));
+            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForZipContent().ToList());
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace ILICheck.Web
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".gpkg", ".ili" };
             Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "true");
-            Assert.IsTrue(expected.SequenceEqual(Extensions.GetAcceptedFileExtensionsForZipContent()));
+            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForZipContent().ToList());
         }
 
         [TestMethod]
