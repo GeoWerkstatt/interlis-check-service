@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace ILICheck.Web
 {
     /// <summary>
     /// The exception that is thrown when a unknown or invalid file extension have been found.
     /// </summary>
+    [Serializable]
     public class UnknownExtensionException : Exception
     {
         /// <summary>
@@ -33,6 +35,15 @@ namespace ILICheck.Web
         /// <param name="innerException">The exception that is the cause of the current exception.</param>
         public UnknownExtensionException(string message, Exception innerException)
             : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnknownExtensionException"/> class
+        /// with serialized data.
+        /// </summary>
+        protected UnknownExtensionException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+            : base(serializationInfo, streamingContext)
         {
         }
     }
