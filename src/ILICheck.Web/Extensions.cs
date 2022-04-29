@@ -114,7 +114,7 @@ namespace ILICheck.Web
             foreach (var extension in extensions)
             {
                 if (!GetAcceptedFileExtensionsForZipContent()
-                    .Any(x => x.Contains(extension, StringComparison.InvariantCultureIgnoreCase)))
+                    .Any(x => x.Contains(extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new UnknownExtensionException(
                         string.Format("Transfer file extension <{0}> is an unknown file extension.", extension));
@@ -124,8 +124,8 @@ namespace ILICheck.Web
             // Find transfer file among the given extensions.
             var customOrder = GetOrderedTransferFileExtensions();
             string transferFileExtension = extensions
-                .OrderBy(x => Array.FindIndex(customOrder.ToArray(), t => t.Equals(x, StringComparison.InvariantCultureIgnoreCase)))
-                .Where(x => customOrder.Contains(x, StringComparer.InvariantCultureIgnoreCase))
+                .OrderBy(x => Array.FindIndex(customOrder.ToArray(), t => t.Equals(x, StringComparison.OrdinalIgnoreCase)))
+                .Where(x => customOrder.Contains(x, StringComparer.OrdinalIgnoreCase))
                 .FirstOrDefault();
 
             if (string.IsNullOrEmpty(transferFileExtension))
@@ -135,7 +135,7 @@ namespace ILICheck.Web
             else
             {
                 // Check for multiple transfer files of the same type
-                if (extensions.Count(extension => extension.Equals(transferFileExtension, StringComparison.InvariantCultureIgnoreCase)) > 1)
+                if (extensions.Count(extension => extension.Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase)) > 1)
                 {
                     throw new MultipleTransferFileFoundException(string.Format("Multiple transfer files <{0}> are not supported", transferFileExtension));
                 }

@@ -63,7 +63,7 @@ namespace ILICheck.Web.Controllers
             var deleteTransferFile = string.Equals(
                 Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
                 "true",
-                StringComparison.InvariantCultureIgnoreCase);
+                StringComparison.OrdinalIgnoreCase);
 
             MakeUploadFolder(connectionId);
 
