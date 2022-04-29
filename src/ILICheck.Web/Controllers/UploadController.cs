@@ -236,107 +236,74 @@ namespace ILICheck.Web.Controllers
 
         private async Task UnzipFileAsync(string zipFilePath, CancellationTokenSource mainCts, string connectionId)
         {
-            string uploadInstructionMessage = " Für eine INTERLIS 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und eine .ili-Datei mit dem passendem INTERLIS Modell enthält. Für eine INTERLIS 2 Validierung laden Sie eine .xtf-Datei hoch (INTERLIS-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen INTERLIS-Modellen (.ili) und Katalogdateien (.xml) hoch.";
+            string uploadInstructionMessage = " Für eine INTERLIS 1 Validierung laden Sie eine .zip-Datei hoch, die eine .itf-Datei und optional eine .ili-Datei mit dem passendem INTERLIS Modell enthält. Für eine INTERLIS 2 Validierung laden Sie eine .xtf-Datei hoch (INTERLIS-Modell wird in öffentlichen Modell-Repositories gesucht). Alternativ laden Sie eine .zip Datei mit einer .xtf-Datei und allen zur Validierung notwendigen INTERLIS-Modellen (.ili) und Katalogdateien (.xml) hoch.";
             await Task.Run(async () =>
+            {
+                LogInfo("Unzipping file");
+                var uploadPath = Path.GetFullPath(configuration.GetSection("Upload")["PathFormat"]);
+                var extractPath = Path.GetDirectoryName(uploadPath);
+
+                // Ensures that the last character on the extraction path is the directory separator char.
+                // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
+                if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
                 {
-                    LogInfo("Unzipping file");
-                    var uploadPath = Path.GetFullPath(configuration.GetSection("Upload")["PathFormat"]);
-                    var extractPath = Path.GetDirectoryName(uploadPath);
+                    extractPath += Path.DirectorySeparatorChar;
+                }
 
-                    // Ensures that the last character on the extraction path
-                    // is the directory separator char.
-                    // Without this, a malicious zip file could try to traverse outside of the expected
-                    // extraction path.
-                    if (!extractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
-                    {
-                        extractPath += Path.DirectorySeparatorChar;
-                    }
-
-                    string unzippedTransferfilePath = "";
+                try
+                {
                     using (var archive = ZipFile.OpenRead(zipFilePath))
                     {
-                        if (archive.Entries.Count > 0)
+                        var transferFileExtension = archive.Entries
+                            .Select(entry => Path.GetExtension(entry.FullName))
+                            .GetTransferFileExtension();
+
+                        if (Path.GetFullPath(zipFilePath).StartsWith(extractPath, StringComparison.Ordinal))
                         {
-                            string transferfileExtension = null;
-                            var extensions = archive.Entries.Select(entry => Path.GetExtension(entry.FullName).ToLower());
-                            var supportedExtensions = new List<string> { ".xtf", ".xml", ".itf", ".ili" };
-                            if (extensions.All(extension => supportedExtensions.Contains(extension)))
+                            var parentDirectory = Directory.GetParent(zipFilePath).FullName;
+                            foreach (var entry in archive.Entries)
                             {
-                                if (extensions.Count() == 2 && extensions.Contains(".ili") && extensions.Contains(".itf"))
-                                {
-                                    transferfileExtension = ".itf";
-                                }
-
-                                if (extensions.Contains(".xtf"))
-                                {
-                                    if (extensions.Where(extension => extension == ".xtf").Count() == 1)
-                                    {
-                                        transferfileExtension = ".xtf";
-                                    }
-                                    else
-                                    {
-                                        await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Mehrere Transferdateien gefunden!" + uploadInstructionMessage);
-                                        LogInfo("Validation aborted, .zip-archive contains several transfer files.");
-                                        mainCts.Cancel();
-                                        return;
-                                    }
-                                }
-
-                                if (string.IsNullOrEmpty(transferfileExtension))
-                                {
-                                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Die hochgeladene .zip-Datei enthält keine Transferdatei(en)!" + uploadInstructionMessage);
-                                    LogInfo(".zip-archive does not contain required files.");
-                                    mainCts.Cancel();
-                                    return;
-                                }
-
-                                if (Path.GetFullPath(zipFilePath).StartsWith(extractPath, StringComparison.Ordinal))
-                                {
-                                    var parentDirectory = Directory.GetParent(zipFilePath).FullName;
-                                    foreach (var entry in archive.Entries)
-                                    {
-                                        entry.ExtractToFile(Path.Combine(parentDirectory, entry.Name));
-                                    }
-
-                                    unzippedTransferfilePath = Directory.GetFiles(parentDirectory).Single(file => Path.GetExtension(file).ToLower() == transferfileExtension);
-                                }
-                                else
-                                {
-                                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Dateipfad konnte nicht aufgelöst werden!" + uploadInstructionMessage);
-                                    LogInfo("Upload aborted, cannot get extraction path.");
-                                    mainCts.Cancel();
-                                    return;
-                                }
+                                entry.ExtractToFile(Path.Combine(parentDirectory, entry.Name));
                             }
-                            else
-                            {
-                                await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Nicht unterstützte Dateien, bitte laden Sie ausschliesslich .xtf, .ift, .ili und .xml hoch! " + uploadInstructionMessage);
-                                LogInfo("Validation aborted, .zip-archive contains unsupported file types.");
-                                mainCts.Cancel();
-                                return;
-                            }
+
+                            UploadFilePath = Directory.GetFiles(parentDirectory).Single(file => Path.GetExtension(file) == transferFileExtension);
                         }
                         else
                         {
-                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Keine Datei! " + uploadInstructionMessage);
-                            LogInfo("Validation aborted, .zip-archive contains no files.");
+                            await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Dateipfad konnte nicht aufgelöst werden!" + uploadInstructionMessage);
+                            LogInfo("Upload aborted, cannot get extraction path.");
                             mainCts.Cancel();
                             return;
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(unzippedTransferfilePath))
-                    {
-                        System.IO.File.Delete(zipFilePath);
-                        UploadFilePath = unzippedTransferfilePath;
-                    }
-                    else
-                    {
-                        await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Unbekannter Fehler.");
-                        LogInfo("Upload aborted, unknown error.");
-                        mainCts.Cancel();
-                    }
-                });
+                    System.IO.File.Delete(zipFilePath);
+                }
+                catch (UnknownExtensionException ex)
+                {
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", $"Nicht unterstützte Dateien, bitte laden Sie ausschliesslich {string.Join(", ", GetAcceptedFileExtensionsForZipContent())} Dateien hoch! " + uploadInstructionMessage);
+                    LogInfo(ex.Message);
+                    mainCts.Cancel();
+                }
+                catch (TransferFileNotFoundException ex)
+                {
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Die hochgeladene .zip-Datei enthält keine Transferdatei(en)!" + uploadInstructionMessage);
+                    LogInfo(ex.Message);
+                    mainCts.Cancel();
+                }
+                catch (MultipleTransferFileFoundException ex)
+                {
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Mehrere Transferdateien gefunden!" + uploadInstructionMessage);
+                    LogInfo(ex.Message);
+                    mainCts.Cancel();
+                }
+                catch (Exception ex)
+                {
+                    await hubContext.Clients.Client(connectionId).SendAsync("validationAborted", "Unbekannter Fehler.");
+                    LogInfo(ex.Message);
+                    mainCts.Cancel();
+                }
+            });
         }
 
         private async Task ParseXmlAsync(string filePath, CancellationTokenSource mainCts, string connectionId)
