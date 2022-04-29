@@ -60,7 +60,7 @@ namespace ILICheck.Web.Controllers
             var connectionId = request.Query["connectionId"][0];
             CurrentConnectionId = connectionId;
             var fileName = request.Query["fileName"][0];
-            var deleteXtfTransferFile = string.Equals(
+            var deleteTransferFile = string.Equals(
                 Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
                 "true",
                 StringComparison.InvariantCultureIgnoreCase);
@@ -71,19 +71,19 @@ namespace ILICheck.Web.Controllers
             LogInfo($"Start uploading: {fileName}");
             LogInfo($"File size: {request.ContentLength}");
             LogInfo($"Start time: {DateTime.Now}");
-            LogInfo($"Delete XTF transfer file after validation: {deleteXtfTransferFile}");
+            LogInfo($"Delete transfer file after validation: {deleteTransferFile}");
 
             var uploadTask = UploadToDirectoryAsync(request);
             await DoTaskWhileSendingUpdatesAsync(uploadTask, connectionId, null);
             if (uploadTask.IsFaulted) throw uploadTask.Exception;
 
-            _ = DoValidationAsync(connectionId, deleteXtfTransferFile);
+            _ = DoValidationAsync(connectionId, deleteTransferFile);
 
             LogInfo($"Successfully received file: {DateTime.Now}");
             return uploadTask.Result;
         }
 
-        private async Task DoValidationAsync(string connectionId, bool deleteXtfTransferFile)
+        private async Task DoValidationAsync(string connectionId, bool deleteTransferFile)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace ILICheck.Web.Controllers
                 await hubContext.Clients.Client(connectionId).SendAsync("validationAborted");
             }
 
-            if (deleteXtfTransferFile || validationTokenSource.Token.IsCancellationRequested || isGpkg)
+            if (deleteTransferFile || validationTokenSource.Token.IsCancellationRequested || isGpkg)
             {
                 if (!string.IsNullOrEmpty(UploadFilePath))
                 {
