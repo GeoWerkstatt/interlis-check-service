@@ -74,6 +74,88 @@ namespace ILICheck.Web
             return string.Join(';', result.Distinct());
         }
 
+        /// <summary>
+        /// Gets the accepted file extensions for user web uploads.
+        /// </summary>
+        public static IEnumerable<string> GetAcceptedFileExtensionsForUserUploads()
+        {
+            var additionalExtensions = new[] { ".zip" };
+            return GetOrderedTransferFileExtensions().Concat(additionalExtensions);
+        }
+
+        /// <summary>
+        /// Gets the accepted file extensions for ZIP content.
+        /// </summary>
+        public static IEnumerable<string> GetAcceptedFileExtensionsForZipContent()
+        {
+            var additionalExtensions = new[] { ".ili" };
+            return GetOrderedTransferFileExtensions().Concat(additionalExtensions);
+        }
+
+        /// <summary>
+        /// Gets the transfer file extension for the given file <paramref name="extensions"/>.
+        /// If there are multiple transfer file extensions available in <paramref name="extensions"/>,
+        /// there is a specific order defined in <see cref="GetOrderedTransferFileExtensions"/> to choose from.
+        /// </summary>
+        /// <exception cref="UnknownExtensionException">If <paramref name="extensions"/> contains unknown extensions.</exception>
+        /// <exception cref="TransferFileNotFoundException">If no transfer file was found in <paramref name="extensions"/>.</exception>
+        /// <exception cref="MultipleTransferFileFoundException">If multiple transfer files were found in <paramref name="extensions"/>.</exception>
+        public static string GetTransferFileExtension(this IEnumerable<string> extensions)
+        {
+            if (extensions == null) throw new ArgumentNullException(nameof(extensions));
+
+            // Check for unknown transfer file extensions
+            foreach (var extension in extensions)
+            {
+                if (!GetAcceptedFileExtensionsForZipContent()
+                    .Any(x => x.Contains(extension, StringComparison.OrdinalIgnoreCase)))
+                {
+                    throw new UnknownExtensionException(
+                        string.Format("Transfer file extension <{0}> is an unknown file extension.", extension));
+                }
+            }
+
+            // Find transfer file among the given extensions.
+            var customOrder = GetOrderedTransferFileExtensions();
+            string transferFileExtension = extensions
+                .Where(x => customOrder.Contains(x, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(x => Array.FindIndex(customOrder.ToArray(), t => t.Equals(x, StringComparison.OrdinalIgnoreCase)))
+                .FirstOrDefault();
+
+            if (string.IsNullOrEmpty(transferFileExtension))
+            {
+                throw new TransferFileNotFoundException(string.Format("No transfer file found."));
+            }
+            else
+            {
+                // Check for multiple transfer files of the same type
+                if (extensions.Count(extension => extension.Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase)) > 1)
+                {
+                    throw new MultipleTransferFileFoundException(string.Format("Multiple transfer files <{0}> are not supported", transferFileExtension));
+                }
+                else
+                {
+                    return transferFileExtension;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the transfer file extensions which are supported for validation with ilivalidator.
+        /// The ordered list of transfer file extensions is prioritized according to known rules
+        /// when validate with additional files (eg. catalogues).
+        /// </summary>
+        private static IEnumerable<string> GetOrderedTransferFileExtensions()
+        {
+            foreach (var extension in new[] { ".xtf", ".itf", ".xml" })
+            {
+                yield return extension;
+            }
+
+            var gpkgSupportEnabled = Environment.GetEnvironmentVariable("ENABLE_GPKG_VALIDATION", EnvironmentVariableTarget.Process) == "true";
+            if (gpkgSupportEnabled) yield return ".gpkg";
+        }
+
         private static string RemoveReferencedModels(this string models) =>
             removeReferencedModelsRegex.Replace(models.Trim(), string.Empty);
     }
