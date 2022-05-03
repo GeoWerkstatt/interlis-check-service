@@ -34,6 +34,7 @@ namespace ILICheck.Web
                         .WithOrigins("https://localhost:44302");
                 });
             });
+            services.AddTransient<IValidator, Validator>();
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 209715200;
