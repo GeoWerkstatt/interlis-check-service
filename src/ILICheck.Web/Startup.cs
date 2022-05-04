@@ -23,6 +23,7 @@ namespace ILICheck.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsSettings", policy =>

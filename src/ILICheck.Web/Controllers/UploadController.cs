@@ -1,117 +1,97 @@
-﻿using ILICheck.Web.Jobs;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace ILICheck.Web.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class UploadController : Controller
     {
         private readonly ILogger<UploadController> logger;
         private readonly IConfiguration configuration;
+        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IValidator validator;
 
-        public string UploadFolderPath { get; set; }
-        public string UploadFilePath { get; set; }
-
-        public UploadController(ILogger<UploadController> logger, IConfiguration configuration, IValidator validator)
+        public UploadController(ILogger<UploadController> logger, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IValidator validator)
         {
             this.logger = logger;
             this.configuration = configuration;
+            this.httpContextAccessor = httpContextAccessor;
             this.validator = validator;
         }
 
         /// <summary>
-        /// Action to upload files to a directory.
+        /// Creates a new validation job for the given transfer <paramref name="file"/>
+        /// A compressed <paramref name="file"/> (.zip) containing additional models and
+        /// catalogues is also supported.
         /// </summary>
-        /// <returns>A <see cref="Task"/> of type <see cref="IActionResult"/>.</returns>
+        /// <param name="file">The transfer or ZIP file to validate.</param>
+        /// <remarks>
+        /// Sample request:
+        /// curl -i -X POST -H "Content-Type: multipart/form-data" \
+        ///   -F 'file=@example.xtf' http://example.com/api/upload
+        /// </remarks>
+        /// <returns>Information for a newly created validation job.</returns>
+        /// <response code="201">The validation job was successfully created and is now scheduled for execution.</response>
+        /// <response code="400">The server cannot precess the request due to invalid or malformed request.</response>
         [HttpPost]
-        [Route("api/[controller]")]
-        public async Task<IActionResult> UploadAsync()
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1629:DocumentationTextMustEndWithAPeriod", Justification = "Not applicable for code examples.")]
+        public async Task<IActionResult> Post(IFormFile file)
         {
-            var request = HttpContext.Request;
-            var connectionId = Guid.NewGuid().ToString();
-            var fileName = request.Query["fileName"][0];
+            var httpRequest = httpContextAccessor.HttpContext.Request;
+
+            // TODO: Additional argument validation required? (eg. file != null && file.length > 0)
             var deleteTransferFile = string.Equals(
                 Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
                 "true",
                 StringComparison.OrdinalIgnoreCase);
 
-            MakeUploadFolder(connectionId);
+            // Create a unique validation job identification
+            var jobId = Guid.NewGuid().ToString();
 
-            logger.LogInformation("Start uploading: {fileName}", fileName);
-            logger.LogInformation("File size: {contentLength}", request.ContentLength);
-            logger.LogInformation("Start time: {timestamp}", DateTime.Now);
+            // TODO: Create folder for validation job files
+            // TODO: Sanitize file/folder names (save to disk/logging)
+            // var uploadFolderPath = configuration.GetUploadPathForSession(jobId);
+            var uploadFolderPath = Path.Combine(@"C:\Temp", jobId);
+            var uploadFileName = Path.Combine(uploadFolderPath, Path.GetRandomFileName());
+            Directory.CreateDirectory(uploadFolderPath);
+
+            // Log some information
+            logger.LogInformation("Start uploading <{fileName}> to <{folder}>", file.FileName, uploadFolderPath);
+            logger.LogInformation("Transfer file size: {contentLength}", httpRequest.ContentLength);
             logger.LogInformation("Delete transfer file(s) after validation: {deleteTransferFile}", deleteTransferFile);
+            logger.LogInformation("Start time: {timestamp}", DateTime.Now);
 
-            // TODO: Handle exception while uploading file...
-            await UploadToDirectoryAsync(request);
+            // TODO: Handle exception while uploading files
+            // logger.LogWarning("Upload aborted, no files data in the request.");
+            // return BadRequest("Es wurde keine Datei hochgeladen.");
 
-            // Fire and forget
-            // Later on Hangfire is used to schedule job
-            _ = validator.ValidateAsync(connectionId, deleteTransferFile, UploadFilePath);
+            // Save the file to disk
+            using (var stream = System.IO.File.Create(uploadFileName))
+            {
+                await file.CopyToAsync(stream);
+            }
 
             logger.LogInformation("Successfully received file: {timestamp}", DateTime.Now);
 
-            // TODO: Return upload result, default HTTP 201
+            // TODO: Schedule job/ Add to job queue.
+            _ = validator.ValidateAsync(jobId, deleteTransferFile, uploadFolderPath);
+            logger.LogInformation("Job with id <{id}> is scheduled for execution.", jobId);
+
+            // TODO: Return HTTP 201 instead of HTTP 200
             return new JsonResult(new
             {
-                jobId = connectionId,
-                statusUrl = "api/v1/status/ff11cb95-1a91-4fea-ba86-2ed5c35a0d56",
+                jobId,
+                statusUrl = string.Format("{0}/{1}", httpRequest.Path.Value, jobId),
             });
-        }
-
-        private void MakeUploadFolder(string connectionId)
-        {
-            UploadFolderPath = configuration.GetUploadPathForSession(connectionId);
-            Directory.CreateDirectory(UploadFolderPath);
-        }
-
-        private async Task<IActionResult> UploadToDirectoryAsync(HttpRequest request)
-        {
-            logger.LogInformation("Uploading file");
-            if (!request.HasFormContentType ||
-                !MediaTypeHeaderValue.TryParse(request.ContentType, out var mediaTypeHeader) ||
-                string.IsNullOrEmpty(mediaTypeHeader.Boundary.Value))
-            {
-                logger.LogWarning("Upload aborted, unsupported media type.");
-                return new UnsupportedMediaTypeResult();
-            }
-
-            var reader = new MultipartReader(mediaTypeHeader.Boundary.Value, request.Body);
-            var section = await reader.ReadNextSectionAsync();
-
-            while (section != null)
-            {
-                var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition,
-                    out var contentDisposition);
-
-                if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
-                    !string.IsNullOrEmpty(contentDisposition.FileName.Value))
-                {
-                    var timestamp = DateTime.Now.ToString("yyyy_MM_d_HHmmss");
-                    var uploadFileName = $"{timestamp}_{contentDisposition.FileName.Value}";
-                    UploadFilePath = Path.Combine(UploadFolderPath, uploadFileName);
-
-                    using (var targetStream = System.IO.File.Create(UploadFilePath))
-                    {
-                        await section.Body.CopyToAsync(targetStream);
-                    }
-
-                    return Ok();
-                }
-
-                section = await reader.ReadNextSectionAsync();
-            }
-
-            logger.LogWarning("Upload aborted, no files data in the request.");
-            return BadRequest("Es wurde keine Datei hochgeladen.");
         }
     }
 }
