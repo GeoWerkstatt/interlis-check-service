@@ -55,7 +55,7 @@ services:
     #     Application and error logs
     #
     #   - /path/to/uploads:/uploads
-    #     XTF transfer files, ilivalidator and session logs
+    #     Transfer files, ilivalidator and session logs
     #
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
@@ -91,16 +91,16 @@ services:
     #     host machine which prevents permisson issues when writing files to the mounted volume
     #
     #   - DELETE_TRANSFER_FILES=true
-    #     Optional, If set to true, the XTF transfer file gets deleted right after ilivalidator
+    #     Optional, If set to true, transfer files get deleted right after ilivalidator
     #     has completed validation
     #     Default false
     #
     #   - TRANSFER_AND_LOG_DATA_RETENTION=15 minutes
-    #     Optional, If set, XTF transfer files and ilivalidator log files older than the
+    #     Optional, If set, transfer files and ilivalidator log files older than the
     #     specified value get deleted
     #     Keep in mind, a validation may last for several minutes. In order to prevent files
     #     from getting deleted during a long running validation choose at least '15 minutes'
-    #     Default unset (preserves logs and XTF transfer files forever)
+    #     Default unset (preserves logs and transfer files forever)
     #     examples: - 30 minutes
     #               - 10 hours
     #               - 5 days
@@ -173,7 +173,7 @@ Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene
 
 ### Web-Check-Service
 
-- Konfiguration der Aufbewahrungszeit der XTF Transferdateien und ilivalidator Log-Dateien auf dem Server
+- Konfiguration der Aufbewahrungszeit der Transferdateien und ilivalidator Log-Dateien auf dem Server
 - Eigenes Favicon-Icon
 - Eigenes Anbieter-Logo mit Verlinkung zu eigener Webseite
 - Eigenes Applikations-Logo
