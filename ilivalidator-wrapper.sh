@@ -26,5 +26,5 @@ then
   java -jar $ILITOOLS_HOME_DIR/ili2gpkg/$ILI2GPKG_VERSION/ili2gpkg-$ILI2GPKG_VERSION.jar --validate $options --dbfile "$transfer_file_name"
 else
   set -x #echo on
-  java -jar $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar $options "$transfer_file_name"
+  java -jar $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar --allObjectsAccessible  $options "$transfer_file_name"
 fi
