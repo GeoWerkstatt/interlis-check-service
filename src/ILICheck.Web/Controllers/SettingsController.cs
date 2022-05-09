@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using static ILICheck.Web.Extensions;
@@ -10,10 +11,12 @@ namespace ILICheck.Web.Controllers
     public class SettingsController : Controller
     {
         private readonly ILogger<SettingsController> logger;
+        private readonly IConfiguration configuration;
 
-        public SettingsController(ILogger<SettingsController> logger)
+        public SettingsController(ILogger<SettingsController> logger, IConfiguration configuration)
         {
             this.logger = logger;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -27,12 +30,12 @@ namespace ILICheck.Web.Controllers
 
             return new JsonResult(new
             {
-                applicationName = Environment.GetEnvironmentVariable("CUSTOM_APP_NAME", EnvironmentVariableTarget.Process) ?? "INTERLIS Web-Check-Service",
-                applicationVersion = Environment.GetEnvironmentVariable("ILICHECK_APP_VERSION", EnvironmentVariableTarget.Process) ?? "undefined",
-                vendorLink = Environment.GetEnvironmentVariable("CUSTOM_VENDOR_LINK", EnvironmentVariableTarget.Process),
-                ilivalidatorVersion = Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION", EnvironmentVariableTarget.Process) ?? "undefined",
-                ili2gpkgVersion = Environment.GetEnvironmentVariable("ILI2GPKG_VERSION", EnvironmentVariableTarget.Process) ?? "undefined/not configured",
-                acceptedFileTypes = string.Join(", ", GetAcceptedFileExtensionsForUserUploads()),
+                applicationName = configuration.GetValue<string>("CUSTOM_APP_NAME") ?? "INTERLIS Web-Check-Service",
+                applicationVersion = configuration.GetValue<string>("ILICHECK_APP_VERSION") ?? "undefined",
+                vendorLink = configuration.GetValue<string>("CUSTOM_VENDOR_LINK"),
+                ilivalidatorVersion = configuration.GetValue<string>("ILIVALIDATOR_VERSION") ?? "undefined",
+                ili2gpkgVersion = configuration.GetValue<string>("ILI2GPKG_VERSION") ?? "undefined/not configured",
+                acceptedFileTypes = string.Join(", ", configuration.GetAcceptedFileExtensionsForUserUploads()),
             });
         }
     }

@@ -49,10 +49,6 @@ namespace ILICheck.Web.Controllers
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
             // TODO: Additional argument validation required? (eg. file != null && file.length > 0)
-            var deleteTransferFile = string.Equals(
-                Environment.GetEnvironmentVariable("DELETE_TRANSFER_FILES", EnvironmentVariableTarget.Process),
-                "true",
-                StringComparison.OrdinalIgnoreCase);
 
             // Create a unique validation job identification
             var jobId = Guid.NewGuid().ToString();
@@ -67,7 +63,6 @@ namespace ILICheck.Web.Controllers
             // Log some information
             logger.LogInformation("Start uploading <{fileName}> to <{folder}>", file.FileName, uploadFolderPath);
             logger.LogInformation("Transfer file size: {contentLength}", httpRequest.ContentLength);
-            logger.LogInformation("Delete transfer file(s) after validation: {deleteTransferFile}", deleteTransferFile);
             logger.LogInformation("Start time: {timestamp}", DateTime.Now);
 
             // TODO: Handle exception while uploading files
@@ -83,7 +78,7 @@ namespace ILICheck.Web.Controllers
             logger.LogInformation("Successfully received file: {timestamp}", DateTime.Now);
 
             // TODO: Schedule job/ Add to job queue.
-            _ = validator.ValidateAsync(jobId, deleteTransferFile, uploadFolderPath);
+            _ = validator.ValidateAsync(jobId, uploadFolderPath);
             logger.LogInformation("Job with id <{id}> is scheduled for execution.", jobId);
 
             // TODO: Return HTTP 201 instead of HTTP 200

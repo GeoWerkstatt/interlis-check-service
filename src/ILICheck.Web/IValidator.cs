@@ -4,6 +4,6 @@ namespace ILICheck.Web
 {
     public interface IValidator
     {
-        Task ValidateAsync(string jobId, bool deleteTransferFile, string uploadFilePath);
+        Task ValidateAsync(string jobId, string uploadFilePath);
     }
 }

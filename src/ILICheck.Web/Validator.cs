@@ -27,8 +27,11 @@ namespace ILICheck.Web
             this.configuration = configuration;
         }
 
-        public async Task ValidateAsync(string jobId, bool deleteTransferFile, string uploadFilePath)
+        public async Task ValidateAsync(string jobId, string uploadFilePath)
         {
+            var deleteTransferFile = configuration.GetValue<bool>("DELETE_TRANSFER_FILES");
+            logger.LogInformation("Delete transfer file(s) after validation: {deleteTransferFile}", deleteTransferFile);
+
             this.uploadFilePath = uploadFilePath;
 
             isZipFile = Path.GetExtension(uploadFilePath) == ".zip";
@@ -106,9 +109,8 @@ namespace ILICheck.Web
                 {
                     using (var archive = ZipFile.OpenRead(zipFilePath))
                     {
-                        var transferFileExtension = archive.Entries
-                            .Select(entry => Path.GetExtension(entry.FullName))
-                            .GetTransferFileExtension();
+                        var fileExtensionsInZipArchive = archive.Entries.Select(entry => Path.GetExtension(entry.FullName));
+                        var transferFileExtension = configuration.GetTransferFileExtension(fileExtensionsInZipArchive);
 
                         if (Path.GetFullPath(zipFilePath).StartsWith(extractPath, StringComparison.Ordinal))
                         {

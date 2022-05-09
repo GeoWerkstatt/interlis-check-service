@@ -77,19 +77,21 @@ namespace ILICheck.Web
         /// <summary>
         /// Gets the accepted file extensions for user web uploads.
         /// </summary>
-        public static IEnumerable<string> GetAcceptedFileExtensionsForUserUploads()
+        /// <param name="configuration">The configuration.</param>
+        public static IEnumerable<string> GetAcceptedFileExtensionsForUserUploads(this IConfiguration configuration)
         {
             var additionalExtensions = new[] { ".zip" };
-            return GetOrderedTransferFileExtensions().Concat(additionalExtensions);
+            return GetOrderedTransferFileExtensions(configuration).Concat(additionalExtensions);
         }
 
         /// <summary>
         /// Gets the accepted file extensions for ZIP content.
         /// </summary>
-        public static IEnumerable<string> GetAcceptedFileExtensionsForZipContent()
+        /// <param name="configuration">The configuration.</param>
+        public static IEnumerable<string> GetAcceptedFileExtensionsForZipContent(this IConfiguration configuration)
         {
             var additionalExtensions = new[] { ".ili" };
-            return GetOrderedTransferFileExtensions().Concat(additionalExtensions);
+            return GetOrderedTransferFileExtensions(configuration).Concat(additionalExtensions);
         }
 
         /// <summary>
@@ -97,17 +99,19 @@ namespace ILICheck.Web
         /// If there are multiple transfer file extensions available in <paramref name="extensions"/>,
         /// there is a specific order defined in <see cref="GetOrderedTransferFileExtensions"/> to choose from.
         /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="extensions">All the file extensions to search for the right transfer file extension in.</param>
         /// <exception cref="UnknownExtensionException">If <paramref name="extensions"/> contains unknown extensions.</exception>
         /// <exception cref="TransferFileNotFoundException">If no transfer file was found in <paramref name="extensions"/>.</exception>
         /// <exception cref="MultipleTransferFileFoundException">If multiple transfer files were found in <paramref name="extensions"/>.</exception>
-        public static string GetTransferFileExtension(this IEnumerable<string> extensions)
+        public static string GetTransferFileExtension(this IConfiguration configuration, IEnumerable<string> extensions)
         {
             if (extensions == null) throw new ArgumentNullException(nameof(extensions));
 
             // Check for unknown transfer file extensions
             foreach (var extension in extensions)
             {
-                if (!GetAcceptedFileExtensionsForZipContent()
+                if (!configuration.GetAcceptedFileExtensionsForZipContent()
                     .Any(x => x.Contains(extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new UnknownExtensionException(
@@ -116,7 +120,7 @@ namespace ILICheck.Web
             }
 
             // Find transfer file among the given extensions.
-            var customOrder = GetOrderedTransferFileExtensions();
+            var customOrder = configuration.GetOrderedTransferFileExtensions();
             string transferFileExtension = extensions
                 .Where(x => customOrder.Contains(x, StringComparer.OrdinalIgnoreCase))
                 .OrderBy(x => Array.FindIndex(customOrder.ToArray(), t => t.Equals(x, StringComparison.OrdinalIgnoreCase)))
@@ -145,15 +149,15 @@ namespace ILICheck.Web
         /// The ordered list of transfer file extensions is prioritized according to known rules
         /// when validate with additional files (eg. catalogues).
         /// </summary>
-        private static IEnumerable<string> GetOrderedTransferFileExtensions()
+        /// <param name="configuration">The configuration.</param>
+        private static IEnumerable<string> GetOrderedTransferFileExtensions(this IConfiguration configuration)
         {
             foreach (var extension in new[] { ".xtf", ".itf", ".xml" })
             {
                 yield return extension;
             }
 
-            var gpkgSupportEnabled = Environment.GetEnvironmentVariable("ENABLE_GPKG_VALIDATION", EnvironmentVariableTarget.Process) == "true";
-            if (gpkgSupportEnabled) yield return ".gpkg";
+            if (configuration.GetValue<bool>("ENABLE_GPKG_VALIDATION")) yield return ".gpkg";
         }
 
         private static string RemoveReferencedModels(this string models) =>

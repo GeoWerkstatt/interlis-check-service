@@ -37,90 +37,97 @@ namespace ILICheck.Web
         public void GetAcceptedFileExtensionsForUserUploadsWithoutGpkgEnabled()
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".zip" };
-            Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "false");
-            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForUserUploads().ToList());
+            var configuration = CreateConfiguration(enableGpkgValidation: false);
+            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForUserUploads().ToList());
         }
 
         [TestMethod]
         public void GetAcceptedFileExtensionsForUserUploadsWithGpkgEnabled()
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".gpkg", ".zip" };
-            Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "true");
-            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForUserUploads().ToList());
+            var configuration = CreateConfiguration(enableGpkgValidation: true);
+            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForUserUploads().ToList());
         }
 
         [TestMethod]
         public void GetAcceptedFileExtensionsForZipContentWithoutGpkgEnabled()
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".ili" };
-            Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "false");
-            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForZipContent().ToList());
+            var configuration = CreateConfiguration(enableGpkgValidation: false);
+            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForZipContent().ToList());
         }
 
         [TestMethod]
         public void GetAcceptedFileExtensionsForZipContentWithGpkgEnabled()
         {
             var expected = new[] { ".xtf", ".itf", ".xml", ".gpkg", ".ili" };
-            Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "true");
-            CollectionAssert.AreEqual(expected, Extensions.GetAcceptedFileExtensionsForZipContent().ToList());
+            var configuration = CreateConfiguration(enableGpkgValidation: true);
+            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForZipContent().ToList());
         }
 
         [TestMethod]
         public void GetTransferFileExtensionWithoutGpkgEnabled()
         {
+            var configuration = CreateConfiguration(enableGpkgValidation: false);
+
             // Assert transfer file extension for various zip content
-            Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "false");
-            Assert.AreEqual(".XTF", Extensions.GetTransferFileExtension(new[] { ".xml", ".ili", ".XTF", ".itf" }));
-            Assert.AreEqual(".itf", Extensions.GetTransferFileExtension(new[] { ".xml", ".ili", ".itf" }));
-            Assert.AreEqual(".XML", Extensions.GetTransferFileExtension(new[] { ".XML", ".ili" }));
-            Assert.AreEqual(".xml", Extensions.GetTransferFileExtension(new[] { ".xml" }));
-            Assert.AreEqual(".itf", Extensions.GetTransferFileExtension(new[] { ".itf" }));
+            Assert.AreEqual(".XTF", configuration.GetTransferFileExtension(new[] { ".xml", ".ili", ".XTF", ".itf" }));
+            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".xml", ".ili", ".itf" }));
+            Assert.AreEqual(".XML", configuration.GetTransferFileExtension(new[] { ".XML", ".ili" }));
+            Assert.AreEqual(".xml", configuration.GetTransferFileExtension(new[] { ".xml" }));
+            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".itf" }));
         }
 
         [TestMethod]
         public void GetTransferFileExtensionWithGpkgEnabled()
         {
+            var configuration = CreateConfiguration(enableGpkgValidation: true);
+
             // Assert transfer file extension for various zip content
-            Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "true");
-            Assert.AreEqual(".xtf", Extensions.GetTransferFileExtension(new[] { ".gpkg", ".xml", ".ILI", ".xtf", ".itf" }));
-            Assert.AreEqual(".ITF", Extensions.GetTransferFileExtension(new[] { ".GPKG", ".xml", ".ili", ".ITF" }));
-            Assert.AreEqual(".xml", Extensions.GetTransferFileExtension(new[] { ".gpkg", ".xml", ".ili" }));
-            Assert.AreEqual(".XML", Extensions.GetTransferFileExtension(new[] { ".gpkg", ".XML" }));
-            Assert.AreEqual(".itf", Extensions.GetTransferFileExtension(new[] { ".gpkg", ".itf" }));
-            Assert.AreEqual(".gpkg", Extensions.GetTransferFileExtension(new[] { ".gpkg" }));
-            Assert.AreEqual(".GPkg", Extensions.GetTransferFileExtension(new[] { ".GPkg" }));
+            Assert.AreEqual(".xtf", configuration.GetTransferFileExtension(new[] { ".gpkg", ".xml", ".ILI", ".xtf", ".itf" }));
+            Assert.AreEqual(".ITF", configuration.GetTransferFileExtension(new[] { ".GPKG", ".xml", ".ili", ".ITF" }));
+            Assert.AreEqual(".xml", configuration.GetTransferFileExtension(new[] { ".gpkg", ".xml", ".ili" }));
+            Assert.AreEqual(".XML", configuration.GetTransferFileExtension(new[] { ".gpkg", ".XML" }));
+            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".gpkg", ".itf" }));
+            Assert.AreEqual(".gpkg", configuration.GetTransferFileExtension(new[] { ".gpkg" }));
+            Assert.AreEqual(".GPkg", configuration.GetTransferFileExtension(new[] { ".GPkg" }));
 
             // Supports multiple model and catalogue items
-            Assert.AreEqual(".itf", Extensions.GetTransferFileExtension(new[] { ".itf", ".ili", ".ILI" }));
-            Assert.AreEqual(".xtf", Extensions.GetTransferFileExtension(new[] { ".xtf", ".xml", ".xml", ".ili", ".ili" }));
+            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".itf", ".ili", ".ILI" }));
+            Assert.AreEqual(".xtf", configuration.GetTransferFileExtension(new[] { ".xtf", ".xml", ".xml", ".ili", ".ili" }));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException), "Null argument should be rejected.")]
-        public void GetTransferFileExtensionForNull() => Extensions.GetTransferFileExtension(null);
+        public void GetTransferFileExtensionForNull() =>
+            CreateConfiguration(enableGpkgValidation: false).GetTransferFileExtension(null);
 
         [TestMethod]
         [ExpectedException(typeof(TransferFileNotFoundException), "Extensions with no transfer file should be detected.")]
-        public void GetTransferFileExtensionForNoTransferFile() => Extensions.GetTransferFileExtension(new[] { ".ili" });
+        public void GetTransferFileExtensionForNoTransferFile() =>
+            CreateConfiguration(enableGpkgValidation: false).GetTransferFileExtension(new[] { ".ili" });
 
         [TestMethod]
         [ExpectedException(typeof(TransferFileNotFoundException), "Empty extensions should be detected.")]
-        public void GetTransferFileExtensionForEmpty() => Extensions.GetTransferFileExtension(Enumerable.Empty<string>());
+        public void GetTransferFileExtensionForEmpty() =>
+            CreateConfiguration(enableGpkgValidation: false).GetTransferFileExtension(Enumerable.Empty<string>());
 
         [TestMethod]
         [ExpectedException(typeof(MultipleTransferFileFoundException), "Multiple transfer file extensions of the same type should be detected.")]
-        public void GetTransferFileExtensionForMultiple() => Extensions.GetTransferFileExtension(new[] { ".itf", ".itf" });
+        public void GetTransferFileExtensionForMultiple() =>
+            CreateConfiguration(enableGpkgValidation: false).GetTransferFileExtension(new[] { ".itf", ".itf" });
 
         [TestMethod]
         [ExpectedException(typeof(UnknownExtensionException), "An unknown transfer file extension should be rejected.")]
-        public void GetTransferFileExtensionForUnknownExtension() => Extensions.GetTransferFileExtension(new[] { ".sh" });
+        public void GetTransferFileExtensionForUnknownExtension() =>
+            CreateConfiguration(enableGpkgValidation: false).GetTransferFileExtension(new[] { ".sh" });
 
         [TestMethod]
         [ExpectedException(typeof(UnknownExtensionException), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.")]
-        public void GetTransferFileExtensionForGpkgWithoutGpkgEnabled()
-        {
-            Environment.SetEnvironmentVariable("ENABLE_GPKG_VALIDATION", "false");
-            Extensions.GetTransferFileExtension(new[] { ".gpkg" });
-        }
+        public void GetTransferFileExtensionForGpkgWithoutGpkgEnabled() =>
+            CreateConfiguration(enableGpkgValidation: false).GetTransferFileExtension(new[] { ".gpkg" });
+
+        private static IConfiguration CreateConfiguration(bool enableGpkgValidation)
+            => new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string> { { "ENABLE_GPKG_VALIDATION", enableGpkgValidation.ToString() } }).Build();
     }
 }
