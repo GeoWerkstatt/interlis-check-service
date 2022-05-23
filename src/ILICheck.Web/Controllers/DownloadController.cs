@@ -1,52 +1,47 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 using System.Linq;
 
 namespace ILICheck.Web.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class DownloadController : Controller
     {
         private readonly ILogger<DownloadController> logger;
-        private readonly IConfiguration configuration;
+        private readonly IFileProvider fileProvider;
 
-        public DownloadController(ILogger<DownloadController> logger, IConfiguration configuration)
+        public DownloadController(ILogger<DownloadController> logger, IFileProvider fileProvider)
         {
             this.logger = logger;
-            this.configuration = configuration;
+            this.fileProvider = fileProvider;
         }
 
         /// <summary>
-        /// Action to download log file from a directory.
+        /// Gets the ilivalidator log file for the specified <paramref name="jobId"/>.
         /// </summary>
-        /// <returns>A <see cref="PhysicalFileResult"/> if successful, a <see cref="NotFoundResult"/> otherwise.</returns>
+        /// <response code="200">Returns the ilivalidator log file.</response>
+        /// <response code="400">The server cannot process the request due to invalid or malformed request.</response>
+        /// <response code="404">The log file for the requested <paramref name="jobId"/> cannot be found.</response>
         [HttpGet]
-        [Route("api/[controller]")]
-        public IActionResult Download()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Download(Guid jobId, LogType logType)
         {
-            var request = HttpContext.Request;
-            var fileExtension = request.Query["fileExtension"][0];
+            fileProvider.Initialize(jobId.ToString());
 
-            // Attention! This breaks downloading logs!
-            // TODO use job id to identify assets for download
-            var connectionId = Guid.NewGuid().ToString();
-            var directoryPath = configuration.GetUploadPathForSession(connectionId);
             try
             {
-                var logFiles = Directory.EnumerateFiles(directoryPath, "ilivalidator_*", SearchOption.TopDirectoryOnly);
-                var logFile = logFiles
-                    .Where(file => Path.GetExtension(file) == fileExtension)
-                    .Single();
-
-                logger.LogInformation("XTF log file for connection id <{connectionId}> requested.", connectionId);
-                return File(System.IO.File.ReadAllBytes(logFile), "text/xml; charset=utf-8");
+                logger.LogInformation("Log file (<{logType}>) for job identifier <{jobId}> requested.", logType, jobId);
+                return File(fileProvider.OpenText(fileProvider.GetLogFile(logType)).BaseStream, "text/xml; charset=utf-8");
             }
             catch (Exception)
             {
                 Response.StatusCode = 404;
-                return View("PageNotFound", "Die gesuchte XTF-Log-Datei wurde leider nicht gefunden. Möglicherweise wurde diese bereits gelöscht.");
+                return View("PageNotFound", "Die gesuchte Log-Datei wurde nicht gefunden. Möglicherweise wurde sie bereits gelöscht.");
             }
         }
     }

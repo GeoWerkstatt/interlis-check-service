@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using static ILICheck.Web.Extensions;
 
 namespace ILICheck.Web.Controllers
 {
@@ -35,7 +33,7 @@ namespace ILICheck.Web.Controllers
                 vendorLink = configuration.GetValue<string>("CUSTOM_VENDOR_LINK"),
                 ilivalidatorVersion = configuration.GetValue<string>("ILIVALIDATOR_VERSION") ?? "undefined",
                 ili2gpkgVersion = configuration.GetValue<string>("ILI2GPKG_VERSION") ?? "undefined/not configured",
-                acceptedFileTypes = string.Join(", ", configuration.GetAcceptedFileExtensionsForUserUploads()),
+                acceptedFileTypes = configuration.GetAcceptedFileExtensionsForUserUploads().Join(", "),
             });
         }
     }

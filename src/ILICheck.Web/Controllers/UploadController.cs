@@ -17,13 +17,17 @@ namespace ILICheck.Web.Controllers
         private readonly IConfiguration configuration;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IValidator validator;
+        private readonly IFileProvider fileProvider;
 
-        public UploadController(ILogger<UploadController> logger, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IValidator validator)
+        public UploadController(ILogger<UploadController> logger, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IValidator validator, IFileProvider fileProvider)
         {
             this.logger = logger;
             this.configuration = configuration;
             this.httpContextAccessor = httpContextAccessor;
             this.validator = validator;
+            this.fileProvider = fileProvider;
+
+            this.fileProvider.Initialize(validator.Id);
         }
 
         /// <summary>
@@ -39,7 +43,7 @@ namespace ILICheck.Web.Controllers
         /// </remarks>
         /// <returns>Information for a newly created validation job.</returns>
         /// <response code="201">The validation job was successfully created and is now scheduled for execution.</response>
-        /// <response code="400">The server cannot precess the request due to invalid or malformed request.</response>
+        /// <response code="400">The server cannot process the request due to invalid or malformed request.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,44 +52,27 @@ namespace ILICheck.Web.Controllers
         {
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
-            // TODO: Additional argument validation required? (eg. file != null && file.length > 0)
-
-            // Create a unique validation job identification
-            var jobId = Guid.NewGuid().ToString();
-
-            // TODO: Create folder for validation job files
-            // TODO: Sanitize file/folder names (save to disk/logging)
-            // var uploadFolderPath = configuration.GetUploadPathForSession(jobId);
-            var uploadFolderPath = Path.Combine(@"C:\Temp", jobId);
-            var uploadFileName = Path.Combine(uploadFolderPath, Path.GetRandomFileName());
-            Directory.CreateDirectory(uploadFolderPath);
-
-            // Log some information
-            logger.LogInformation("Start uploading <{fileName}> to <{folder}>", file.FileName, uploadFolderPath);
+            logger.LogInformation("Start uploading <{fileName}> to <{folder}>", file.FileName, fileProvider.HomeDirectory);
             logger.LogInformation("Transfer file size: {contentLength}", httpRequest.ContentLength);
             logger.LogInformation("Start time: {timestamp}", DateTime.Now);
 
-            // TODO: Handle exception while uploading files
-            // logger.LogWarning("Upload aborted, no files data in the request.");
-            // return BadRequest("Es wurde keine Datei hochgeladen.");
-
-            // Save the file to disk
-            using (var stream = System.IO.File.Create(uploadFileName))
+            // Sanitize file name and save the file to disk
+            var transferFile = Path.ChangeExtension(Path.GetRandomFileName(), configuration.GetSanitizedFileExtension(file.FileName));
+            using (var stream = fileProvider.CreateFile(transferFile))
             {
                 await file.CopyToAsync(stream);
             }
 
             logger.LogInformation("Successfully received file: {timestamp}", DateTime.Now);
 
-            // TODO: Schedule job/ Add to job queue.
-            _ = validator.ValidateAsync(jobId, uploadFolderPath);
-            logger.LogInformation("Job with id <{id}> is scheduled for execution.", jobId);
+            _ = validator.ValidateAsync(transferFile);
+            logger.LogInformation("Job with id <{id}> is scheduled for execution.", validator.Id);
 
-            // TODO: Return HTTP 201 instead of HTTP 200
+            Response.StatusCode = 201;
             return new JsonResult(new
             {
-                jobId,
-                statusUrl = string.Format("{0}/{1}", httpRequest.Path.Value, jobId),
+                validator.Id,
+                statusUrl = string.Format("{0}/{1}", httpRequest.Path.Value, validator.Id),
             });
         }
     }
