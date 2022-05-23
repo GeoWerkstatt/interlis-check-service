@@ -36,6 +36,7 @@ namespace ILICheck.Web
                 });
             });
             services.AddTransient<IValidator, Validator>();
+            services.AddTransient<IFileProvider, PhysicalFileProvider>(_ => new PhysicalFileProvider(Configuration.GetValue<string>("ILICHECK_UPLOADS_DIR")));
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 209715200;
