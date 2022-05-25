@@ -61,7 +61,7 @@ namespace ILICheck.Web.Controllers
             var transferFile = Path.ChangeExtension(Path.GetRandomFileName(), configuration.GetSanitizedFileExtension(file.FileName));
             using (var stream = fileProvider.CreateFile(transferFile))
             {
-                await file.CopyToAsync(stream);
+                await file.CopyToAsync(stream).ConfigureAwait(false);
             }
 
             logger.LogInformation("Successfully received file: {Timestamp}", DateTime.Now);

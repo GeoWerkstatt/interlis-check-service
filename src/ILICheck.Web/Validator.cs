@@ -59,27 +59,27 @@ namespace ILICheck.Web
                 // Unzip compressed file
                 if (Path.GetExtension(TransferFile) == ".zip")
                 {
-                    await UnzipCompressedFileAsync();
+                    await UnzipCompressedFileAsync().ConfigureAwait(false);
                 }
 
                 // Read model names from GeoPackage
                 if (Path.GetExtension(TransferFile) == ".gpkg")
                 {
-                    GpkgModelNames = await ReadGpkgModelNamesAsync();
+                    GpkgModelNames = await ReadGpkgModelNamesAsync().ConfigureAwait(false);
                 }
 
                 // Additional xml validation for supported files
                 var supportedExtensions = new[] { ".xml", ".xtf" };
                 if (supportedExtensions.Contains(Path.GetExtension(TransferFile), StringComparer.OrdinalIgnoreCase))
                 {
-                    await ValidateXmlAsync();
+                    await ValidateXmlAsync().ConfigureAwait(false);
                 }
 
                 // Execute validation with ilivalidator
-                await ValidateAsync();
+                await ValidateAsync().ConfigureAwait(false);
 
                 // Clean up user uploaded/uncompressed files
-                await CleanUploadDirectoryAsync();
+                await CleanUploadDirectoryAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -118,7 +118,7 @@ namespace ILICheck.Web
                 {
                     logger.LogInformation("{ErrorMessage}", ex.Message);
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace ILICheck.Web
 
             try
             {
-                while (await reader.ReadAsync()) { }
+                while (await reader.ReadAsync().ConfigureAwait(false)) { }
             }
             catch (XmlException ex)
             {
@@ -170,7 +170,7 @@ namespace ILICheck.Web
             try
             {
                 var connectionString = $"Data Source={Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile)}";
-                return await Task.Run(() => ReadGpkgModelNameEntries(connectionString).CleanupGpkgModelNames(configuration).Join(";"));
+                return await Task.Run(() => ReadGpkgModelNameEntries(connectionString).CleanupGpkgModelNames(configuration).Join(";")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -210,7 +210,7 @@ namespace ILICheck.Web
             };
 
             process.Start();
-            await process.WaitForExitAsync();
+            await process.WaitForExitAsync().ConfigureAwait(false);
             if (process.ExitCode != 0)
             {
                 logger.LogWarning("The ilivalidator found errors in the file. Validation failed.");
@@ -234,10 +234,10 @@ namespace ILICheck.Web
                 .Select(async file =>
                 {
                     logger.LogInformation("Deleting file <{File}>", file);
-                    await fileProvider.DeleteFileAsync(file);
+                    await fileProvider.DeleteFileAsync(file).ConfigureAwait(false);
                 });
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
     }
 }

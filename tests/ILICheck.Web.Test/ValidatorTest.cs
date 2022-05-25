@@ -43,7 +43,7 @@ namespace ILICheck.Web
         public async Task ValidateXmlAsyncForNull()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns((string)null);
-            await validatorMock.Object.ValidateXmlAsync();
+            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -51,7 +51,7 @@ namespace ILICheck.Web
         public async Task ValidateXmlAsyncForEmpty()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns(string.Empty);
-            await validatorMock.Object.ValidateXmlAsync();
+            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -59,7 +59,7 @@ namespace ILICheck.Web
         public async Task ValidateXmlAsyncForInvalid()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.xtf");
-            await validatorMock.Object.ValidateXmlAsync();
+            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -67,14 +67,14 @@ namespace ILICheck.Web
         public async Task ValidateXmlAsyncForFileNotFound()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("unavailable.xtf");
-            await validatorMock.Object.ValidateXmlAsync();
+            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task ValidateXmlAsync()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("example.xtf");
-            await validatorMock.Object.ValidateXmlAsync();
+            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -82,7 +82,7 @@ namespace ILICheck.Web
         public async Task ReadGpkgModelNamesAsyncForNull()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns((string)null);
-            await validatorMock.Object.ReadGpkgModelNamesAsync();
+            await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -90,7 +90,7 @@ namespace ILICheck.Web
         public async Task ReadGpkgModelNamesAsyncForEmpty()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns(string.Empty);
-            await validatorMock.Object.ReadGpkgModelNamesAsync();
+            await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace ILICheck.Web
         public async Task ReadGpkgModelNamesAsyncForInvalid()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.gpkg");
-            await validatorMock.Object.ReadGpkgModelNamesAsync();
+            await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -107,7 +107,7 @@ namespace ILICheck.Web
             validatorMock.SetupGet(x => x.TransferFile).Returns("example.gpkg");
             var expected = "Wildruhezonen_Codelisten_V2_1;Wildruhezonen_LV03_V2_1;Wildruhezonen_LV95_V2_1;LOUDTRINITY";
 
-            Assert.AreEqual(expected, await validatorMock.Object.ReadGpkgModelNamesAsync());
+            Assert.AreEqual(expected, await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace ILICheck.Web
             fileProviderMock.Setup(x => x.DeleteFileAsync(It.Is<string>(x => x == "example.xtf"))).Returns(Task.FromResult(0));
             fileProviderMock.Setup(x => x.DeleteFileAsync(It.Is<string>(x => x == "example.ili"))).Returns(Task.FromResult(0));
 
-            await validatorMock.Object.CleanUploadDirectoryAsync();
+            await validatorMock.Object.CleanUploadDirectoryAsync().ConfigureAwait(false);
         }
 
         private static IConfiguration CreateConfiguration() =>
