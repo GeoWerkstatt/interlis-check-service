@@ -218,7 +218,7 @@ namespace ILICheck.Web
             }
             else
             {
-                logger.LogInformation("The ilivalidator found no errors in the file. Validation successfull!");
+                logger.LogInformation("The ilivalidator found no errors in the file. Validation successful!");
             }
 
             logger.LogInformation("Validation completed: {Timestamp}", DateTime.Now);
