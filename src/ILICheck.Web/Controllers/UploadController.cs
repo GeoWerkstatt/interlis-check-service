@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ILICheck.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class UploadController : Controller
     {
         private readonly ILogger<UploadController> logger;
@@ -36,11 +36,12 @@ namespace ILICheck.Web.Controllers
         /// A compressed <paramref name="file"/> (.zip) containing additional models and
         /// catalogues is also supported.
         /// </summary>
+        /// <param name="version">The application programming interface (API) version.</param>
         /// <param name="file">The transfer or ZIP file to validate.</param>
         /// <remarks>
         /// Sample request:
         /// curl -i -X POST -H "Content-Type: multipart/form-data" \
-        ///   -F 'file=@example.xtf' http://example.com/api/upload
+        ///   -F 'file=@example.xtf' http://example.com/api/v1/upload
         /// </remarks>
         /// <returns>Information for a newly created validation job.</returns>
         /// <response code="201">The validation job was successfully created and is now scheduled for execution.</response>
@@ -49,7 +50,7 @@ namespace ILICheck.Web.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1629:DocumentationTextMustEndWithAPeriod", Justification = "Not applicable for code examples.")]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Upload(ApiVersion version, IFormFile file)
         {
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
@@ -69,7 +70,10 @@ namespace ILICheck.Web.Controllers
             _ = validator.ValidateAsync(transferFile);
             logger.LogInformation("Job with id <{JobId}> is scheduled for execution.", validator.Id);
 
-            var location = new Uri(string.Format(CultureInfo.InvariantCulture, "/api/status/{0}", validator.Id));
+            var location = new Uri(
+                string.Format(CultureInfo.InvariantCulture, "/api/v{0}/status/{1}", version.MajorVersion, validator.Id),
+                UriKind.Relative);
+
             return Created(location, new { jobId = validator.Id, statusUrl = location, });
         }
     }
