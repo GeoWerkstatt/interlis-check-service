@@ -35,7 +35,7 @@ namespace ILICheck.Web.Controllers
 
             try
             {
-                logger.LogInformation("Log file (<{logType}>) for job identifier <{jobId}> requested.", logType, jobId);
+                logger.LogInformation("Log file (<{LogType}>) for job identifier <{JobId}> requested.", logType, jobId);
                 return File(fileProvider.OpenText(fileProvider.GetLogFile(logType)).BaseStream, "text/xml; charset=utf-8");
             }
             catch (Exception)

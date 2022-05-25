@@ -83,7 +83,7 @@ namespace ILICheck.Web
             }
             catch (Exception ex)
             {
-                logger.LogError("Unexpected error <{exceptionMessage}>", ex.Message);
+                logger.LogError("Unexpected error <{ErrorMessage}>", ex.Message);
             }
         }
 
@@ -96,7 +96,7 @@ namespace ILICheck.Web
         {
             if (!string.Equals(Path.GetExtension(TransferFile), ".zip", StringComparison.OrdinalIgnoreCase)) throw new NotSupportedException("Only .zip files are supported.");
 
-            logger.LogInformation("Unzipping compressed file <{transferFile}>", TransferFile);
+            logger.LogInformation("Unzipping compressed file <{TransferFile}>", TransferFile);
 
             await Task.Run(() =>
             {
@@ -132,7 +132,7 @@ namespace ILICheck.Web
             if (TransferFile == null) throw new ArgumentNullException(nameof(TransferFile));
             if (string.IsNullOrWhiteSpace(TransferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(TransferFile));
 
-            logger.LogInformation("Validating xml structure for transfer file <{transferFile}>", TransferFile);
+            logger.LogInformation("Validating xml structure for transfer file <{TransferFile}>", TransferFile);
 
             var settings = new XmlReaderSettings
             {
@@ -149,7 +149,7 @@ namespace ILICheck.Web
             }
             catch (XmlException ex)
             {
-                logger.LogWarning("Cannot parse transfer file <{filePath}>: {errorMessage}", TransferFile, ex.Message);
+                logger.LogWarning("Cannot parse transfer file <{TransferFile}>: {ErrorMessage}", TransferFile, ex.Message);
                 throw;
             }
         }
@@ -165,7 +165,7 @@ namespace ILICheck.Web
             if (TransferFile == null) throw new ArgumentNullException(nameof(TransferFile));
             if (string.IsNullOrWhiteSpace(TransferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(TransferFile));
 
-            logger.LogInformation("Reading model names from GeoPackage <{transferFile}>", TransferFile);
+            logger.LogInformation("Reading model names from GeoPackage <{TransferFile}>", TransferFile);
 
             try
             {
@@ -220,7 +220,7 @@ namespace ILICheck.Web
                 logger.LogInformation("The ilivalidator found no errors in the file. Validation successfull!");
             }
 
-            logger.LogInformation("Validation completed: {timestamp}", DateTime.Now);
+            logger.LogInformation("Validation completed: {Timestamp}", DateTime.Now);
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace ILICheck.Web
                 .GetFilesToDelete(fileProvider.GetFiles(), TransferFile)
                 .Select(async file =>
                 {
-                    logger.LogInformation("Deleting file <{file}>", file);
+                    logger.LogInformation("Deleting file <{File}>", file);
                     await fileProvider.DeleteFileAsync(file);
                 });
 

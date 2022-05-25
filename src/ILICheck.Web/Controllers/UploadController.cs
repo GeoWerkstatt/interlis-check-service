@@ -53,9 +53,9 @@ namespace ILICheck.Web.Controllers
         {
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
-            logger.LogInformation("Start uploading <{fileName}> to <{folder}>", file.FileName, fileProvider.HomeDirectory);
-            logger.LogInformation("Transfer file size: {contentLength}", httpRequest.ContentLength);
-            logger.LogInformation("Start time: {timestamp}", DateTime.Now);
+            logger.LogInformation("Start uploading <{TransferFile}> to <{HomeDirectory}>", file.FileName, fileProvider.HomeDirectory);
+            logger.LogInformation("Transfer file size: {ContentLength}", httpRequest.ContentLength);
+            logger.LogInformation("Start time: {Timestamp}", DateTime.Now);
 
             // Sanitize file name and save the file to disk
             var transferFile = Path.ChangeExtension(Path.GetRandomFileName(), configuration.GetSanitizedFileExtension(file.FileName));
@@ -64,10 +64,10 @@ namespace ILICheck.Web.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            logger.LogInformation("Successfully received file: {timestamp}", DateTime.Now);
+            logger.LogInformation("Successfully received file: {Timestamp}", DateTime.Now);
 
             _ = validator.ValidateAsync(transferFile);
-            logger.LogInformation("Job with id <{id}> is scheduled for execution.", validator.Id);
+            logger.LogInformation("Job with id <{JobId}> is scheduled for execution.", validator.Id);
 
             var location = new Uri(string.Format(CultureInfo.InvariantCulture, "/api/status/{0}", validator.Id));
             return Created(location, new { jobId = validator.Id, statusUrl = location, });
