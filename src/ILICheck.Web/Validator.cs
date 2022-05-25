@@ -114,21 +114,9 @@ namespace ILICheck.Web
                     // Set new transfer file
                     TransferFile = fileProvider.GetFiles().Single(file => Path.GetExtension(file) == transferFileExtension);
                 }
-                catch (UnknownExtensionException ex)
-                {
-                    logger.LogInformation(ex.Message);
-                }
-                catch (TransferFileNotFoundException ex)
-                {
-                    logger.LogInformation(ex.Message);
-                }
-                catch (MultipleTransferFileFoundException ex)
-                {
-                    logger.LogInformation(ex.Message);
-                }
                 catch (Exception ex)
                 {
-                    logger.LogWarning(ex.Message);
+                    logger.LogInformation("{ErrorMessage}", ex.Message);
                 }
             });
         }

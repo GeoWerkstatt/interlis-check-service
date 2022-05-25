@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -48,7 +49,7 @@ namespace ILICheck.Web.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1629:DocumentationTextMustEndWithAPeriod", Justification = "Not applicable for code examples.")]
-        public async Task<IActionResult> Post(IFormFile file)
+        public async Task<IActionResult> Upload(IFormFile file)
         {
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
@@ -68,12 +69,8 @@ namespace ILICheck.Web.Controllers
             _ = validator.ValidateAsync(transferFile);
             logger.LogInformation("Job with id <{id}> is scheduled for execution.", validator.Id);
 
-            Response.StatusCode = 201;
-            return new JsonResult(new
-            {
-                validator.Id,
-                statusUrl = string.Format("{0}/{1}", httpRequest.Path.Value, validator.Id),
-            });
+            var location = new Uri(string.Format(CultureInfo.InvariantCulture, "/api/status/{0}", validator.Id));
+            return Created(location, new { jobId = validator.Id, statusUrl = location, });
         }
     }
 }
