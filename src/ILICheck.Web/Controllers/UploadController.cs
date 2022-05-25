@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ILICheck.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class UploadController : Controller
     {
         private readonly ILogger<UploadController> logger;

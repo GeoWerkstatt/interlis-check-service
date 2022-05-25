@@ -7,7 +7,7 @@ using System.Linq;
 namespace ILICheck.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class DownloadController : Controller
     {
         private readonly ILogger<DownloadController> logger;

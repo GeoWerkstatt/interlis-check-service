@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace ILICheck.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class SettingsController : Controller
     {
         private readonly ILogger<SettingsController> logger;

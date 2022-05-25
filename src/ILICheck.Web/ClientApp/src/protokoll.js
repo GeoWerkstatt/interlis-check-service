@@ -15,7 +15,7 @@ export const Protokoll = props => {
   const xtfLogFileExtension = ".xtf";
   const logFileExtension = ".log";
   const downloadAvailable = connection && fileCheckStatus.fileDownloadAvailable;
-  const downloadUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=`;
+  const downloadUrl = `api/v1/download?connectionId=${closedConnectionId}&fileExtension=`;
 
   // Copy to clipboard
   const resetToDefaultText = () => setCopyToClipboardTooltipText(copyToClipboardTooltipDefaultText);
@@ -36,7 +36,7 @@ export const Protokoll = props => {
       {log.length > 0 && <Card className="protokoll-card">
         <Card.Body>
           <div className="protokoll">
-            {log.map((logEntry, index) => <div key={index}>{logEntry}{indicateWaiting && index ===log.length -1 &&  "."}</div>)} 
+            {log.map((logEntry, index) => <div key={index}>{logEntry}{indicateWaiting && index ===log.length -1 &&  "."}</div>)}
             <div ref={logEndRef} />
           </div>
           <Card.Title className={fileCheckStatus.class}>{fileCheckStatus.text}
