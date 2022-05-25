@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace ILICheck.Web
         {
             if (transferFile == null) throw new ArgumentNullException(nameof(transferFile));
             if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
-            if (!File.Exists(transferFile)) throw new InvalidOperationException(string.Format("Transfer file with the specified name <{0}> not found in <{1}>.", transferFile, fileProvider.HomeDirectory));
+            if (!File.Exists(transferFile)) throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Transfer file with the specified name <{0}> not found in <{1}>.", transferFile, fileProvider.HomeDirectory));
 
             // Set the fully qualified path to the transfer file.
             TransferFile = transferFile;
@@ -175,7 +176,7 @@ namespace ILICheck.Web
             catch (Exception ex)
             {
                 throw new GeoPackageException(
-                    string.Format("Cannot read model names from the given GeoPackage SQLite database. <{0}>", ex.Message), ex);
+                    string.Format(CultureInfo.InvariantCulture, "Cannot read model names from the given GeoPackage SQLite database. <{0}>", ex.Message), ex);
             }
         }
 

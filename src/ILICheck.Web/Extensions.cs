@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -122,7 +123,7 @@ namespace ILICheck.Web
                     .Any(x => x.Contains(extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new UnknownExtensionException(
-                        string.Format("Transfer file extension <{0}> is an unknown file extension.", extension));
+                        string.Format(CultureInfo.InvariantCulture, "Transfer file extension <{0}> is an unknown file extension.", extension));
                 }
             }
 
@@ -135,14 +136,14 @@ namespace ILICheck.Web
 
             if (string.IsNullOrEmpty(transferFileExtension))
             {
-                throw new TransferFileNotFoundException(string.Format("No transfer file found."));
+                throw new TransferFileNotFoundException(string.Format(CultureInfo.InvariantCulture, "No transfer file found."));
             }
             else
             {
                 // Check for multiple transfer files of the same type
                 if (extensions.Count(extension => extension.Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase)) > 1)
                 {
-                    throw new MultipleTransferFileFoundException(string.Format("Multiple transfer files <{0}> are not supported", transferFileExtension));
+                    throw new MultipleTransferFileFoundException(string.Format(CultureInfo.InvariantCulture, "Multiple transfer files <{0}> are not supported", transferFileExtension));
                 }
                 else
                 {
@@ -204,7 +205,7 @@ namespace ILICheck.Web
             catch (InvalidOperationException)
             {
                 throw new FileNotFoundException(
-                    string.Format("Log file of type <{0}> not found in <{1}>", logType, fileProvider.HomeDirectory));
+                    string.Format(CultureInfo.InvariantCulture, "Log file of type <{0}> not found in <{1}>", logType, fileProvider.HomeDirectory));
             }
         }
 
