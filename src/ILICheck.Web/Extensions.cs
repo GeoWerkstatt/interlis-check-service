@@ -183,7 +183,7 @@ namespace ILICheck.Web
         /// <param name="unsaveFileName">The unsave file name.</param>
         /// <returns>The sanitized file extension for the specified <paramref name="unsaveFileName"/>.</returns>
         public static string GetSanitizedFileExtension(this IConfiguration configuration, string unsaveFileName) =>
-            configuration.GetAcceptedFileExtensionsForUserUploads().Single(extension => extension == Path.GetExtension(unsaveFileName).ToLower());
+            configuration.GetAcceptedFileExtensionsForUserUploads().Single(extension => Path.GetExtension(unsaveFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// Gets the log file for the specified <paramref name="logType"/>.
