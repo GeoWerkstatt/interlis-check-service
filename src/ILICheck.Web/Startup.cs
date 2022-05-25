@@ -26,6 +26,7 @@ namespace ILICheck.Web
         {
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
+            services.AddHealthChecks().AddCheck<IlivalidatorHealthCheck>("Ilivalidator");
             services.AddApiVersioning(config =>
             {
                 config.AssumeDefaultVersionWhenUnspecified = true;
@@ -89,9 +90,8 @@ namespace ILICheck.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapHealthChecks("/health");
             });
 
             app.UseSpa(spa =>
