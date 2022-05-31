@@ -84,7 +84,7 @@ namespace ILICheck.Web
             }
             catch (Exception ex)
             {
-                logger.LogError("Unexpected error <{ErrorMessage}>", ex.Message);
+                logger.LogError(ex, "Unexpected error <{ErrorMessage}>", ex.Message);
             }
         }
 
@@ -117,7 +117,7 @@ namespace ILICheck.Web
                 }
                 catch (Exception ex)
                 {
-                    logger.LogInformation("{ErrorMessage}", ex.Message);
+                    logger.LogError(ex, "Unexpected error <{ErrorMessage}>", ex.Message);
                 }
             }).ConfigureAwait(false);
         }
@@ -171,7 +171,7 @@ namespace ILICheck.Web
             try
             {
                 var connectionString = $"Data Source={Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile)}";
-                return await Task.Run(() => ReadGpkgModelNameEntries(connectionString).CleanupGpkgModelNames(configuration).Join(";")).ConfigureAwait(false);
+                return await Task.Run(() => ReadGpkgModelNameEntries(connectionString).CleanupGpkgModelNames(configuration).JoinNonEmpty(";")).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

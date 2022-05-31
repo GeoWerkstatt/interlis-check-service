@@ -25,7 +25,7 @@ namespace ILICheck.Web
         /// <returns>A string that consists of the members of <paramref name="values"/> delimited by the <paramref name="separator"/> string.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="values"/> is <c>null</c>.</exception>
         /// <exception cref="InvalidOperationException">If <paramref name="separator"/> is <c>null</c> or empty.</exception>
-        public static string Join(this IEnumerable<string> values, string separator)
+        public static string JoinNonEmpty(this IEnumerable<string> values, string separator)
         {
             if (values == null) throw new ArgumentNullException(nameof(values));
             if (string.IsNullOrEmpty(separator)) throw new InvalidOperationException($"Null or empty {nameof(separator)} value is not allowed.");
@@ -153,21 +153,21 @@ namespace ILICheck.Web
         }
 
         /// <summary>
-        /// Gets the file names from the given set of <paramref name="files"/> which can be deleted after validation has been completed.
+        /// Gets the file names from the given set of <paramref name="fileNames"/> which can be deleted after validation has been completed.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="files"></param>
+        /// <param name="fileNames">The collection of file names to get the ones which can be deleted from.</param>
         /// <param name="transferFile">The transfer file name.</param>
-        public static IEnumerable<string> GetFilesToDelete(this IConfiguration configuration, IEnumerable<string> files, string transferFile)
+        public static IEnumerable<string> GetFilesToDelete(this IConfiguration configuration, IEnumerable<string> fileNames, string transferFile)
         {
-            if (files == null) throw new ArgumentNullException(nameof(files));
+            if (fileNames == null) throw new ArgumentNullException(nameof(fileNames));
 
             if (configuration.GetValue<bool>("DELETE_TRANSFER_FILES"))
             {
                 yield return transferFile;
 
                 var logFileExtensions = new[] { ".log", ".xtf" };
-                foreach (var file in files)
+                foreach (var file in fileNames)
                 {
                     if (!logFileExtensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase))
                         yield return file;
@@ -178,13 +178,13 @@ namespace ILICheck.Web
         }
 
         /// <summary>
-        /// Gets the sanitized file extension for the specified <paramref name="unsaveFileName"/>.
+        /// Gets the sanitized file extension for the specified <paramref name="unsafeFileName"/>.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="unsaveFileName">The unsave file name.</param>
-        /// <returns>The sanitized file extension for the specified <paramref name="unsaveFileName"/>.</returns>
-        public static string GetSanitizedFileExtension(this IConfiguration configuration, string unsaveFileName) =>
-            configuration.GetAcceptedFileExtensionsForUserUploads().Single(extension => Path.GetExtension(unsaveFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
+        /// <param name="unsafeFileName">The unsafe file name.</param>
+        /// <returns>The sanitized file extension for the specified <paramref name="unsafeFileName"/>.</returns>
+        public static string GetSanitizedFileExtension(this IConfiguration configuration, string unsafeFileName) =>
+            configuration.GetAcceptedFileExtensionsForUserUploads().Single(extension => Path.GetExtension(unsafeFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// Gets the log file for the specified <paramref name="logType"/>.

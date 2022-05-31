@@ -11,18 +11,18 @@ namespace ILICheck.Web
     public class ExtensionsTest
     {
         [TestMethod]
-        public void Join()
+        public void JoinNonEmpty()
         {
-            Assert.AreEqual(string.Empty, Enumerable.Empty<string>().Join(","));
-            Assert.AreEqual("1/2", new[] { "1", "2" }.Join("/"));
-            Assert.AreEqual("BLUECALENDAR;HOPPINGNIGHT;NIGHTMAESTRO", new[] { "BLUECALENDAR", "HOPPINGNIGHT", "NIGHTMAESTRO" }.Join(";"));
-            Assert.AreEqual(".abc, .de, .test", new[] { ".abc", ".de", ".test" }.Join(", "));
-            Assert.AreEqual("foo bar", new[] { "foo", "bar" }.Join(" "));
-            Assert.AreEqual("foo,bar", new[] { "foo", (string)null, "", " ", "bar" }.Join(","));
+            Assert.AreEqual(string.Empty, Enumerable.Empty<string>().JoinNonEmpty(","));
+            Assert.AreEqual("1/2", new[] { "1", "2" }.JoinNonEmpty("/"));
+            Assert.AreEqual("BLUECALENDAR;HOPPINGNIGHT;NIGHTMAESTRO", new[] { "BLUECALENDAR", "HOPPINGNIGHT", "NIGHTMAESTRO" }.JoinNonEmpty(";"));
+            Assert.AreEqual(".abc, .de, .test", new[] { ".abc", ".de", ".test" }.JoinNonEmpty(", "));
+            Assert.AreEqual("foo bar", new[] { "foo", "bar" }.JoinNonEmpty(" "));
+            Assert.AreEqual("foo,bar", new[] { "foo", (string)null, "", " ", "bar" }.JoinNonEmpty(","));
 
-            Assert.ThrowsException<ArgumentNullException>(() => ((IEnumerable<string>)null).Join(","), "The string collection should not be null.");
-            Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.Join(null), "Null seperator should be rejected.");
-            Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.Join(""), "Empty seperator should be rejected.");
+            Assert.ThrowsException<ArgumentNullException>(() => ((IEnumerable<string>)null).JoinNonEmpty(","), "The string collection should not be null.");
+            Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(null), "Null seperator should be rejected.");
+            Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(""), "Empty seperator should be rejected.");
         }
 
         [TestMethod]

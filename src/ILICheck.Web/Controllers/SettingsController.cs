@@ -26,14 +26,14 @@ namespace ILICheck.Web.Controllers
         {
             logger.LogTrace("Application configuration requested.");
 
-            return new JsonResult(new
+            return Ok(new
             {
                 applicationName = configuration.GetValue<string>("CUSTOM_APP_NAME") ?? "INTERLIS Web-Check-Service",
                 applicationVersion = configuration.GetValue<string>("ILICHECK_APP_VERSION") ?? "undefined",
                 vendorLink = configuration.GetValue<string>("CUSTOM_VENDOR_LINK"),
                 ilivalidatorVersion = configuration.GetValue<string>("ILIVALIDATOR_VERSION") ?? "undefined",
                 ili2gpkgVersion = configuration.GetValue<string>("ILI2GPKG_VERSION") ?? "undefined/not configured",
-                acceptedFileTypes = configuration.GetAcceptedFileExtensionsForUserUploads().Join(", "),
+                acceptedFileTypes = configuration.GetAcceptedFileExtensionsForUserUploads().JoinNonEmpty(", "),
             });
         }
     }
