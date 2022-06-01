@@ -10,6 +10,8 @@ namespace ILICheck.Web
     [TestClass]
     public class ExtensionsTest
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void JoinNonEmpty()
         {
@@ -227,12 +229,41 @@ namespace ILICheck.Web
             Assert.AreEqual("example_log.xTf", fileProviderMock.Object.GetLogFile(LogType.Xtf));
         }
 
-        private static IConfiguration CreateConfiguration(bool enableGpkgValidation = false, bool deleteTransferFiles = false, string blacklistedGpkgModels = "", string uploadsRootDir = "") =>
+        [TestMethod]
+        public void GetIlivalidatorCommand()
+        {
+            AssertGetIlivalidatorCommand(
+                "dada hopp monkey:latest sh ilivalidator --log /PEEVEDBAGEL/ANT_log.log --xtflog /PEEVEDBAGEL/ANT_log.xtf \"/PEEVEDBAGEL/ANT.XTF\"",
+                "dada hopp monkey:latest sh",
+                "/PEEVEDBAGEL/",
+                "ANT.XTF",
+                null);
+
+            AssertGetIlivalidatorCommand(
+                "ilivalidator --log foo/bar/SETNET_log.log --xtflog foo/bar/SETNET_log.xtf --models \"ANGRY;SQUIRREL\" \"foo/bar/SETNET.abc\"",
+                null,
+                "foo/bar",
+                "SETNET.abc",
+                "ANGRY;SQUIRREL");
+
+            AssertGetIlivalidatorCommand(
+                "ilivalidator --log ${SEA}/RED/WATCH_log.log --xtflog ${SEA}/RED/WATCH_log.xtf \"${SEA}/RED/WATCH.GPKG\"",
+                string.Empty,
+                "${SEA}/RED/",
+                "WATCH.GPKG",
+                string.Empty);
+        }
+
+        private static void AssertGetIlivalidatorCommand(string expected, string prefix, string homeDirectory, string transferFile, string models) =>
+            Assert.AreEqual(expected, CreateConfiguration(commandPrefix: prefix).GetIlivalidatorCommand(homeDirectory, transferFile, models));
+
+        private static IConfiguration CreateConfiguration(bool enableGpkgValidation = false, bool deleteTransferFiles = false, string blacklistedGpkgModels = "", string commandPrefix = "", string uploadsRootDir = "") =>
             new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "ENABLE_GPKG_VALIDATION", enableGpkgValidation.ToString() },
                 { "DELETE_TRANSFER_FILES", deleteTransferFiles.ToString() },
                 { "Validation:BlacklistedGpkgModels", blacklistedGpkgModels },
+                { "Validation:CommandPrefix", commandPrefix },
                 { "ILICHECK_UPLOADS_DIR", uploadsRootDir },
             }).Build();
     }
