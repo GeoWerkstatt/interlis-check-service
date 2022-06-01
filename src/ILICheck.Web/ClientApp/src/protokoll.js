@@ -15,7 +15,7 @@ export const Protokoll = props => {
   const xtfLogFileExtension = ".xtf";
   const logFileExtension = ".log";
   const downloadAvailable = connection && fileCheckStatus.fileDownloadAvailable;
-  const downloadUrl = `api/download?connectionId=${closedConnectionId}&fileExtension=`;
+  const downloadUrl = `api/v1/download?connectionId=${closedConnectionId}&fileExtension=`;
 
   // Copy to clipboard
   const resetToDefaultText = () => setCopyToClipboardTooltipText(copyToClipboardTooltipDefaultText);

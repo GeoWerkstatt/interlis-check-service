@@ -92,7 +92,7 @@ export const Home = props => {
 
     const controller = new AbortController()
     const signal = controller.signal
-    fetch(`api/upload?connectionId=${connection.connectionId}&fileName=${file.name}`, {
+    fetch(`api/v1/upload?connectionId=${connection.connectionId}&fileName=${file.name}`, {
       method: 'POST',
       signal: signal,
       body: formData,

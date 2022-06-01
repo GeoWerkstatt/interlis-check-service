@@ -30,7 +30,7 @@ export const Layout = props => {
 
   // Fetch client settings
   useEffect(() => {
-    fetch('api/settings')
+    fetch('api/v1/settings')
       .then(res => res.headers.get('content-type')?.includes('application/json') && res.json())
       .then(json => setClientSettings(json));
   }, []);
