@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.FileProviders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -15,6 +14,11 @@ namespace ILICheck.Web
         /// Gets the home directory.
         /// </summary>
         DirectoryInfo HomeDirectory { get; }
+
+        /// <summary>
+        /// Gets the home directory path format using the Unix path format.
+        /// </summary>
+        string HomeDirectoryPathFormat { get; }
 
         /// <summary>
         /// Creates or overwrites the specified <paramref name="file"/>.

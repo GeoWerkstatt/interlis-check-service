@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -187,32 +186,14 @@ namespace ILICheck.Web
         {
             logger.LogInformation("Validating transfer file with ilivalidator/ili2gpkg");
 
-            var rootPath = Path.Combine("${ILICHECK_UPLOADS_DIR}", Id);
-            var transferFilePath = Path.Combine(rootPath, TransferFile);
-            var logPath = Path.Combine(rootPath, $"{Path.GetFileNameWithoutExtension(TransferFile)}_log.log");
-            var xtfLogPath = Path.Combine(rootPath, $"{Path.GetFileNameWithoutExtension(TransferFile)}_log.xtf");
+            var command = configuration.GetIlivalidatorCommand(
+                fileProvider.HomeDirectoryPathFormat,
+                TransferFile,
+                GpkgModelNames);
 
-            var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
-            var options = $"--log {logPath} --xtflog {xtfLogPath}";
-            if (!string.IsNullOrEmpty(GpkgModelNames)) options = $"{options} --models \"{GpkgModelNames}\"";
-            var command = $"{commandPrefix}ilivalidator {options} \"{transferFilePath}\"";
+            var exitCode = await configuration.ExecuteCommandAsync(command).ConfigureAwait(false);
 
-            var startInfo = new ProcessStartInfo()
-            {
-                FileName = configuration.GetShellExecutable(),
-                Arguments = command,
-                UseShellExecute = true,
-            };
-
-            using var process = new Process()
-            {
-                StartInfo = startInfo,
-                EnableRaisingEvents = true,
-            };
-
-            process.Start();
-            await process.WaitForExitAsync().ConfigureAwait(false);
-            if (process.ExitCode != 0)
+            if (exitCode != 0)
             {
                 logger.LogWarning("The ilivalidator found errors in the file. Validation failed.");
             }
