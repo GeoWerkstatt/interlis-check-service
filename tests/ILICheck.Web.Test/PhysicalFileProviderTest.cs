@@ -35,7 +35,6 @@ namespace ILICheck.Web
 
             Assert.ThrowsException<ArgumentNullException>(() => physicalFileProvider.Initialize(null));
             Assert.ThrowsException<ArgumentException>(() => physicalFileProvider.Initialize(string.Empty));
-            Assert.ThrowsException<ArgumentException>(() => physicalFileProvider.Initialize(" "));
         }
 
         private IConfiguration CreateConfiguration() =>
