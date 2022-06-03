@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -11,39 +12,36 @@ namespace ILICheck.Web
         public TestContext TestContext { get; set; }
 
         [TestMethod]
-        public void HomeDirectory()
+        public void PhysicalFileProviderForNullEnvKey() =>
+            Assert.ThrowsException<ArgumentNullException>(() => new PhysicalFileProvider(CreateConfiguration(), null));
+
+        [TestMethod]
+        public void Initialize()
         {
-            var rootDirectoryEnvironmentKey = "UPSALA_TRALLALA";
-            var physicalFileProvider = new PhysicalFileProvider(
-                CreateConfiguration(rootDirectoryEnvironmentKey),
-                rootDirectoryEnvironmentKey);
+            var physicalFileProvider = new PhysicalFileProvider(CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
+            physicalFileProvider.Initialize("GREENANALYST");
 
-            physicalFileProvider.Initialize("SLEEPYFARM");
+            var expectedHomeDirectory = Path.Combine(TestContext.DeploymentDirectory, "GREENANALYST");
+            var expectedHomeDirectoryPathFormat = "${ILICHECK_UPLOADS_DIR}/GREENANALYST/";
 
-            Assert.AreEqual(
-                Path.Combine(TestContext.DeploymentDirectory, "SLEEPYFARM"),
-                physicalFileProvider.HomeDirectory.FullName);
+            Assert.AreEqual(expectedHomeDirectory, physicalFileProvider.HomeDirectory.FullName);
+            Assert.AreEqual(expectedHomeDirectoryPathFormat, physicalFileProvider.HomeDirectoryPathFormat);
         }
 
         [TestMethod]
-        public void HomeDirectoryPathFormat()
+        public void InitializeForInvalid()
         {
-            var rootDirectoryEnvironmentKey = "SPORKBOUNCE_IRATEFIRE";
-            var physicalFileProvider = new PhysicalFileProvider(
-                CreateConfiguration(rootDirectoryEnvironmentKey),
-                rootDirectoryEnvironmentKey);
+            var physicalFileProvider = new PhysicalFileProvider(CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
 
-            physicalFileProvider.Initialize("CHILLYMOON");
-
-            Assert.AreEqual(
-                "${SPORKBOUNCE_IRATEFIRE}/CHILLYMOON/",
-                physicalFileProvider.HomeDirectoryPathFormat);
+            Assert.ThrowsException<ArgumentNullException>(() => physicalFileProvider.Initialize(null));
+            Assert.ThrowsException<ArgumentException>(() => physicalFileProvider.Initialize(string.Empty));
+            Assert.ThrowsException<ArgumentException>(() => physicalFileProvider.Initialize(" "));
         }
 
-        private IConfiguration CreateConfiguration(string rootDirectoryEnvironmentKey = null) =>
+        private IConfiguration CreateConfiguration() =>
             new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
             {
-                { rootDirectoryEnvironmentKey, TestContext.DeploymentDirectory },
+                { "ILICHECK_UPLOADS_DIR", TestContext.DeploymentDirectory },
             }).Build();
     }
 }

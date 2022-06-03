@@ -28,11 +28,13 @@ namespace ILICheck.Web
         /// Initializes a new instance of the <see cref="PhysicalFileProvider"/> at the given root directory path.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="variable">The name of the environment variable containing the root directory path.</param>
-        public PhysicalFileProvider(IConfiguration configuration, string variable)
+        /// <param name="rootDirectoryEnvironmentKey">The name of the environment variable containing the root directory path.</param>
+        /// <exception cref="ArgumentNullException">If <see cref="configuration"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If <see cref="rootDirectoryEnvironmentKey"/> is <c>null</c>.</exception>
+        public PhysicalFileProvider(IConfiguration configuration, string rootDirectoryEnvironmentKey)
         {
-            this.configuration = configuration;
-            rootDirectoryEnvironmentKey = variable;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.rootDirectoryEnvironmentKey = rootDirectoryEnvironmentKey ?? throw new ArgumentNullException(nameof(rootDirectoryEnvironmentKey));
         }
 
         /// <inheritdoc/>
@@ -64,6 +66,8 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
+        /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="name"/> is <c>string.Empty</c>.</exception>
         public void Initialize(string name)
         {
             name = Path.TrimEndingDirectorySeparator(name);
