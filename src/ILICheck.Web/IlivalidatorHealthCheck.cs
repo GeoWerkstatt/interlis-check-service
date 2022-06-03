@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web
 {
@@ -27,7 +27,7 @@ namespace ILICheck.Web
             var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
             var command = $"{commandPrefix} ilivalidator --help".Trim();
 
-            var exitCode = await configuration.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
+            var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
 
             if (exitCode == 0)
             {

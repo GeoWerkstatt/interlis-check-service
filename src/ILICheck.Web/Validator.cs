@@ -1,13 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
-using static ILICheck.Web.Extensions;
+using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web
 {
@@ -103,8 +105,10 @@ namespace ILICheck.Web
                 try
                 {
                     using var archive = ZipFile.OpenRead(Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile));
-                    var fileExtensionsInZipArchive = archive.Entries.Select(entry => Path.GetExtension(entry.FullName));
-                    var transferFileExtension = configuration.GetTransferFileExtension(fileExtensionsInZipArchive);
+
+                    var transferFileExtension = archive.Entries
+                        .Select(entry => Path.GetExtension(entry.FullName))
+                        .GetTransferFileExtension(configuration);
 
                     foreach (var entry in archive.Entries)
                     {
@@ -170,7 +174,11 @@ namespace ILICheck.Web
             try
             {
                 var connectionString = $"Data Source={Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile)}";
-                return await Task.Run(() => ReadGpkgModelNameEntries(connectionString).CleanupGpkgModelNames(configuration).JoinNonEmpty(";")).ConfigureAwait(false);
+                return await Task.Run(() =>
+                    ReadGpkgModelNameEntries(connectionString)
+                    .CleanupGpkgModelNames(configuration)
+                    .JoinNonEmpty(";"))
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -186,12 +194,13 @@ namespace ILICheck.Web
         {
             logger.LogInformation("Validating transfer file with ilivalidator/ili2gpkg");
 
-            var command = configuration.GetIlivalidatorCommand(
+            var command = GetIlivalidatorCommand(
+                configuration,
                 fileProvider.HomeDirectoryPathFormat,
                 TransferFile,
                 GpkgModelNames);
 
-            var exitCode = await configuration.ExecuteCommandAsync(command).ConfigureAwait(false);
+            var exitCode = await ExecuteCommandAsync(configuration, command).ConfigureAwait(false);
 
             if (exitCode != 0)
             {
@@ -211,8 +220,8 @@ namespace ILICheck.Web
         /// </summary>
         internal async Task CleanUploadDirectoryAsync()
         {
-            var tasks = configuration
-                .GetFilesToDelete(fileProvider.GetFiles(), TransferFile)
+            var tasks = fileProvider.GetFiles()
+                .GetFilesToDelete(configuration, TransferFile)
                 .Select(async file =>
                 {
                     logger.LogInformation("Deleting file <{File}>", file);
@@ -220,6 +229,22 @@ namespace ILICheck.Web
                 });
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets all available model names from a GeoPackage SQLite database.
+        /// </summary>
+        /// <param name="connectionString">The string used to open the connection.</param>
+        /// <returns>The model names from the specified GeoPackage.</returns>
+        private IEnumerable<string> ReadGpkgModelNameEntries(string connectionString)
+        {
+            using var connection = new SqliteConnection(connectionString);
+            connection.Open();
+
+            using var command = new SqliteCommand("SELECT * FROM T_ILI2DB_MODEL", connection);
+
+            var reader = command.ExecuteReader();
+            while (reader.Read()) yield return reader["modelName"].ToString();
         }
     }
 }
