@@ -221,7 +221,7 @@ namespace ILICheck.Web
         /// <param name="homeDirectory">The home directory path using the Unix path format.</param>
         /// <param name="transferFile">The transfer file name.</param>
         /// <param name="gpkgModelNames">The extracted model names. Optional.</param>
-        /// <returns>The ilivalidation command.</returns>
+        /// <returns>The ilivalidator command.</returns>
         public static string GetIlivalidatorCommand(this IConfiguration configuration, string homeDirectory, string transferFile, string gpkgModelNames = null)
         {
             homeDirectory = Path.TrimEndingDirectorySeparator(homeDirectory);
