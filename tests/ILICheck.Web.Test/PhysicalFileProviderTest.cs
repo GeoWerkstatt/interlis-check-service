@@ -22,7 +22,7 @@ namespace ILICheck.Web
             physicalFileProvider.Initialize("GREENANALYST");
 
             var expectedHomeDirectory = Path.Combine(TestContext.DeploymentDirectory, "GREENANALYST");
-            var expectedHomeDirectoryPathFormat = "${ILICHECK_UPLOADS_DIR}/GREENANALYST/";
+            var expectedHomeDirectoryPathFormat = "$ILICHECK_UPLOADS_DIR/GREENANALYST/";
 
             Assert.AreEqual(expectedHomeDirectory, physicalFileProvider.HomeDirectory.FullName);
             Assert.AreEqual(expectedHomeDirectoryPathFormat, physicalFileProvider.HomeDirectoryPathFormat);

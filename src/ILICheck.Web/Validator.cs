@@ -51,7 +51,7 @@ namespace ILICheck.Web
         {
             if (transferFile == null) throw new ArgumentNullException(nameof(transferFile));
             if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
-            if (!File.Exists(transferFile)) throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Transfer file with the specified name <{0}> not found in <{1}>.", transferFile, fileProvider.HomeDirectory));
+            if (!fileProvider.Exists(transferFile)) throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Transfer file with the specified name <{0}> not found in <{1}>.", transferFile, fileProvider.HomeDirectory));
 
             // Set the fully qualified path to the transfer file.
             TransferFile = transferFile;

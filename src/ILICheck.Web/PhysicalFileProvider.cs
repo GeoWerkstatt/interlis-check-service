@@ -52,6 +52,13 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
+        public bool Exists(string file)
+        {
+            if (!initialized) throw new InvalidOperationException("The file provider needs to be initialized first.");
+            return File.Exists(Path.Combine(HomeDirectory.FullName, file));
+        }
+
+        /// <inheritdoc/>
         public virtual Task DeleteFileAsync(string file)
         {
             if (!initialized) throw new InvalidOperationException("The file provider needs to be initialized first.");
@@ -72,7 +79,7 @@ namespace ILICheck.Web
         {
             name = Path.TrimEndingDirectorySeparator(name);
             HomeDirectory = new DirectoryInfo(configuration.GetValue<string>(rootDirectoryEnvironmentKey)).CreateSubdirectory(name);
-            HomeDirectoryPathFormat = string.Format(CultureInfo.InvariantCulture, "${{{0}}}/{1}/", rootDirectoryEnvironmentKey, name);
+            HomeDirectoryPathFormat = string.Format(CultureInfo.InvariantCulture, "${0}/{1}/", rootDirectoryEnvironmentKey, name);
 
             initialized = true;
         }

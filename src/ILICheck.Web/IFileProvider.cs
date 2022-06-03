@@ -36,6 +36,14 @@ namespace ILICheck.Web
         StreamReader OpenText(string file);
 
         /// <summary>
+        /// Determines whether the specified <paramref name="file"/> exists.
+        /// </summary>
+        /// <param name="file">The file to check.</param>
+        /// <returns><c>true</c> if the caller has the required permissions and path contains the name of
+        /// an existing file; otherwise, <c>false</c>.</returns>
+        bool Exists(string file);
+
+        /// <summary>
         /// Enumerates the current <see cref="HomeDirectory"/>.
         /// </summary>
         /// <returns>Returns the contents of the <see cref="HomeDirectory"/>.</returns>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -68,11 +69,14 @@ namespace ILICheck.Web
             var logPath = $"{homeDirectory}/{transferFileNameWithoutExtension}_log.log";
             var xtfLogPath = $"{homeDirectory}/{transferFileNameWithoutExtension}_log.xtf";
             var transferFilePath = $"{homeDirectory}/{transferFile}";
-            var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
-            var options = $"--log {logPath} --xtflog {xtfLogPath}";
+            var commandFormat = configuration.GetSection("Validation")["CommandFormat"];
+            var options = $"--log \"{logPath}\" --xtflog \"{xtfLogPath}\"";
             if (!string.IsNullOrEmpty(gpkgModelNames)) options = $"{options} --models \"{gpkgModelNames}\"";
 
-            return $"{commandPrefix} ilivalidator {options} \"{transferFilePath}\"".Trim();
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                commandFormat,
+                $"ilivalidator {options} \"{transferFilePath}\"");
         }
 
         /// <summary>

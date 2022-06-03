@@ -23,8 +23,8 @@ exec {BASH_XTRACEFD}> >(sudo tee /proc/1/fd/2)
 if [[ $ENABLE_GPKG_VALIDATION = true && $is_gpkg = true ]]
 then
   set -x #echo on
-  java -jar $ILITOOLS_HOME_DIR/ili2gpkg/$ILI2GPKG_VERSION/ili2gpkg-$ILI2GPKG_VERSION.jar --validate $options --dbfile "$transfer_file_name"
+  java -jar $ILITOOLS_HOME_DIR/ili2gpkg/$ILI2GPKG_VERSION/ili2gpkg-$ILI2GPKG_VERSION.jar --validate $options --dbfile $transfer_file_name
 else
   set -x #echo on
-  java -jar $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar --allObjectsAccessible  $options "$transfer_file_name"
+  java -jar $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar --allObjectsAccessible  $options $transfer_file_name
 fi
