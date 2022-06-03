@@ -147,9 +147,23 @@ namespace ILICheck.Web
         /// <param name="unsafeFileName">The unsafe file name.</param>
         /// <param name="configuration">The configuration.</param>
         /// <returns>The sanitized file extension for the specified <paramref name="unsafeFileName"/>.</returns>
-        public static string GetSanitizedFileExtension(this string unsafeFileName, IConfiguration configuration) =>
-            GetAcceptedFileExtensionsForUserUploads(configuration)
-            .Single(extension => Path.GetExtension(unsafeFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
+        /// <exception cref="UnknownExtensionException">If file extension of <paramref name="unsafeFileName"/> is unknown.</exception>
+        public static string GetSanitizedFileExtension(this string unsafeFileName, IConfiguration configuration)
+        {
+            try
+            {
+                return GetAcceptedFileExtensionsForUserUploads(configuration)
+                    .Single(extension => Path.GetExtension(unsafeFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
+            }
+            catch (InvalidOperationException)
+            {
+                throw new UnknownExtensionException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Transfer file extension <{0}> is an unknown file extension.",
+                        Path.GetExtension(unsafeFileName)));
+            }
+        }
 
         /// <summary>
         /// Gets the log file for the specified <paramref name="logType"/>.

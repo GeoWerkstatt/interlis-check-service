@@ -168,17 +168,17 @@ namespace ILICheck.Web
             Assert.AreEqual(".xtf", "TRAWLMASTER.xtf".GetSanitizedFileExtension(configuration));
             Assert.AreEqual(".xml", "TRAWLMASTER.FARMARTIST.XML".GetSanitizedFileExtension(configuration));
             Assert.AreEqual(".zip", "GOPHERFELONY SCANWAFFLE .zIP".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<InvalidOperationException>(() => "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<UnknownExtensionException>(() => "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(configuration));
 
             configuration = CreateConfiguration(enableGpkgValidation: true);
 
             Assert.AreEqual(".gpkg", "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(configuration));
 
             // Not supported/invalid file extensions
-            Assert.ThrowsException<InvalidOperationException>(() => "TRAWLBOUNCE.ini".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<InvalidOperationException>(() => "BIZARREPENGUIN.sh".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<InvalidOperationException>(() => "LATENTNET-HX.exe".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<InvalidOperationException>(() => "IRATEMONKEY.cmd".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<UnknownExtensionException>(() => "TRAWLBOUNCE.ini".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<UnknownExtensionException>(() => "BIZARREPENGUIN.sh".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<UnknownExtensionException>(() => "LATENTNET-HX.exe".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<UnknownExtensionException>(() => "IRATEMONKEY.cmd".GetSanitizedFileExtension(configuration));
         }
 
         [TestMethod]
