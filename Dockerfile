@@ -80,4 +80,6 @@ COPY --from=build /app/publish $ILICHECK_APP_HOME_DIR
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY ilivalidator-wrapper.sh /usr/local/bin/ilivalidator
 
+HEALTHCHECK CMD curl --fail http://localhost/health || exit 1
+
 ENTRYPOINT ["/entrypoint.sh"]

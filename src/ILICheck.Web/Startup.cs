@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace ILICheck.Web
 {
@@ -25,6 +26,7 @@ namespace ILICheck.Web
         {
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
+            services.AddHealthChecks().AddCheck<IlivalidatorHealthCheck>("Ilivalidator");
             services.AddApiVersioning(config =>
             {
                 config.AssumeDefaultVersionWhenUnspecified = true;
@@ -44,7 +46,7 @@ namespace ILICheck.Web
                 });
             });
             services.AddTransient<IValidator, Validator>();
-            services.AddTransient<IFileProvider, PhysicalFileProvider>(_ => new PhysicalFileProvider(Configuration.GetValue<string>("ILICHECK_UPLOADS_DIR")));
+            services.AddTransient<IFileProvider, PhysicalFileProvider>(x => new PhysicalFileProvider(x.GetRequiredService<IConfiguration>(), "ILICHECK_UPLOADS_DIR"));
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 209715200;
@@ -88,9 +90,8 @@ namespace ILICheck.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapHealthChecks("/health");
             });
 
             app.UseSpa(spa =>

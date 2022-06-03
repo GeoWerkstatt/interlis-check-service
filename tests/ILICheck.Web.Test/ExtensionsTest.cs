@@ -10,6 +10,8 @@ namespace ILICheck.Web
     [TestClass]
     public class ExtensionsTest
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void JoinNonEmpty()
         {
@@ -24,6 +26,59 @@ namespace ILICheck.Web
             Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(null), "Null seperator should be rejected.");
             Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(""), "Empty seperator should be rejected.");
         }
+
+        [TestMethod]
+        public void GetTransferFileExtensionWithoutGpkgEnabled()
+        {
+            var configuration = CreateConfiguration(enableGpkgValidation: false);
+
+            Assert.AreEqual(".XTF", new[] { ".xml", ".ili", ".XTF", ".itf" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".itf", new[] { ".xml", ".ili", ".itf" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".XML", new[] { ".XML", ".ili" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".xml", new[] { ".xml" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".itf", new[] { ".itf" }.GetTransferFileExtension(configuration));
+        }
+
+        [TestMethod]
+        public void GetTransferFileExtensionWithGpkgEnabled()
+        {
+            var configuration = CreateConfiguration(enableGpkgValidation: true);
+
+            Assert.AreEqual(".xtf", new[] { ".gpkg", ".xml", ".ILI", ".xtf", ".itf" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".ITF", new[] { ".GPKG", ".xml", ".ili", ".ITF" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".xml", new[] { ".gpkg", ".xml", ".ili" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".XML", new[] { ".gpkg", ".XML" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".itf", new[] { ".gpkg", ".itf" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".gpkg", new[] { ".gpkg" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".GPkg", new[] { ".GPkg" }.GetTransferFileExtension(configuration));
+        }
+
+        [TestMethod]
+        public void GetTransferFileExtensionForMultipleModelAndCatalogueItems()
+        {
+            var configuration = CreateConfiguration(enableGpkgValidation: false);
+
+            Assert.AreEqual(".itf", new[] { ".itf", ".ili", ".ILI" }.GetTransferFileExtension(configuration));
+            Assert.AreEqual(".xtf", new[] { ".xtf", ".xml", ".xml", ".ili", ".ili" }.GetTransferFileExtension(configuration));
+        }
+
+        [TestMethod]
+        public void GetTransferFileExtensionForInvalid()
+        {
+            var configuration = CreateConfiguration(enableGpkgValidation: false);
+
+            Assert.ThrowsException<ArgumentNullException>(() => ((IEnumerable<string>)null).GetTransferFileExtension(configuration), "Null argument should be rejected.");
+            Assert.ThrowsException<TransferFileNotFoundException>(() => new[] { ".ili" }.GetTransferFileExtension(configuration), "Extensions with no transfer file should be detected.");
+            Assert.ThrowsException<TransferFileNotFoundException>(() => Enumerable.Empty<string>().GetTransferFileExtension(configuration), "Empty extensions should be detected.");
+            Assert.ThrowsException<MultipleTransferFileFoundException>(() => new[] { ".itf", ".itf" }.GetTransferFileExtension(configuration), "Multiple transfer file extensions of the same type should be detected.");
+            Assert.ThrowsException<UnknownExtensionException>(() => new[] { ".sh" }.GetTransferFileExtension(configuration), "An unknown transfer file extension should be rejected.");
+            Assert.ThrowsException<UnknownExtensionException>(() => new[] { ".gpkg" }.GetTransferFileExtension(configuration), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnknownExtensionException), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.")]
+        public void GetTransferFileExtensionForGpkgWithoutGpkgEnabled() =>
+            new[] { ".gpkg" }.GetTransferFileExtension(CreateConfiguration(enableGpkgValidation: false));
 
         [TestMethod]
         public void CleanupGpkgModelNames()
@@ -52,96 +107,11 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
-        public void GetAcceptedFileExtensionsForUserUploadsWithoutGpkgEnabled()
-        {
-            var expected = new[] { ".xtf", ".itf", ".xml", ".zip" };
-            var configuration = CreateConfiguration(enableGpkgValidation: false);
-            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForUserUploads().ToList());
-        }
-
-        [TestMethod]
-        public void GetAcceptedFileExtensionsForUserUploadsWithGpkgEnabled()
-        {
-            var expected = new[] { ".xtf", ".itf", ".xml", ".gpkg", ".zip" };
-            var configuration = CreateConfiguration(enableGpkgValidation: true);
-            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForUserUploads().ToList());
-        }
-
-        [TestMethod]
-        public void GetAcceptedFileExtensionsForZipContentWithoutGpkgEnabled()
-        {
-            var expected = new[] { ".xtf", ".itf", ".xml", ".ili" };
-            var configuration = CreateConfiguration(enableGpkgValidation: false);
-            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForZipContent().ToList());
-        }
-
-        [TestMethod]
-        public void GetAcceptedFileExtensionsForZipContentWithGpkgEnabled()
-        {
-            var expected = new[] { ".xtf", ".itf", ".xml", ".gpkg", ".ili" };
-            var configuration = CreateConfiguration(enableGpkgValidation: true);
-            CollectionAssert.AreEqual(expected, configuration.GetAcceptedFileExtensionsForZipContent().ToList());
-        }
-
-        [TestMethod]
-        public void GetTransferFileExtensionWithoutGpkgEnabled()
-        {
-            var configuration = CreateConfiguration(enableGpkgValidation: false);
-
-            Assert.AreEqual(".XTF", configuration.GetTransferFileExtension(new[] { ".xml", ".ili", ".XTF", ".itf" }));
-            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".xml", ".ili", ".itf" }));
-            Assert.AreEqual(".XML", configuration.GetTransferFileExtension(new[] { ".XML", ".ili" }));
-            Assert.AreEqual(".xml", configuration.GetTransferFileExtension(new[] { ".xml" }));
-            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".itf" }));
-        }
-
-        [TestMethod]
-        public void GetTransferFileExtensionWithGpkgEnabled()
-        {
-            var configuration = CreateConfiguration(enableGpkgValidation: true);
-
-            Assert.AreEqual(".xtf", configuration.GetTransferFileExtension(new[] { ".gpkg", ".xml", ".ILI", ".xtf", ".itf" }));
-            Assert.AreEqual(".ITF", configuration.GetTransferFileExtension(new[] { ".GPKG", ".xml", ".ili", ".ITF" }));
-            Assert.AreEqual(".xml", configuration.GetTransferFileExtension(new[] { ".gpkg", ".xml", ".ili" }));
-            Assert.AreEqual(".XML", configuration.GetTransferFileExtension(new[] { ".gpkg", ".XML" }));
-            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".gpkg", ".itf" }));
-            Assert.AreEqual(".gpkg", configuration.GetTransferFileExtension(new[] { ".gpkg" }));
-            Assert.AreEqual(".GPkg", configuration.GetTransferFileExtension(new[] { ".GPkg" }));
-        }
-
-        [TestMethod]
-        public void GetTransferFileExtensionForMultipleModelAndCatalogueItems()
-        {
-            var configuration = CreateConfiguration(enableGpkgValidation: false);
-
-            Assert.AreEqual(".itf", configuration.GetTransferFileExtension(new[] { ".itf", ".ili", ".ILI" }));
-            Assert.AreEqual(".xtf", configuration.GetTransferFileExtension(new[] { ".xtf", ".xml", ".xml", ".ili", ".ili" }));
-        }
-
-        [TestMethod]
-        public void GetTransferFileExtensionForInvalid()
-        {
-            var configuration = CreateConfiguration(enableGpkgValidation: false);
-
-            Assert.ThrowsException<ArgumentNullException>(() => configuration.GetTransferFileExtension(null), "Null argument should be rejected.");
-            Assert.ThrowsException<TransferFileNotFoundException>(() => configuration.GetTransferFileExtension(new[] { ".ili" }), "Extensions with no transfer file should be detected.");
-            Assert.ThrowsException<TransferFileNotFoundException>(() => configuration.GetTransferFileExtension(Enumerable.Empty<string>()), "Empty extensions should be detected.");
-            Assert.ThrowsException<MultipleTransferFileFoundException>(() => configuration.GetTransferFileExtension(new[] { ".itf", ".itf" }), "Multiple transfer file extensions of the same type should be detected.");
-            Assert.ThrowsException<UnknownExtensionException>(() => configuration.GetTransferFileExtension(new[] { ".sh" }), "An unknown transfer file extension should be rejected.");
-            Assert.ThrowsException<UnknownExtensionException>(() => configuration.GetTransferFileExtension(new[] { ".gpkg" }), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(UnknownExtensionException), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.")]
-        public void GetTransferFileExtensionForGpkgWithoutGpkgEnabled() =>
-            CreateConfiguration(enableGpkgValidation: false).GetTransferFileExtension(new[] { ".gpkg" });
-
-        [TestMethod]
         public void GetFilesToDeleteWithDeleteTransferFilesEnabled()
         {
             var configuration = CreateConfiguration(deleteTransferFiles: true);
             var transferFile = @"\\IRATESOURCE\WAFFLETOTE.xtf";
-            var files = new[]
+            var input = new[]
             {
                 @"C:\Temp\IRONAUTO.log",
                 @"\\UNITEDWATCH\WRONGFARM.xtf",
@@ -163,7 +133,7 @@ namespace ILICheck.Web
                 @"VIOLETDEITY.itf",
             };
 
-            CollectionAssert.AreEqual(expected, configuration.GetFilesToDelete(files, transferFile).ToList());
+            CollectionAssert.AreEqual(expected, input.GetFilesToDelete(configuration, transferFile).ToList());
         }
 
         [TestMethod]
@@ -171,7 +141,7 @@ namespace ILICheck.Web
         {
             var configuration = CreateConfiguration(deleteTransferFiles: false);
             var transferFile = @"\\IRATESOURCE\WAFFLETOTE.xtf";
-            var files = new[]
+            var input = new[]
             {
                 @"C:\Temp\IRONAUTO.log",
                 @"\\UNITEDWATCH\WRONGFARM.xtf",
@@ -185,7 +155,7 @@ namespace ILICheck.Web
 
             var expected = Enumerable.Empty<string>().ToList();
 
-            CollectionAssert.AreEqual(expected, configuration.GetFilesToDelete(files, transferFile).ToList());
+            CollectionAssert.AreEqual(expected, input.GetFilesToDelete(configuration, transferFile).ToList());
         }
 
         [TestMethod]
@@ -193,22 +163,22 @@ namespace ILICheck.Web
         {
             var configuration = CreateConfiguration(enableGpkgValidation: false);
 
-            Assert.AreEqual(".xml", configuration.GetSanitizedFileExtension("VIOLETNIGHT.xml"));
-            Assert.AreEqual(".zip", configuration.GetSanitizedFileExtension("SLIMYSOURCE.zip"));
-            Assert.AreEqual(".xtf", configuration.GetSanitizedFileExtension("TRAWLMASTER.xtf"));
-            Assert.AreEqual(".xml", configuration.GetSanitizedFileExtension("TRAWLMASTER.FARMARTIST.XML"));
-            Assert.AreEqual(".zip", configuration.GetSanitizedFileExtension("GOPHERFELONY SCANWAFFLE .zIP"));
-            Assert.ThrowsException<InvalidOperationException>(() => configuration.GetSanitizedFileExtension("SLICKERTRAWL.gpkg"));
+            Assert.AreEqual(".xml", "VIOLETNIGHT.xml".GetSanitizedFileExtension(configuration));
+            Assert.AreEqual(".zip", "SLIMYSOURCE.zip".GetSanitizedFileExtension(configuration));
+            Assert.AreEqual(".xtf", "TRAWLMASTER.xtf".GetSanitizedFileExtension(configuration));
+            Assert.AreEqual(".xml", "TRAWLMASTER.FARMARTIST.XML".GetSanitizedFileExtension(configuration));
+            Assert.AreEqual(".zip", "GOPHERFELONY SCANWAFFLE .zIP".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<InvalidOperationException>(() => "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(configuration));
 
             configuration = CreateConfiguration(enableGpkgValidation: true);
 
-            Assert.AreEqual(".gpkg", configuration.GetSanitizedFileExtension("SLICKERTRAWL.gpkg"));
+            Assert.AreEqual(".gpkg", "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(configuration));
 
             // Not supported/invalid file extensions
-            Assert.ThrowsException<InvalidOperationException>(() => configuration.GetSanitizedFileExtension("TRAWLBOUNCE.ini"));
-            Assert.ThrowsException<InvalidOperationException>(() => configuration.GetSanitizedFileExtension("BIZARREPENGUIN.sh"));
-            Assert.ThrowsException<InvalidOperationException>(() => configuration.GetSanitizedFileExtension("LATENTNET-HX.exe"));
-            Assert.ThrowsException<InvalidOperationException>(() => configuration.GetSanitizedFileExtension("IRATEMONKEY.cmd"));
+            Assert.ThrowsException<InvalidOperationException>(() => "TRAWLBOUNCE.ini".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<InvalidOperationException>(() => "BIZARREPENGUIN.sh".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<InvalidOperationException>(() => "LATENTNET-HX.exe".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<InvalidOperationException>(() => "IRATEMONKEY.cmd".GetSanitizedFileExtension(configuration));
         }
 
         [TestMethod]
@@ -227,13 +197,12 @@ namespace ILICheck.Web
             Assert.AreEqual("example_log.xTf", fileProviderMock.Object.GetLogFile(LogType.Xtf));
         }
 
-        private static IConfiguration CreateConfiguration(bool enableGpkgValidation = false, bool deleteTransferFiles = false, string blacklistedGpkgModels = "", string uploadsRootDir = "") =>
+        private static IConfiguration CreateConfiguration(bool enableGpkgValidation = false, bool deleteTransferFiles = false, string blacklistedGpkgModels = "") =>
             new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "ENABLE_GPKG_VALIDATION", enableGpkgValidation.ToString() },
                 { "DELETE_TRANSFER_FILES", deleteTransferFiles.ToString() },
                 { "Validation:BlacklistedGpkgModels", blacklistedGpkgModels },
-                { "ILICHECK_UPLOADS_DIR", uploadsRootDir },
             }).Build();
     }
 }

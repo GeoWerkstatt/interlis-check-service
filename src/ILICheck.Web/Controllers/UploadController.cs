@@ -59,7 +59,7 @@ namespace ILICheck.Web.Controllers
             logger.LogInformation("Start time: {Timestamp}", DateTime.Now);
 
             // Sanitize file name and save the file to disk
-            var transferFile = Path.ChangeExtension(Path.GetRandomFileName(), configuration.GetSanitizedFileExtension(file.FileName));
+            var transferFile = Path.ChangeExtension(Path.GetRandomFileName(), file.FileName.GetSanitizedFileExtension(configuration));
             using (var stream = fileProvider.CreateFile(transferFile))
             {
                 await file.CopyToAsync(stream).ConfigureAwait(false);

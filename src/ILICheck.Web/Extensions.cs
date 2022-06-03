@@ -1,11 +1,11 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web
 {
@@ -43,22 +43,6 @@ namespace ILICheck.Web
             configuration.GetSection("Validation")["ShellExecutable"];
 
         /// <summary>
-        /// Gets all available model names from a GeoPackage SQLite database.
-        /// </summary>
-        /// <param name="connectionString">The string used to open the connection.</param>
-        /// <returns>The model names from the specified GeoPackage.</returns>
-        public static IEnumerable<string> ReadGpkgModelNameEntries(string connectionString)
-        {
-            using var connection = new SqliteConnection(connectionString);
-            connection.Open();
-
-            using var command = new SqliteCommand("SELECT * FROM T_ILI2DB_MODEL", connection);
-
-            var reader = command.ExecuteReader();
-            while (reader.Read()) yield return reader["modelName"].ToString();
-        }
-
-        /// <summary>
         /// Removes referenced and blacklisted model names in order to be able to successfully validate with ili2gpkg.
         /// </summary>
         /// <param name="rawGpkgModelNames">Untouched (raw) model names from a GeoPackage SQLite database (gpkg).</param>
@@ -83,43 +67,23 @@ namespace ILICheck.Web
         }
 
         /// <summary>
-        /// Gets the accepted file extensions for user web uploads.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        public static IEnumerable<string> GetAcceptedFileExtensionsForUserUploads(this IConfiguration configuration)
-        {
-            var additionalExtensions = new[] { ".zip" };
-            return GetOrderedTransferFileExtensions(configuration).Concat(additionalExtensions);
-        }
-
-        /// <summary>
-        /// Gets the accepted file extensions for ZIP content.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        public static IEnumerable<string> GetAcceptedFileExtensionsForZipContent(this IConfiguration configuration)
-        {
-            var additionalExtensions = new[] { ".ili" };
-            return GetOrderedTransferFileExtensions(configuration).Concat(additionalExtensions);
-        }
-
-        /// <summary>
         /// Gets the main transfer file extension among the given file <paramref name="extensions"/>.
         /// If there are multiple transfer file extensions available in <paramref name="extensions"/>,
-        /// there is a specific order defined in <see cref="GetOrderedTransferFileExtensions"/> to choose from.
+        /// there is a specific order defined in <see cref="ValidatorHelper.GetOrderedTransferFileExtensions"/> to choose from.
         /// </summary>
-        /// <param name="configuration">The configuration.</param>
         /// <param name="extensions">All the file extensions to search for the right transfer file extension in.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <exception cref="UnknownExtensionException">If <paramref name="extensions"/> contains unknown extensions.</exception>
         /// <exception cref="TransferFileNotFoundException">If no transfer file was found in <paramref name="extensions"/>.</exception>
         /// <exception cref="MultipleTransferFileFoundException">If multiple transfer files were found in <paramref name="extensions"/>.</exception>
-        public static string GetTransferFileExtension(this IConfiguration configuration, IEnumerable<string> extensions)
+        public static string GetTransferFileExtension(this IEnumerable<string> extensions, IConfiguration configuration)
         {
             if (extensions == null) throw new ArgumentNullException(nameof(extensions));
 
             // Check for unknown transfer file extensions
             foreach (var extension in extensions)
             {
-                if (!configuration.GetAcceptedFileExtensionsForZipContent()
+                if (!GetAcceptedFileExtensionsForZipContent(configuration)
                     .Any(x => x.Contains(extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new UnknownExtensionException(
@@ -128,7 +92,7 @@ namespace ILICheck.Web
             }
 
             // Find transfer file among the given extensions.
-            var customOrder = configuration.GetOrderedTransferFileExtensions();
+            var customOrder = GetOrderedTransferFileExtensions(configuration);
             string transferFileExtension = extensions
                 .Where(x => customOrder.Contains(x, StringComparer.OrdinalIgnoreCase))
                 .OrderBy(x => Array.FindIndex(customOrder.ToArray(), t => t.Equals(x, StringComparison.OrdinalIgnoreCase)))
@@ -155,10 +119,10 @@ namespace ILICheck.Web
         /// <summary>
         /// Gets the file names from the given set of <paramref name="fileNames"/> which can be deleted after validation has been completed.
         /// </summary>
-        /// <param name="configuration">The configuration.</param>
         /// <param name="fileNames">The collection of file names to get the ones which can be deleted from.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <param name="transferFile">The transfer file name.</param>
-        public static IEnumerable<string> GetFilesToDelete(this IConfiguration configuration, IEnumerable<string> fileNames, string transferFile)
+        public static IEnumerable<string> GetFilesToDelete(this IEnumerable<string> fileNames, IConfiguration configuration, string transferFile)
         {
             if (fileNames == null) throw new ArgumentNullException(nameof(fileNames));
 
@@ -180,11 +144,12 @@ namespace ILICheck.Web
         /// <summary>
         /// Gets the sanitized file extension for the specified <paramref name="unsafeFileName"/>.
         /// </summary>
-        /// <param name="configuration">The configuration.</param>
         /// <param name="unsafeFileName">The unsafe file name.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <returns>The sanitized file extension for the specified <paramref name="unsafeFileName"/>.</returns>
-        public static string GetSanitizedFileExtension(this IConfiguration configuration, string unsafeFileName) =>
-            configuration.GetAcceptedFileExtensionsForUserUploads().Single(extension => Path.GetExtension(unsafeFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
+        public static string GetSanitizedFileExtension(this string unsafeFileName, IConfiguration configuration) =>
+            GetAcceptedFileExtensionsForUserUploads(configuration)
+            .Single(extension => Path.GetExtension(unsafeFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// Gets the log file for the specified <paramref name="logType"/>.
@@ -207,22 +172,6 @@ namespace ILICheck.Web
                 throw new FileNotFoundException(
                     string.Format(CultureInfo.InvariantCulture, "Log file of type <{0}> not found in <{1}>", logType, fileProvider.HomeDirectory));
             }
-        }
-
-        /// <summary>
-        /// Gets the transfer file extensions which are supported for validation with ilivalidator.
-        /// The ordered list of transfer file extensions is prioritized according to known rules
-        /// when validate with additional files (eg. catalogues).
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        private static IEnumerable<string> GetOrderedTransferFileExtensions(this IConfiguration configuration)
-        {
-            foreach (var extension in new[] { ".xtf", ".itf", ".xml" })
-            {
-                yield return extension;
-            }
-
-            if (configuration.GetValue<bool>("ENABLE_GPKG_VALIDATION")) yield return ".gpkg";
         }
 
         private static string RemoveReferencedModels(this string models) =>

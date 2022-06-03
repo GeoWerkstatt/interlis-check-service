@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,19 +13,28 @@ namespace ILICheck.Web
     /// </summary>
     public class PhysicalFileProvider : IFileProvider
     {
+        private readonly IConfiguration configuration;
+        private readonly string rootDirectoryEnvironmentKey;
+
         private bool initialized;
 
         /// <inheritdoc/>
         public DirectoryInfo HomeDirectory { get; private set; }
 
+        /// <inheritdoc/>
+        public string HomeDirectoryPathFormat { get; private set; }
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="PhysicalFileProvider"/>
-        /// at the given <paramref name="root"/> directory path.
+        /// Initializes a new instance of the <see cref="PhysicalFileProvider"/> at the given root directory path.
         /// </summary>
-        /// <param name="root">The root directory. This must be an absolute path.</param>
-        public PhysicalFileProvider(string root)
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="rootDirectoryEnvironmentKey">The name of the environment variable containing the root directory path.</param>
+        /// <exception cref="ArgumentNullException">If <see cref="configuration"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If <see cref="rootDirectoryEnvironmentKey"/> is <c>null</c>.</exception>
+        public PhysicalFileProvider(IConfiguration configuration, string rootDirectoryEnvironmentKey)
         {
-            HomeDirectory = new DirectoryInfo(root);
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.rootDirectoryEnvironmentKey = rootDirectoryEnvironmentKey ?? throw new ArgumentNullException(nameof(rootDirectoryEnvironmentKey));
         }
 
         /// <inheritdoc/>
@@ -55,9 +66,14 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
+        /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="name"/> is <c>string.Empty</c>.</exception>
         public void Initialize(string name)
         {
-            HomeDirectory = HomeDirectory.CreateSubdirectory(name);
+            name = Path.TrimEndingDirectorySeparator(name);
+            HomeDirectory = new DirectoryInfo(configuration.GetValue<string>(rootDirectoryEnvironmentKey)).CreateSubdirectory(name);
+            HomeDirectoryPathFormat = string.Format(CultureInfo.InvariantCulture, "${{{0}}}/{1}/", rootDirectoryEnvironmentKey, name);
+
             initialized = true;
         }
     }
