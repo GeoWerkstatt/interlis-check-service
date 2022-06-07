@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using static ILICheck.Web.ValidatorHelper;
@@ -24,8 +25,8 @@ namespace ILICheck.Web
         /// <inheritdoc/>
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
-            var commandPrefix = configuration.GetSection("Validation")["CommandPrefix"];
-            var command = $"{commandPrefix} ilivalidator --help".Trim();
+            var commandFormat = configuration.GetSection("Validation")["CommandFormat"];
+            var command = string.Format(CultureInfo.InvariantCulture, commandFormat, "ilivalidator --help");
 
             var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
 
