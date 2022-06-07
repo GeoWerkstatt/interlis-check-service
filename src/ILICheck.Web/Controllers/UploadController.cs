@@ -32,7 +32,7 @@ namespace ILICheck.Web.Controllers
         }
 
         /// <summary>
-        /// Creates a new validation job for the given transfer <paramref name="file"/>
+        /// Asynchronously creates a new validation job for the given transfer <paramref name="file"/>
         /// A compressed <paramref name="file"/> (.zip) containing additional models and
         /// catalogues is also supported.
         /// </summary>
@@ -50,31 +50,42 @@ namespace ILICheck.Web.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1629:DocumentationTextMustEndWithAPeriod", Justification = "Not applicable for code examples.")]
-        public async Task<IActionResult> Upload(ApiVersion version, IFormFile file)
+        public async Task<IActionResult> UploadAsync(ApiVersion version, IFormFile file)
         {
+            if (file == null) return Problem($"Form data <{nameof(file)}> cannot be empty.", statusCode: 400);
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
             logger.LogInformation("Start uploading <{TransferFile}> to <{HomeDirectory}>", file.FileName, fileProvider.HomeDirectory);
             logger.LogInformation("Transfer file size: {ContentLength}", httpRequest.ContentLength);
             logger.LogInformation("Start time: {Timestamp}", DateTime.Now);
 
-            // Sanitize file name and save the file to disk
-            var transferFile = Path.ChangeExtension(Path.GetRandomFileName(), file.FileName.GetSanitizedFileExtension(configuration));
-            using (var stream = fileProvider.CreateFile(transferFile))
+            try
             {
-                await file.CopyToAsync(stream).ConfigureAwait(false);
+                // Sanitize file name and save the file to the predefined home directory.
+                var transferFile = Path.ChangeExtension(
+                    Path.GetRandomFileName(),
+                    file.FileName.GetSanitizedFileExtension(configuration));
+
+                using (var stream = fileProvider.CreateFile(transferFile))
+                {
+                    await file.CopyToAsync(stream).ConfigureAwait(false);
+                }
+
+                logger.LogInformation("Successfully received file: {TransferFile}", file.FileName);
+
+                _ = validator.ValidateAsync(transferFile);
+                logger.LogInformation("Job with id <{JobId}> is scheduled for execution.", validator.Id);
+
+                var location = new Uri(
+                    string.Format(CultureInfo.InvariantCulture, "/api/v{0}/status/{1}", version.MajorVersion, validator.Id),
+                    UriKind.Relative);
+
+                return Created(location, new { jobId = validator.Id, statusUrl = location });
             }
-
-            logger.LogInformation("Successfully received file: {Timestamp}", DateTime.Now);
-
-            _ = validator.ValidateAsync(transferFile);
-            logger.LogInformation("Job with id <{JobId}> is scheduled for execution.", validator.Id);
-
-            var location = new Uri(
-                string.Format(CultureInfo.InvariantCulture, "/api/v{0}/status/{1}", version.MajorVersion, validator.Id),
-                UriKind.Relative);
-
-            return Created(location, new { jobId = validator.Id, statusUrl = location, });
+            catch (UnknownExtensionException ex)
+            {
+                return Problem(ex.Message, statusCode: 400);
+            }
         }
     }
 }
