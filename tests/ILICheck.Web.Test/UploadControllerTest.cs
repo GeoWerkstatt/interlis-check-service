@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace ILICheck.Web.Controllers
 {
     [TestClass]
-    public sealed class UploadControllerTest : IDisposable
+    public sealed class UploadControllerTest
     {
         private Mock<ILogger<UploadController>> loggerMock;
         private Mock<IHttpContextAccessor> httpContextAccessorMock;
@@ -109,10 +109,5 @@ namespace ILICheck.Web.Controllers
                 { "ILICHECK_UPLOADS_DIR", TestContext.DeploymentDirectory },
                 { "ENABLE_GPKG_VALIDATION", enableGpkgValidation.ToString() },
             }).Build();
-
-        public void Dispose()
-        {
-            controller.Dispose();
-        }
     }
 }
