@@ -78,7 +78,8 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
-        public (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId) => jobs[jobId];
+        public (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId) =>
+            jobs.TryGetValue(jobId, out var status) ? status : default;
 
         /// <summary>
         /// Adds or updates the status for the given <paramref name="jobId"/>.
