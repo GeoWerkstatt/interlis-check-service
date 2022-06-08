@@ -4,45 +4,45 @@ using System.Runtime.Serialization;
 namespace ILICheck.Web
 {
     /// <summary>
-    /// The exception that is thrown when a GeoPackage SQLite database cannot be processed properly.
+    /// The exception that is thrown when a XML transfer file cannot be parsed correctly.
     /// </summary>
     [Serializable]
-    public class GeoPackageException : Exception
+    public class InvalidXmlException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GeoPackageException"/> class.
+        /// Initializes a new instance of the <see cref="InvalidXmlException"/> class.
         /// </summary>
-        public GeoPackageException()
+        public InvalidXmlException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GeoPackageException"/> class
+        /// Initializes a new instance of the <see cref="InvalidXmlException"/> class
         /// with a specified error <paramref name="message"/>.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public GeoPackageException(string message)
+        public InvalidXmlException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GeoPackageException"/> class
+        /// Initializes a new instance of the <see cref="InvalidXmlException"/> class
         /// with a specified error <paramref name="message"/> and a reference to the
         /// <paramref name="innerException"/> that is the cause of this exception.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">The exception that is the cause of the current exception.</param>
-        public GeoPackageException(string message, Exception innerException)
+        public InvalidXmlException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GeoPackageException"/> class
+        /// Initializes a new instance of the <see cref="InvalidXmlException"/> class
         /// with serialized data.
         /// </summary>
-        protected GeoPackageException(SerializationInfo info, StreamingContext streamingContext)
+        protected InvalidXmlException(SerializationInfo info, StreamingContext streamingContext)
             : base(info, streamingContext)
         {
         }

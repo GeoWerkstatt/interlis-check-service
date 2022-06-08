@@ -5,6 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web
@@ -87,6 +90,7 @@ namespace ILICheck.Web
                     .Any(x => x.Contains(extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new UnknownExtensionException(
+                        extension,
                         string.Format(CultureInfo.InvariantCulture, "Transfer file extension <{0}> is an unknown file extension.", extension));
                 }
             }
@@ -107,7 +111,9 @@ namespace ILICheck.Web
                 // Check for multiple transfer files of the same type
                 if (extensions.Count(extension => extension.Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase)) > 1)
                 {
-                    throw new MultipleTransferFileFoundException(string.Format(CultureInfo.InvariantCulture, "Multiple transfer files <{0}> are not supported", transferFileExtension));
+                    throw new MultipleTransferFileFoundException(
+                        transferFileExtension,
+                        string.Format(CultureInfo.InvariantCulture, "Multiple transfer files <{0}> are not supported", transferFileExtension));
                 }
                 else
                 {
@@ -157,11 +163,13 @@ namespace ILICheck.Web
             }
             catch (InvalidOperationException)
             {
+                var invalidFileExtension = Path.GetExtension(unsafeFileName);
                 throw new UnknownExtensionException(
+                    invalidFileExtension,
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "Transfer file extension <{0}> is an unknown file extension.",
-                        Path.GetExtension(unsafeFileName)));
+                        invalidFileExtension));
             }
         }
 
@@ -186,6 +194,31 @@ namespace ILICheck.Web
                 throw new FileNotFoundException(
                     string.Format(CultureInfo.InvariantCulture, "Log file of type <{0}> not found in <{1}>", logType, fileProvider.HomeDirectory));
             }
+        }
+
+        /// <summary>
+        /// Asynchronously invokes the specified <paramref name="action"/> on the given items in <paramref name="source"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the items in the sequence.</typeparam>
+        /// <param name="source">The asynchronous sequence containing the items.</param>
+        /// <param name="action">The action to invoke.</param>
+        /// <param name="cancellationToken">An optional <see cref="CancellationToken"/> to cancel the asynchronous operation.</param>
+        public static async Task ParallelForEachAsync<T>(this IAsyncEnumerable<T> source, Func<T, Task> action, CancellationToken cancellationToken = default)
+        {
+            var dataFlowBlockOptions = new ExecutionDataflowBlockOptions
+            {
+                MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded,
+                CancellationToken = cancellationToken,
+            };
+
+            var actionBlock = new ActionBlock<T>(action, dataFlowBlockOptions);
+            await foreach (var item in source)
+            {
+                await actionBlock.SendAsync(item);
+            }
+
+            actionBlock.Complete();
+            await actionBlock.Completion;
         }
 
         private static string RemoveReferencedModels(this string models) =>

@@ -22,7 +22,7 @@ namespace ILICheck.Web.Controllers
         /// <summary>
         /// Gets the ilivalidator log file for the specified <paramref name="jobId"/> and <paramref name="logType"/>.
         /// </summary>
-        /// <param name="jobId">The validation job identifier.</param>
+        /// <param name="jobId">The job identifier.</param>
         /// <param name="logType">The log type (log|xtf).</param>
         /// <response code="200">Returns the ilivalidator log file.</response>
         /// <response code="400">The server cannot process the request due to invalid or malformed request.</response>

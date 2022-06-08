@@ -54,7 +54,7 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
-        [ExpectedException(typeof(XmlException), "Corrupt or invalid transfer file should be rejected.")]
+        [ExpectedException(typeof(InvalidXmlException), "Corrupt or invalid transfer file should be rejected.")]
         public async Task ValidateXmlAsyncForInvalid()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.xtf");

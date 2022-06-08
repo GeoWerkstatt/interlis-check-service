@@ -21,6 +21,7 @@ namespace ILICheck.Web.Controllers
         private Mock<PhysicalFileProvider> fileProviderMock;
         private Mock<ApiVersion> apiVersionMock;
         private Mock<IFormFile> formFileMock;
+        private Mock<IValidatorService> validatorServiceMock;
         private UploadController controller;
 
         public TestContext TestContext { get; set; }
@@ -32,6 +33,7 @@ namespace ILICheck.Web.Controllers
             httpContextAccessorMock = new Mock<IHttpContextAccessor>(MockBehavior.Strict);
             validatorMock = new Mock<IValidator>(MockBehavior.Strict);
             fileProviderMock = new Mock<PhysicalFileProvider>(MockBehavior.Strict, CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
+            validatorServiceMock = new Mock<IValidatorService>(MockBehavior.Strict);
             formFileMock = new Mock<IFormFile>(MockBehavior.Strict);
             apiVersionMock = new Mock<ApiVersion>(MockBehavior.Strict, 9, 88);
 
@@ -42,7 +44,8 @@ namespace ILICheck.Web.Controllers
                 CreateConfiguration(),
                 httpContextAccessorMock.Object,
                 validatorMock.Object,
-                fileProviderMock.Object);
+                fileProviderMock.Object,
+                validatorServiceMock.Object);
         }
 
         [TestCleanup]
@@ -53,6 +56,7 @@ namespace ILICheck.Web.Controllers
             validatorMock.VerifyAll();
             fileProviderMock.VerifyAll();
             formFileMock.VerifyAll();
+            validatorServiceMock.VerifyAll();
             apiVersionMock.VerifyAll();
 
             controller.Dispose();
@@ -66,9 +70,9 @@ namespace ILICheck.Web.Controllers
             httpContextAccessorMock.Setup(x => x.HttpContext).Returns(httpContext);
             formFileMock.SetupGet(x => x.FileName).Returns("BIZARRESCAN.xtf");
             formFileMock.Setup(x => x.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(0));
-            validatorMock.Setup(x => x.ValidateAsync(It.Is<string>(x =>
-                !x.Equals("BIZARRESCAN.xtf", StringComparison.OrdinalIgnoreCase) &&
-                Path.GetExtension(x).Equals(".xtf", StringComparison.Ordinal)))).Returns(Task.FromResult(0));
+            validatorServiceMock.Setup(x => x.EnqueueJobAsync(
+                It.Is<string>(x => x.Equals("testdata", StringComparison.Ordinal)),
+                It.IsAny<Func<CancellationToken, Task>>())).Returns(Task.FromResult(0));
 
             var response = await controller.UploadAsync(apiVersionMock.Object, formFileMock.Object) as CreatedResult;
 

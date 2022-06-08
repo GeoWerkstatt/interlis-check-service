@@ -42,8 +42,8 @@ namespace ILICheck.Web
         /// Initializes a new instance of the <see cref="TransferFileNotFoundException"/> class
         /// with serialized data.
         /// </summary>
-        protected TransferFileNotFoundException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-            : base(serializationInfo, streamingContext)
+        protected TransferFileNotFoundException(SerializationInfo info, StreamingContext streamingContext)
+            : base(info, streamingContext)
         {
         }
     }

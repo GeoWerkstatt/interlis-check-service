@@ -45,6 +45,8 @@ namespace ILICheck.Web
                         .WithOrigins("https://localhost:44302");
                 });
             });
+            services.AddSingleton<IValidatorService, ValidatorService>();
+            services.AddHostedService(services => (ValidatorService)services.GetService<IValidatorService>());
             services.AddTransient<IValidator, Validator>();
             services.AddTransient<IFileProvider, PhysicalFileProvider>(x => new PhysicalFileProvider(x.GetRequiredService<IConfiguration>(), "ILICHECK_UPLOADS_DIR"));
             services.Configure<FormOptions>(options =>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using static ILICheck.Web.ValidatorHelper;
@@ -47,7 +49,7 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
-        public async Task ValidateAsync(string transferFile)
+        public async Task ExecuteAsync(string transferFile, CancellationToken cancellationToken)
         {
             if (transferFile == null) throw new ArgumentNullException(nameof(transferFile));
             if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
@@ -56,37 +58,30 @@ namespace ILICheck.Web
             // Set the fully qualified path to the transfer file.
             TransferFile = transferFile;
 
-            try
+            // Unzip compressed file
+            if (Path.GetExtension(TransferFile) == ".zip")
             {
-                // Unzip compressed file
-                if (Path.GetExtension(TransferFile) == ".zip")
-                {
-                    await UnzipCompressedFileAsync().ConfigureAwait(false);
-                }
-
-                // Read model names from GeoPackage
-                if (Path.GetExtension(TransferFile) == ".gpkg")
-                {
-                    GpkgModelNames = await ReadGpkgModelNamesAsync().ConfigureAwait(false);
-                }
-
-                // Additional xml validation for supported files
-                var supportedExtensions = new[] { ".xml", ".xtf" };
-                if (supportedExtensions.Contains(Path.GetExtension(TransferFile), StringComparer.OrdinalIgnoreCase))
-                {
-                    await ValidateXmlAsync().ConfigureAwait(false);
-                }
-
-                // Execute validation with ilivalidator
-                await ValidateAsync().ConfigureAwait(false);
-
-                // Clean up user uploaded/uncompressed files
-                await CleanUploadDirectoryAsync().ConfigureAwait(false);
+                await UnzipCompressedFileAsync().ConfigureAwait(false);
             }
-            catch (Exception ex)
+
+            // Read model names from GeoPackage
+            if (Path.GetExtension(TransferFile) == ".gpkg")
             {
-                logger.LogError(ex, "Unexpected error <{ErrorMessage}>", ex.Message);
+                GpkgModelNames = await ReadGpkgModelNamesAsync().ConfigureAwait(false);
             }
+
+            // Additional xml validation for supported files
+            var supportedExtensions = new[] { ".xml", ".xtf" };
+            if (supportedExtensions.Contains(Path.GetExtension(TransferFile), StringComparer.OrdinalIgnoreCase))
+            {
+                await ValidateXmlAsync().ConfigureAwait(false);
+            }
+
+            // Execute validation with ilivalidator
+            await ValidateAsync(cancellationToken).ConfigureAwait(false);
+
+            // Clean up user uploaded/uncompressed files
+            await CleanUploadDirectoryAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -102,26 +97,19 @@ namespace ILICheck.Web
 
             await Task.Run(() =>
             {
-                try
+                using var archive = ZipFile.OpenRead(Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile));
+
+                var transferFileExtension = archive.Entries
+                    .Select(entry => Path.GetExtension(entry.FullName))
+                    .GetTransferFileExtension(configuration);
+
+                foreach (var entry in archive.Entries)
                 {
-                    using var archive = ZipFile.OpenRead(Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile));
-
-                    var transferFileExtension = archive.Entries
-                        .Select(entry => Path.GetExtension(entry.FullName))
-                        .GetTransferFileExtension(configuration);
-
-                    foreach (var entry in archive.Entries)
-                    {
-                        entry.ExtractToFile(Path.Combine(fileProvider.HomeDirectory.FullName, entry.Name));
-                    }
-
-                    // Set new transfer file
-                    TransferFile = fileProvider.GetFiles().Single(file => Path.GetExtension(file) == transferFileExtension);
+                    entry.ExtractToFile(Path.Combine(fileProvider.HomeDirectory.FullName, entry.Name));
                 }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Unexpected error <{ErrorMessage}>", ex.Message);
-                }
+
+                // Set new transfer file
+                TransferFile = fileProvider.GetFiles().Single(file => Path.GetExtension(file) == transferFileExtension);
             }).ConfigureAwait(false);
         }
 
@@ -149,12 +137,14 @@ namespace ILICheck.Web
 
             try
             {
+                // Validate XML file.
                 while (await reader.ReadAsync().ConfigureAwait(false)) { }
             }
             catch (XmlException ex)
             {
-                logger.LogWarning("Cannot parse transfer file <{TransferFile}>: {ErrorMessage}", TransferFile, ex.Message);
-                throw;
+                throw new InvalidXmlException(
+                    string.Format(CultureInfo.InvariantCulture, "Cannot parse transfer file <{0}>: {1}", TransferFile, ex.Message),
+                    ex);
             }
         }
 
@@ -190,9 +180,9 @@ namespace ILICheck.Web
         /// <summary>
         /// Asynchronously validates the <see cref="TransferFile"/> with ilivalidator/ili2gpkg.
         /// </summary>
-        internal async Task ValidateAsync()
+        internal async Task ValidateAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("Validating transfer file with ilivalidator/ili2gpkg");
+            logger.LogInformation("Validating transfer file <{TransferFile}> with ilivalidator/ili2gpkg", TransferFile);
 
             var command = GetIlivalidatorCommand(
                 configuration,
@@ -200,17 +190,13 @@ namespace ILICheck.Web
                 TransferFile,
                 GpkgModelNames);
 
-            var exitCode = await ExecuteCommandAsync(configuration, command).ConfigureAwait(false);
-
+            var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
             if (exitCode != 0)
             {
-                logger.LogWarning("The ilivalidator found errors in the file. Validation failed.");
-            }
-            else
-            {
-                logger.LogInformation("The ilivalidator found no errors in the file. Validation successful!");
+                throw new ValidationFailedException("The ilivalidator found errors in the file. Validation failed.");
             }
 
+            logger.LogInformation("The ilivalidator found no errors in the file. Validation successful!");
             logger.LogInformation("Validation completed: {Timestamp}", DateTime.Now);
         }
 
