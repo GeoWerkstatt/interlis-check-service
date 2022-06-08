@@ -54,7 +54,7 @@ namespace ILICheck.Web.Controllers
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1629:DocumentationTextMustEndWithAPeriod", Justification = "Not applicable for code examples.")]
         public async Task<IActionResult> UploadAsync(ApiVersion version, IFormFile file)
         {
-            if (file == null) return Problem($"Form data <{nameof(file)}> cannot be empty.", statusCode: 400);
+            if (file == null) return Problem($"Form data <{nameof(file)}> cannot be empty.", statusCode: StatusCodes.Status400BadRequest);
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
             logger.LogInformation("Start uploading <{TransferFile}> to <{HomeDirectory}>", file.FileName, fileProvider.HomeDirectory);

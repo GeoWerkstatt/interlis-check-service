@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace ILICheck.Web
     {
         private readonly ILogger<ValidatorService> logger;
         private readonly Channel<(string Id, Func<CancellationToken, Task> Task)> queue;
-        private readonly ConcurrentDictionary<string, (string Status, string StatusMessage)> jobs;
+        private readonly ConcurrentDictionary<string, (Status Status, string StatusMessage)> jobs = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidatorService"/> class.
@@ -25,7 +24,6 @@ namespace ILICheck.Web
         {
             this.logger = logger;
             queue = Channel.CreateUnbounded<(string, Func<CancellationToken, Task>)>();
-            jobs = new ConcurrentDictionary<string, (string, string)>();
         }
 
         /// <inheritdoc/>

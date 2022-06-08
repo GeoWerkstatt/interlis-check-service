@@ -191,7 +191,6 @@ namespace ILICheck.Web
                 GpkgModelNames);
 
             var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
-
             if (exitCode != 0)
             {
                 logger.LogInformation("The ilivalidator found errors in the file. Validation failed.");
