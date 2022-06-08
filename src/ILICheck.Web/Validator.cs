@@ -149,12 +149,15 @@ namespace ILICheck.Web
 
             try
             {
+                // Validate XML file.
                 while (await reader.ReadAsync().ConfigureAwait(false)) { }
             }
             catch (XmlException ex)
             {
                 logger.LogWarning("Cannot parse transfer file <{TransferFile}>: {ErrorMessage}", TransferFile, ex.Message);
-                throw;
+                throw new InvalidXmlException(
+                    string.Format(CultureInfo.InvariantCulture, "Cannot parse transfer file <{0}>: {1}", TransferFile, ex.Message),
+                    ex);
             }
         }
 
