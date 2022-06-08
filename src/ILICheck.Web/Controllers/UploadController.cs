@@ -19,14 +19,16 @@ namespace ILICheck.Web.Controllers
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IValidator validator;
         private readonly IFileProvider fileProvider;
+        private readonly IValidatorService validatorService;
 
-        public UploadController(ILogger<UploadController> logger, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IValidator validator, IFileProvider fileProvider)
+        public UploadController(ILogger<UploadController> logger, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IValidator validator, IFileProvider fileProvider, IValidatorService validatorService)
         {
             this.logger = logger;
             this.configuration = configuration;
             this.httpContextAccessor = httpContextAccessor;
             this.validator = validator;
             this.fileProvider = fileProvider;
+            this.validatorService = validatorService;
 
             this.fileProvider.Initialize(validator.Id);
         }
@@ -73,7 +75,10 @@ namespace ILICheck.Web.Controllers
 
                 logger.LogInformation("Successfully received file: {TransferFile}", file.FileName);
 
-                _ = validator.ValidateAsync(transferFile);
+                // Add validation job to queue.
+                await validatorService.EnqueueJobAsync(
+                    validator.Id, cancellationToken => validator.ExecuteAsync(transferFile, cancellationToken));
+
                 logger.LogInformation("Job with id <{JobId}> is scheduled for execution.", validator.Id);
 
                 var location = new Uri(

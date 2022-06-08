@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ILICheck.Web
@@ -35,9 +36,10 @@ namespace ILICheck.Web
         /// when executing this function.
         /// </summary>
         /// <param name="transferFile">The name of the transfer file to validate.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to cancel the asynchronous operation.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="transferFile"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">If <paramref name="transferFile"/> is <c>string.Empty</c>.</exception>
         /// <exception cref="InvalidOperationException">If <paramref name="transferFile"/> is not found.</exception>
-        Task ValidateAsync(string transferFile);
+        Task ExecuteAsync(string transferFile, CancellationToken cancellationToken);
     }
 }

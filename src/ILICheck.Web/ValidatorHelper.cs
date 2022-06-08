@@ -84,7 +84,7 @@ namespace ILICheck.Web
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="command">The command to execute.</param>
-        /// <param name="cancellationToken">An optional token to cancel the asynchronous operation.</param>
+        /// <param name="cancellationToken">An optional <see cref="CancellationToken"/> to cancel the asynchronous operation.</param>
         /// <returns>The exit code that the associated process specified when it terminated.</returns>
         public static async Task<int> ExecuteCommandAsync(IConfiguration configuration, string command, CancellationToken cancellationToken = default)
         {
