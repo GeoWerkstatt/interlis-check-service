@@ -10,6 +10,11 @@ namespace ILICheck.Web
     public class MultipleTransferFileFoundException : Exception
     {
         /// <summary>
+        /// Gets the transfer file extension which was found multiple times.
+        /// </summary>
+        public string FileExtension { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MultipleTransferFileFoundException"/> class.
         /// </summary>
         public MultipleTransferFileFoundException()
@@ -20,10 +25,12 @@ namespace ILICheck.Web
         /// Initializes a new instance of the <see cref="MultipleTransferFileFoundException"/> class
         /// with a specified error <paramref name="message"/>.
         /// </summary>
+        /// <param name="fileExtension">The transfer file extension which was found multiple times.</param>
         /// <param name="message">The message that describes the error.</param>
-        public MultipleTransferFileFoundException(string message)
+        public MultipleTransferFileFoundException(string fileExtension, string message)
             : base(message)
         {
+            FileExtension = fileExtension;
         }
 
         /// <summary>
@@ -31,20 +38,32 @@ namespace ILICheck.Web
         /// with a specified error <paramref name="message"/> and a reference to the
         /// <paramref name="innerException"/> that is the cause of this exception.
         /// </summary>
+        /// <param name="fileExtension">The transfer file extension which was found multiple times.</param>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">The exception that is the cause of the current exception.</param>
-        public MultipleTransferFileFoundException(string message, Exception innerException)
+        public MultipleTransferFileFoundException(string fileExtension, string message, Exception innerException)
             : base(message, innerException)
         {
+            FileExtension = fileExtension;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultipleTransferFileFoundException"/> class
         /// with serialized data.
         /// </summary>
-        protected MultipleTransferFileFoundException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-            : base(serializationInfo, streamingContext)
+        protected MultipleTransferFileFoundException(SerializationInfo info, StreamingContext streamingContext)
+            : base(info, streamingContext)
         {
+            FileExtension = info.GetString(nameof(FileExtension));
+        }
+
+        /// <inheritdoc />
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null) throw new ArgumentNullException(nameof(info));
+
+            info.AddValue(nameof(FileExtension), FileExtension);
+            base.GetObjectData(info, context);
         }
     }
 }

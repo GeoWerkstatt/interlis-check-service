@@ -87,6 +87,7 @@ namespace ILICheck.Web
                     .Any(x => x.Contains(extension, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new UnknownExtensionException(
+                        extension,
                         string.Format(CultureInfo.InvariantCulture, "Transfer file extension <{0}> is an unknown file extension.", extension));
                 }
             }
@@ -107,7 +108,9 @@ namespace ILICheck.Web
                 // Check for multiple transfer files of the same type
                 if (extensions.Count(extension => extension.Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase)) > 1)
                 {
-                    throw new MultipleTransferFileFoundException(string.Format(CultureInfo.InvariantCulture, "Multiple transfer files <{0}> are not supported", transferFileExtension));
+                    throw new MultipleTransferFileFoundException(
+                        transferFileExtension,
+                        string.Format(CultureInfo.InvariantCulture, "Multiple transfer files <{0}> are not supported", transferFileExtension));
                 }
                 else
                 {
@@ -157,11 +160,13 @@ namespace ILICheck.Web
             }
             catch (InvalidOperationException)
             {
+                var invalidFileExtension = Path.GetExtension(unsafeFileName);
                 throw new UnknownExtensionException(
+                    invalidFileExtension,
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "Transfer file extension <{0}> is an unknown file extension.",
-                        Path.GetExtension(unsafeFileName)));
+                        invalidFileExtension));
             }
         }
 

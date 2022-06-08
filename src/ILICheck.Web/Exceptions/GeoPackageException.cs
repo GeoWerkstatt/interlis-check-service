@@ -42,8 +42,8 @@ namespace ILICheck.Web
         /// Initializes a new instance of the <see cref="GeoPackageException"/> class
         /// with serialized data.
         /// </summary>
-        protected GeoPackageException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-            : base(serializationInfo, streamingContext)
+        protected GeoPackageException(SerializationInfo info, StreamingContext streamingContext)
+            : base(info, streamingContext)
         {
         }
     }
