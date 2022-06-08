@@ -21,7 +21,7 @@ namespace ILICheck.Web
         /// Gets the <see cref="Status"/> for the given <paramref name="jobId"/>.
         /// </summary>
         /// <param name="jobId">The job identifier.</param>
-        /// <returns>The <see cref="Status"/> for the given <paramref name="jobId"/> if the job exists; otherwise, <c>default</c>..</returns>
+        /// <returns>The <see cref="Status"/> for the given <paramref name="jobId"/> if the job exists; otherwise, <c>default</c>.</returns>
         (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId);
     }
 }
