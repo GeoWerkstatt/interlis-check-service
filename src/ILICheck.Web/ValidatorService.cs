@@ -53,6 +53,14 @@ namespace ILICheck.Web
                 {
                     UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die Modellnamen konnten nicht aus der GeoPackage Datenbank gelesen werden.", ex.Message);
                 }
+                catch (InvalidXmlException ex)
+                {
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die XML-Struktur in der Transferdatei ist ungültig.", ex.Message);
+                }
+                catch (ValidationFailedException ex)
+                {
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die Daten sind nicht modellkonform.", ex.Message);
+                }
                 catch (Exception ex)
                 {
                     var traceId = Guid.NewGuid();
