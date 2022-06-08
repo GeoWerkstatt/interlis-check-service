@@ -33,30 +33,30 @@ namespace ILICheck.Web
             {
                 try
                 {
-                    UpdateJobStatus(item.Id, "processing", "Die Datei wird validiert...");
+                    UpdateJobStatus(item.Id, Status.Processing, "Die Datei wird validiert...");
                     await item.Task(stoppingToken);
-                    UpdateJobStatus(item.Id, "completed", "Die Daten sind modellkonform.");
+                    UpdateJobStatus(item.Id, Status.Completed, "Die Daten sind modellkonform.");
                 }
                 catch (UnknownExtensionException ex)
                 {
-                    UpdateJobStatus(item.Id, "completed", $"Die Dateiendung {ex.FileExtension} ist nicht erlaubt.", ex.Message);
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, $"Die Dateiendung {ex.FileExtension} ist nicht erlaubt.", ex.Message);
                 }
                 catch (MultipleTransferFileFoundException ex)
                 {
-                    UpdateJobStatus(item.Id, "completed", $"Es wurden mehrere Transferdateien mit der Dateiendung <{ex.FileExtension}> gefunden.", ex.Message);
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, $"Es wurden mehrere Transferdateien mit der Dateiendung <{ex.FileExtension}> gefunden.", ex.Message);
                 }
                 catch (TransferFileNotFoundException ex)
                 {
-                    UpdateJobStatus(item.Id, "completed", "Es konnte keine gültige Transferdatei gefunden werden.", ex.Message);
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Es konnte keine gültige Transferdatei gefunden werden.", ex.Message);
                 }
                 catch (GeoPackageException ex)
                 {
-                    UpdateJobStatus(item.Id, "completed", "Die Modellnamen konnten nicht aus der GeoPackage Datenbank gelesen werden.", ex.Message);
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die Modellnamen konnten nicht aus der GeoPackage Datenbank gelesen werden.", ex.Message);
                 }
                 catch (Exception ex)
                 {
                     var traceId = Guid.NewGuid();
-                    UpdateJobStatus(item.Id, "failed", $"Unbekannter Fehler. Fehler-Id: <{traceId}>");
+                    UpdateJobStatus(item.Id, Status.Failed, $"Unbekannter Fehler. Fehler-Id: <{traceId}>");
                     logger.LogError(ex, "Unhandled exception TraceId: <{TraceId}> Message: <{ErrorMessage}>", traceId, ex.Message);
                 }
             }, stoppingToken);
@@ -65,12 +65,12 @@ namespace ILICheck.Web
         /// <inheritdoc/>
         public async Task EnqueueJobAsync(string jobId, Func<CancellationToken, Task> action)
         {
-            UpdateJobStatus(jobId, "enqueued", "Die Validierung wird vorbereitet...");
+            UpdateJobStatus(jobId, Status.Enqueued, "Die Validierung wird vorbereitet...");
             await queue.Writer.WriteAsync((jobId, action));
         }
 
         /// <inheritdoc/>
-        public (string Status, string StatusMessage) GetJobStatus(string jobId) => jobs[jobId];
+        public (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId) => jobs[jobId];
 
         /// <summary>
         /// Adds or updates the status for the given <paramref name="jobId"/>.
@@ -79,7 +79,7 @@ namespace ILICheck.Web
         /// <param name="status">The status.</param>
         /// <param name="statusMessage">The status message.</param>
         /// <param name="logMessage">Optional info log message.</param>
-        private void UpdateJobStatus(string jobId, string status, string statusMessage, string logMessage = null)
+        private void UpdateJobStatus(string jobId, Status status, string statusMessage, string logMessage = null)
         {
             jobs[jobId] = (status, statusMessage);
             if (!string.IsNullOrEmpty(logMessage)) logger.LogInformation(logMessage);
