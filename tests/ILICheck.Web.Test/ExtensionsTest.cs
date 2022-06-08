@@ -161,24 +161,24 @@ namespace ILICheck.Web
         [TestMethod]
         public void GetSanitizedFileExtension()
         {
-            var configuration = CreateConfiguration(enableGpkgValidation: false);
+            var acceptedFileExtensions = ValidatorHelper.GetAcceptedFileExtensionsForUserUploads(CreateConfiguration(enableGpkgValidation: false));
 
-            Assert.AreEqual(".xml", "VIOLETNIGHT.xml".GetSanitizedFileExtension(configuration));
-            Assert.AreEqual(".zip", "SLIMYSOURCE.zip".GetSanitizedFileExtension(configuration));
-            Assert.AreEqual(".xtf", "TRAWLMASTER.xtf".GetSanitizedFileExtension(configuration));
-            Assert.AreEqual(".xml", "TRAWLMASTER.FARMARTIST.XML".GetSanitizedFileExtension(configuration));
-            Assert.AreEqual(".zip", "GOPHERFELONY SCANWAFFLE .zIP".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<UnknownExtensionException>(() => "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(configuration));
+            Assert.AreEqual(".xml", "VIOLETNIGHT.xml".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.AreEqual(".zip", "SLIMYSOURCE.zip".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.AreEqual(".xtf", "TRAWLMASTER.xtf".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.AreEqual(".xml", "TRAWLMASTER.FARMARTIST.XML".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.AreEqual(".zip", "GOPHERFELONY SCANWAFFLE .zIP".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsException<UnknownExtensionException>(() => "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(acceptedFileExtensions));
 
-            configuration = CreateConfiguration(enableGpkgValidation: true);
+            acceptedFileExtensions = ValidatorHelper.GetAcceptedFileExtensionsForUserUploads(CreateConfiguration(enableGpkgValidation: true));
 
-            Assert.AreEqual(".gpkg", "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(configuration));
+            Assert.AreEqual(".gpkg", "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(acceptedFileExtensions));
 
             // Not supported/invalid file extensions
-            Assert.ThrowsException<UnknownExtensionException>(() => "TRAWLBOUNCE.ini".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<UnknownExtensionException>(() => "BIZARREPENGUIN.sh".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<UnknownExtensionException>(() => "LATENTNET-HX.exe".GetSanitizedFileExtension(configuration));
-            Assert.ThrowsException<UnknownExtensionException>(() => "IRATEMONKEY.cmd".GetSanitizedFileExtension(configuration));
+            Assert.ThrowsException<UnknownExtensionException>(() => "TRAWLBOUNCE.ini".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsException<UnknownExtensionException>(() => "BIZARREPENGUIN.sh".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsException<UnknownExtensionException>(() => "LATENTNET-HX.exe".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsException<UnknownExtensionException>(() => "IRATEMONKEY.cmd".GetSanitizedFileExtension(acceptedFileExtensions));
         }
 
         [TestMethod]

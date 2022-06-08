@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web.Controllers
 {
@@ -66,7 +67,7 @@ namespace ILICheck.Web.Controllers
                 // Sanitize file name and save the file to the predefined home directory.
                 var transferFile = Path.ChangeExtension(
                     Path.GetRandomFileName(),
-                    file.FileName.GetSanitizedFileExtension(configuration));
+                    file.FileName.GetSanitizedFileExtension(GetAcceptedFileExtensionsForUserUploads(configuration)));
 
                 using (var stream = fileProvider.CreateFile(transferFile))
                 {
@@ -89,6 +90,7 @@ namespace ILICheck.Web.Controllers
             }
             catch (UnknownExtensionException ex)
             {
+                logger.LogInformation(ex.Message);
                 return Problem(ex.Message, statusCode: 400);
             }
         }

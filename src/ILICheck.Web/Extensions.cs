@@ -151,15 +151,16 @@ namespace ILICheck.Web
         /// Gets the sanitized file extension for the specified <paramref name="unsafeFileName"/>.
         /// </summary>
         /// <param name="unsafeFileName">The unsafe file name.</param>
-        /// <param name="configuration">The configuration.</param>
+        /// <param name="acceptedFileExtensions">The accepted file extensions.</param>
         /// <returns>The sanitized file extension for the specified <paramref name="unsafeFileName"/>.</returns>
         /// <exception cref="UnknownExtensionException">If file extension of <paramref name="unsafeFileName"/> is unknown.</exception>
-        public static string GetSanitizedFileExtension(this string unsafeFileName, IConfiguration configuration)
+        public static string GetSanitizedFileExtension(this string unsafeFileName, IEnumerable<string> acceptedFileExtensions)
         {
             try
             {
-                return GetAcceptedFileExtensionsForUserUploads(configuration)
-                    .Single(extension => Path.GetExtension(unsafeFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
+                return acceptedFileExtensions
+                    .Single(extension => Path.GetExtension(unsafeFileName)
+                    .Equals(extension, StringComparison.OrdinalIgnoreCase));
             }
             catch (InvalidOperationException)
             {
