@@ -193,13 +193,10 @@ namespace ILICheck.Web
             var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
             if (exitCode != 0)
             {
-                logger.LogInformation("The ilivalidator found errors in the file. Validation failed.");
-            }
-            else
-            {
-                logger.LogInformation("The ilivalidator found no errors in the file. Validation successful!");
+                throw new ValidationFailedException("The ilivalidator found errors in the file. Validation failed.");
             }
 
+            logger.LogInformation("The ilivalidator found no errors in the file. Validation successful!");
             logger.LogInformation("Validation completed: {Timestamp}", DateTime.Now);
         }
 
