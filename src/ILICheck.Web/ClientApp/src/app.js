@@ -1,7 +1,7 @@
-import './app.css';
-import React, { useState, useEffect, useCallback } from 'react';
-import { HubConnectionBuilder } from '@microsoft/signalr';
-import Layout from './layout';
+import "./app.css";
+import React, { useState, useEffect, useCallback } from "react";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+import Layout from "./layout";
 
 function App() {
   const [connection, setConnection] = useState(null);
@@ -14,9 +14,9 @@ function App() {
   const resetLog = useCallback(() => setLog([]), [setLog]);
   const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
     if (disableUploadLogs) setUploadLogsEnabled(false);
-    setLog(log => {
-       if (message === log[log.length -1]) return log
-       else return [...log, message]
+    setLog((log) => {
+      if (message === log[log.length - 1]) return log;
+      else return [...log, message];
     });
   }, []);
 
@@ -26,45 +26,43 @@ function App() {
   useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled]);
 
   useEffect(() => {
-    const connection = new HubConnectionBuilder()
-      .withUrl("/hub")
-      .build();
+    const connection = new HubConnectionBuilder().withUrl("/hub").build();
 
     async function start() {
       try {
         await connection.start().then(() => {
-          if (connection.connectionId) connection.invoke('SendConnectionId', connection.connectionId);
+          if (connection.connectionId) connection.invoke("SendConnectionId", connection.connectionId);
         });
       } catch (err) {
         console.log(err);
         setTimeout(start, 5000);
       }
-    };
+    }
 
-    connection.on('confirmConnection', (message) => {
-      console.log('Message:', message);
+    connection.on("confirmConnection", (message) => {
+      console.log("Message:", message);
     });
 
-    connection.on('updateLog', (message) => updateLog(message));
+    connection.on("updateLog", (message) => updateLog(message));
 
-    connection.on('stopConnection', () => {
-      setClosedConnectionId(connection.connectionId)
+    connection.on("stopConnection", () => {
+      setClosedConnectionId(connection.connectionId);
       connection.stop();
     });
 
-    connection.on('validatedWithErrors', (message) => {
-      updateLog(message)
-      setValidationResult("error")
+    connection.on("validatedWithErrors", (message) => {
+      updateLog(message);
+      setValidationResult("error");
     });
 
-    connection.on('validatedWithoutErrors', (message) => {
-      updateLog(message)
-      setValidationResult("ok")
+    connection.on("validatedWithoutErrors", (message) => {
+      updateLog(message);
+      setValidationResult("ok");
     });
 
-    connection.on('validationAborted', (message) => {
-      message && updateLog(message)
-      setValidationResult("aborted")
+    connection.on("validationAborted", (message) => {
+      message && updateLog(message);
+      setValidationResult("aborted");
     });
 
     connection.onclose(async () => {
@@ -73,18 +71,21 @@ function App() {
 
     start();
 
-    setConnection(connection)
-  }, [updateLog])
+    setConnection(connection);
+  }, [updateLog]);
 
   return (
-    <Layout connection={connection}
+    <Layout
+      connection={connection}
       closedConnectionId={closedConnectionId}
-      log={log} updateLog={updateLog}
+      log={log}
+      updateLog={updateLog}
       resetLog={resetLog}
       validationResult={validationResult}
       setValidationResult={setValidationResult}
       setUploadLogsInterval={setUploadLogsInterval}
-      setUploadLogsEnabled={setUploadLogsEnabled} />
+      setUploadLogsEnabled={setUploadLogsEnabled}
+    />
   );
 }
 
