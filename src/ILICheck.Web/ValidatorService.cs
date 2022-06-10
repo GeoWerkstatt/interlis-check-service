@@ -55,7 +55,7 @@ namespace ILICheck.Web
                 }
                 catch (InvalidXmlException ex)
                 {
-                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die XML-Struktur in der Transferdatei ist ungültig.", ex.Message);
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die XML-Struktur der Transferdatei ist ungültig.", ex.Message);
                 }
                 catch (ValidationFailedException ex)
                 {
