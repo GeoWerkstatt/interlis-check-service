@@ -106,24 +106,30 @@ export const Home = (props) => {
       method: "POST",
       body: formData,
     });
-    const data = await response.json();
-    var interval = setInterval(async () => {
-      const status = await fetch(data.statusUrl, {
-        method: "GET",
-      });
-      const statusData = await status.json();
-      updateLog(statusData.statusMessage);
-      if (
-        statusData.status === "completed" ||
-        statusData.status === "completedWithErrors" ||
-        statusData.status === "failed"
-      ) {
-        clearInterval(interval);
-        setTestRunning(false);
-        displayValidationResult(statusData);
-      }
-    }, 1000);
-    setStatusInterval(interval);
+    if (response.ok) {
+      const data = await response.json();
+      var interval = setInterval(async () => {
+        const status = await fetch(data.statusUrl, {
+          method: "GET",
+        });
+        const statusData = await status.json();
+        updateLog(statusData.statusMessage);
+        if (
+          statusData.status === "completed" ||
+          statusData.status === "completedWithErrors" ||
+          statusData.status === "failed"
+        ) {
+          clearInterval(interval);
+          setTestRunning(false);
+          setStatusData(statusData);
+        }
+      }, 1000);
+      setStatusInterval(interval);
+    } else {
+      console.log("Error while uploading file: " + response.json());
+      updateLog("Der Upload war nicht erfolgreich. Die Validierung wurde abgebrochen.");
+      setTestRunning(false);
+    }
   }
 
   return (
