@@ -1,7 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>CS1591</NoWarn>
     <Product>INTERLIS Web-Check-Service</Product>
