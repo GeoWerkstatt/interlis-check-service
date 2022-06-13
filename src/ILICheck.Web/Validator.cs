@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -105,7 +104,11 @@ namespace ILICheck.Web
 
                 foreach (var entry in archive.Entries)
                 {
-                    entry.ExtractToFile(Path.Combine(fileProvider.HomeDirectory.FullName, entry.Name));
+                    var sanitizedFileName = Path.ChangeExtension(
+                        Path.GetRandomFileName(),
+                        entry.Name.GetSanitizedFileExtension(GetAcceptedFileExtensionsForZipContent(configuration)));
+
+                    entry.ExtractToFile(Path.Combine(fileProvider.HomeDirectory.FullName, sanitizedFileName));
                 }
 
                 // Set new transfer file
