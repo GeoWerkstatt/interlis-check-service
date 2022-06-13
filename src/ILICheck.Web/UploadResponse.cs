@@ -1,20 +1,23 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ILICheck.Web
 {
     /// <summary>
-    /// The upload response type.
+    /// The upload response schema.
     /// </summary>
     public class UploadResponse
     {
         /// <summary>
-        /// Gets or sets the job identification.
+        /// The job identification.
         /// </summary>
+        [Required]
         public Guid JobId { get; set; }
 
         /// <summary>
         /// The status url.
         /// </summary>
+        [Required]
         public Uri StatusUrl { get; set; }
     }
 }

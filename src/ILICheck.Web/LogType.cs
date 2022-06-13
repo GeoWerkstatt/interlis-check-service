@@ -1,7 +1,7 @@
 ﻿namespace ILICheck.Web
 {
     /// <summary>
-    /// Defines supported log types awailable for download.
+    /// Supported log types available for download.
     /// </summary>
     public enum LogType
     {

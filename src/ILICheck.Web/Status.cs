@@ -1,7 +1,7 @@
 ﻿namespace ILICheck.Web
 {
     /// <summary>
-    /// Defines validator job statuses.
+    /// The validator job statuses.
     /// </summary>
     public enum Status
     {

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web.Controllers
@@ -19,10 +21,11 @@ namespace ILICheck.Web.Controllers
         }
 
         /// <summary>
-        /// Action to get client application settings.
+        /// Gets the application settings.
         /// </summary>
         /// <returns>JSON-formatted client application settings.</returns>
         [HttpGet]
+        [SwaggerResponse(StatusCodes.Status200OK, "The the application settings which can be used to configure a client.", typeof(SettingsResponse), new[] { "application/json" })]
         public IActionResult GetSettings()
         {
             logger.LogTrace("Application configuration requested.");

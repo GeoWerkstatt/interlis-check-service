@@ -1,34 +1,38 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ILICheck.Web
 {
     /// <summary>
-    /// The status response type.
+    /// The status response schema.
     /// </summary>
     public class StatusResponse
     {
         /// <summary>
-        /// Gets or sets the job identification.
+        /// The job identification.
         /// </summary>
+        [Required]
         public Guid JobId { get; set; }
 
         /// <summary>
-        /// Gets or sets the job status.
+        /// The job status.
         /// </summary>
+        [Required]
         public Status Status { get; set; }
 
         /// <summary>
-        /// Gets or sets the job status message.
+        /// The job status message.
         /// </summary>
+        [Required]
         public string StatusMessage { get; set; }
 
         /// <summary>
-        /// Gets or sets the log url.
+        /// The log url if available; otherwise, <c>null</c>.
         /// </summary>
         public Uri LogUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the XTF log url.
+        /// The XTF log url if available; otherwise, <c>null</c>.
         /// </summary>
         public Uri XtfLogUrl { get; set; }
     }

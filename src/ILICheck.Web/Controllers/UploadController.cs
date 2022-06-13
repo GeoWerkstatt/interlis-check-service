@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -35,24 +36,48 @@ namespace ILICheck.Web.Controllers
         }
 
         /// <summary>
-        /// Asynchronously creates a new validation job for the given transfer <paramref name="file"/>
-        /// A compressed <paramref name="file"/> (.zip) containing additional models and
-        /// catalogues is also supported.
+        /// Schedules a new job for the given transfer <paramref name="file"/>.
         /// </summary>
         /// <param name="version">The application programming interface (API) version.</param>
         /// <param name="file">The transfer or ZIP file to validate.</param>
         /// <remarks>
-        /// Sample request:
+        /// ## Usage
+        /// 
+        /// ### CURL
+        /// 
+        /// ```bash
         /// curl -i -X POST -H "Content-Type: multipart/form-data" \
-        ///   -F 'file=@example.xtf' http://example.com/api/v1/upload
+        ///   -F 'file=@example.xtf' https://example.com/api/v1/upload
+        /// ```
+        /// 
+        /// ### JavaScript
+        /// 
+        /// ```bash
+        /// import { createReadStream } from 'fs';
+        /// import FormData from 'form-data';
+        /// import fetch from 'node-fetch';
+        /// 
+        /// var form = new FormData();
+        /// form.append('file', createReadStream('example.xtf'));
+        /// const response = await fetch('https://example.com/api/v1/upload', {
+        ///   method: 'POST',
+        ///   body: form,
+        /// });
+        /// ```
+        /// 
+        /// ### Python
+        /// 
+        /// ```python
+        /// import requests
+        /// response = requests.post('https://example.com/api/v1/upload', files={'file':open('example.xtf')}).json()
+        /// ```
         /// </remarks>
         /// <returns>Information for a newly created validation job.</returns>
-        /// <response code="201">The validation job was successfully created and is now scheduled for execution.</response>
-        /// <response code="400">The server cannot process the request due to invalid or malformed request.</response>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerResponse(StatusCodes.Status201Created, "The validation job was successfully created and is now scheduled for execution.", typeof(UploadResponse), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1629:DocumentationTextMustEndWithAPeriod", Justification = "Not applicable for code examples.")]
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1028:CodeMustNotContainTrailingWhitespace", Justification = "Not applicable for code examples.")]
         public async Task<IActionResult> UploadAsync(ApiVersion version, IFormFile file)
         {
             if (file == null) return Problem($"Form data <{nameof(file)}> cannot be empty.", statusCode: StatusCodes.Status400BadRequest);

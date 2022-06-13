@@ -1,40 +1,45 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ILICheck.Web
 {
     /// <summary>
-    /// The settings response type.
+    /// The settings response schema.
     /// </summary>
     public class SettingsResponse
     {
         /// <summary>
-        /// Gets or sets the application name.
+        /// The application name.
         /// </summary>
+        [Required]
         public string ApplicationName { get; set; }
 
         /// <summary>
-        /// Gets or sets the application version.
+        /// The application version.
         /// </summary>
+        [Required]
         public string ApplicationVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets the vendor link.
+        /// The vendor link if available; otherwise, <c>null</c>.
         /// </summary>
         public string VendorLink { get; set; }
 
         /// <summary>
-        /// Gets or sets the ilivalidator version.
+        /// The ilivalidator version.
         /// </summary>
+        [Required]
         public string IlivalidatorVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets the ili2gpkg version.
+        /// The ili2gpkg version.
         /// </summary>
+        [Required]
         public string Ili2gpkgVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets the accepted file types.
+        /// The accepted file types.
         /// </summary>
+        [Required]
         public string AcceptedFileTypes { get; set; }
     }
 }
