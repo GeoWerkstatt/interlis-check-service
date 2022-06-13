@@ -40,9 +40,9 @@ namespace ILICheck.Web.Controllers
         {
             logger.LogTrace("Status for job <{JobId}> requested.", jobId);
 
-            fileProvider.Initialize(jobId.ToString());
+            fileProvider.Initialize(jobId);
 
-            var job = validatorService.GetJobStatusOrDefault(jobId.ToString());
+            var job = validatorService.GetJobStatusOrDefault(jobId);
             if (job == default)
             {
                 return Problem($"No job information available for job id <{jobId}>", statusCode: StatusCodes.Status404NotFound);
@@ -65,7 +65,7 @@ namespace ILICheck.Web.Controllers
         /// <param name="jobId">The job identifier.</param>
         /// <param name="logType">The log type (log|xtf).</param>
         /// <returns>The log download URL if the log file exists; otherwise, <c>null</c>.</returns>
-        internal Uri GetLogDownloadUrl(ApiVersion version, string jobId, LogType logType)
+        internal Uri GetLogDownloadUrl(ApiVersion version, Guid jobId, LogType logType)
         {
             try
             {

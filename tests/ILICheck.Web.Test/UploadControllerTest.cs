@@ -15,6 +15,8 @@ namespace ILICheck.Web.Controllers
     [TestClass]
     public sealed class UploadControllerTest
     {
+        private readonly string jobId = "28e1adff-765e-4c0b-b667-90458b33e1ca";
+
         private Mock<ILogger<UploadController>> loggerMock;
         private Mock<IHttpContextAccessor> httpContextAccessorMock;
         private Mock<IValidator> validatorMock;
@@ -37,7 +39,7 @@ namespace ILICheck.Web.Controllers
             formFileMock = new Mock<IFormFile>(MockBehavior.Strict);
             apiVersionMock = new Mock<ApiVersion>(MockBehavior.Strict, 9, 88);
 
-            validatorMock.SetupGet(x => x.Id).Returns("testdata");
+            validatorMock.SetupGet(x => x.Id).Returns(new Guid(jobId));
 
             controller = new UploadController(
                 loggerMock.Object,
@@ -71,15 +73,17 @@ namespace ILICheck.Web.Controllers
             formFileMock.SetupGet(x => x.FileName).Returns("BIZARRESCAN.xtf");
             formFileMock.Setup(x => x.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(0));
             validatorServiceMock.Setup(x => x.EnqueueJobAsync(
-                It.Is<string>(x => x.Equals("testdata", StringComparison.Ordinal)),
+                It.Is<Guid>(x => x.Equals(new Guid(jobId))),
                 It.IsAny<Func<CancellationToken, Task>>())).Returns(Task.FromResult(0));
 
             var response = await controller.UploadAsync(apiVersionMock.Object, formFileMock.Object) as CreatedResult;
 
             Assert.IsInstanceOfType(response, typeof(CreatedResult));
+            Assert.IsInstanceOfType(response.Value, typeof(UploadResponse));
             Assert.AreEqual(StatusCodes.Status201Created, response.StatusCode);
-            Assert.AreEqual("/api/v9/status/testdata", response.Location);
-            Assert.AreEqual("{ jobId = testdata, statusUrl = /api/v9/status/testdata }", response.Value.ToString());
+            Assert.AreEqual($"/api/v9/status/{jobId}", response.Location);
+            Assert.AreEqual(jobId, ((UploadResponse)response.Value).JobId.ToString());
+            Assert.AreEqual($"/api/v9/status/{jobId}", ((UploadResponse)response.Value).StatusUrl.ToString());
         }
 
         [TestMethod]

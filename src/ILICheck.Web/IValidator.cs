@@ -12,7 +12,7 @@ namespace ILICheck.Web
         /// <summary>
         /// Gets the identifier for this instance.
         /// </summary>
-        string Id { get; }
+        Guid Id { get; }
 
         /// <summary>
         /// Gets the home directory for all the files releated to this instance.

@@ -6,13 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace ILICheck.Web
 {
     [TestClass]
     public class ValidatorTest
     {
+        private readonly string jobId = "2b005f1a-4eac-4d05-8ac6-c9221250f5a0";
+
         private Mock<ILogger<Validator>> loggerMock;
         private Mock<PhysicalFileProvider> fileProviderMock;
         private Mock<Validator> validatorMock;
@@ -26,7 +27,7 @@ namespace ILICheck.Web
             fileProviderMock = new Mock<PhysicalFileProvider>(MockBehavior.Strict, CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
             validatorMock = new Mock<Validator>(MockBehavior.Strict, loggerMock.Object, CreateConfiguration(), fileProviderMock.Object);
 
-            validatorMock.SetupGet(x => x.Id).Returns("testdata");
+            validatorMock.SetupGet(x => x.Id).Returns(new Guid(jobId));
         }
 
         [TestCleanup]
@@ -54,6 +55,7 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
+        [DeploymentItem(@"testdata\invalid.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         [ExpectedException(typeof(InvalidXmlException), "Corrupt or invalid transfer file should be rejected.")]
         public async Task ValidateXmlAsyncForInvalid()
         {
@@ -70,6 +72,7 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
+        [DeploymentItem(@"testdata\example.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         public async Task ValidateXmlAsync()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("example.xtf");
@@ -101,6 +104,7 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
+        [DeploymentItem(@"testdata\example.gpkg", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         public async Task ReadGpkgModelNamesAsync()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("example.gpkg");

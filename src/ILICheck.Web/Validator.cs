@@ -24,7 +24,7 @@ namespace ILICheck.Web
         private readonly IFileProvider fileProvider;
 
         /// <inheritdoc/>
-        public virtual string Id { get; } = Guid.NewGuid().ToString();
+        public virtual Guid Id { get; } = Guid.NewGuid();
 
         /// <inheritdoc/>
         public virtual string HomeDirectory => fileProvider.HomeDirectory.FullName;

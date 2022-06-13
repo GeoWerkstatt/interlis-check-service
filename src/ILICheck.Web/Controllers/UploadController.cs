@@ -86,7 +86,7 @@ namespace ILICheck.Web.Controllers
                     string.Format(CultureInfo.InvariantCulture, "/api/v{0}/status/{1}", version.MajorVersion, validator.Id),
                     UriKind.Relative);
 
-                return Created(location, new { jobId = validator.Id, statusUrl = location });
+                return Created(location, new UploadResponse { JobId = validator.Id, StatusUrl = location });
             }
             catch (UnknownExtensionException ex)
             {

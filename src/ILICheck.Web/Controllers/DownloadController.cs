@@ -33,7 +33,7 @@ namespace ILICheck.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Download(Guid jobId, LogType logType)
         {
-            fileProvider.Initialize(jobId.ToString());
+            fileProvider.Initialize(jobId);
 
             try
             {
