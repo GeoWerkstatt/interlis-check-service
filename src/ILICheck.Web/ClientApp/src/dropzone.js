@@ -167,9 +167,9 @@ export const FileDropzone = ({
           </div>
         )}
         {testRunning && (
-          <p>
+          <div>
             <Spinner className="spinner" animation="border" />
-          </p>
+          </div>
         )}
         {fileAvailable && (
           <p className={!nutzungsbestimmungenAvailable && "added-margin"}>
