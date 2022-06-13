@@ -159,8 +159,7 @@ namespace ILICheck.Web
             try
             {
                 return acceptedFileExtensions
-                    .Single(extension => Path.GetExtension(unsafeFileName)
-                    .Equals(extension, StringComparison.OrdinalIgnoreCase));
+                    .Single(extension => Path.GetExtension(unsafeFileName).Equals(extension, StringComparison.OrdinalIgnoreCase));
             }
             catch (InvalidOperationException)
             {
