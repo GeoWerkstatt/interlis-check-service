@@ -21,13 +21,7 @@ export const Home = (props) => {
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
   const [statusInterval, setStatusInterval] = useState(null);
-  const [fileCheckStatus, setFileCheckStatus] = useState({
-    text: "",
-    class: "",
-    testRunTime: null,
-    fileName: "",
-    fileDownloadAvailable: false,
-  });
+  const [statusData, setStatusData] = useState(null);
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
   const [isFirstValidation, setIsFirstValidation] = useState(true);
@@ -41,6 +35,7 @@ export const Home = (props) => {
   // Reset log and abort upload on file change
   useEffect(() => {
     resetLog();
+    setStatusData(null);
     setTestRunning(false);
     setUploadLogsEnabled(false);
     if (statusInterval) clearInterval(statusInterval);
@@ -60,44 +55,9 @@ export const Home = (props) => {
     e.stopPropagation();
     resetLog();
     setTestRunning(true);
-    setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
     setUploadLogsInterval(setIntervalImmediately(logUploadLogMessages, 2000));
     uploadFile(fileToCheck);
   };
-
-  function displayValidationResult(statusData) {
-    if (statusData) {
-      let className;
-      let text;
-      let downloadAvailable = false;
-      setTestRunning(false);
-
-      if (statusData.status === "completed") {
-        downloadAvailable = true;
-        className = "valid";
-        text = "Keine Fehler!";
-      }
-
-      if (statusData.status === "completedWithErrors") {
-        downloadAvailable = true;
-        className = "errors";
-        text = "Fehler!";
-      }
-
-      if (statusData.status === "failed") {
-        className = "errors";
-        text = "Fehler!";
-      }
-
-      setFileCheckStatus({
-        text: text,
-        class: className,
-        testRunTime: new Date(),
-        fileName: fileToCheck ? fileToCheck.name : "",
-        fileDownloadAvailable: downloadAvailable,
-      });
-    }
-  }
 
   async function uploadFile(file) {
     const formData = new FormData();
@@ -164,7 +124,12 @@ export const Home = (props) => {
           />
         </div>
       </Container>
-      <Protokoll log={log} fileCheckStatus={fileCheckStatus} testRunning={testRunning} />
+      <Protokoll
+        log={log}
+        statusData={statusData}
+        fileName={fileToCheck ? fileToCheck.name : ""}
+        testRunning={testRunning}
+      />
     </div>
   );
 };
