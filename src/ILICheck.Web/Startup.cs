@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ILICheck.Web
 {
@@ -49,6 +51,10 @@ namespace ILICheck.Web
             services.AddHostedService(services => (ValidatorService)services.GetService<IValidatorService>());
             services.AddTransient<IValidator, Validator>();
             services.AddTransient<IFileProvider, PhysicalFileProvider>(x => new PhysicalFileProvider(x.GetRequiredService<IConfiguration>(), "ILICHECK_UPLOADS_DIR"));
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+            });
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 209715200;

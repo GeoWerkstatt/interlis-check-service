@@ -23,7 +23,7 @@ namespace ILICheck.Web.Controllers
         /// </summary>
         /// <returns>JSON-formatted client application settings.</returns>
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetSettings()
         {
             logger.LogTrace("Application configuration requested.");
 

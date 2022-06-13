@@ -77,7 +77,7 @@ namespace ILICheck.Web.Controllers
             var response = await controller.UploadAsync(apiVersionMock.Object, formFileMock.Object) as CreatedResult;
 
             Assert.IsInstanceOfType(response, typeof(CreatedResult));
-            Assert.AreEqual(201, response.StatusCode);
+            Assert.AreEqual(StatusCodes.Status201Created, response.StatusCode);
             Assert.AreEqual("/api/v9/status/testdata", response.Location);
             Assert.AreEqual("{ jobId = testdata, statusUrl = /api/v9/status/testdata }", response.Value.ToString());
         }
@@ -88,7 +88,7 @@ namespace ILICheck.Web.Controllers
             var response = await controller.UploadAsync(apiVersionMock.Object, null) as ObjectResult;
 
             Assert.IsInstanceOfType(response, typeof(ObjectResult));
-            Assert.AreEqual(400, response.StatusCode);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, response.StatusCode);
             Assert.AreEqual("Form data <file> cannot be empty.", ((ProblemDetails)response.Value).Detail);
         }
 
@@ -103,7 +103,7 @@ namespace ILICheck.Web.Controllers
             var response = await controller.UploadAsync(apiVersionMock.Object, formFileMock.Object) as ObjectResult;
 
             Assert.IsInstanceOfType(response, typeof(ObjectResult));
-            Assert.AreEqual(400, response.StatusCode);
+            Assert.AreEqual(StatusCodes.Status400BadRequest, response.StatusCode);
             Assert.AreEqual("Transfer file extension <.cmd> is an unknown file extension.", ((ProblemDetails)response.Value).Detail);
         }
 

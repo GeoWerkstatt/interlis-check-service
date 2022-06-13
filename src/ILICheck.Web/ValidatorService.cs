@@ -55,7 +55,7 @@ namespace ILICheck.Web
                 }
                 catch (InvalidXmlException ex)
                 {
-                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die XML-Struktur in der Transferdatei ist ungültig.", ex.Message);
+                    UpdateJobStatus(item.Id, Status.CompletedWithErrors, "Die XML-Struktur der Transferdatei ist ungültig.", ex.Message);
                 }
                 catch (ValidationFailedException ex)
                 {
@@ -78,7 +78,8 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
-        public (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId) => jobs[jobId];
+        public (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId) =>
+            jobs.TryGetValue(jobId, out var status) ? status : default;
 
         /// <summary>
         /// Adds or updates the status for the given <paramref name="jobId"/>.
