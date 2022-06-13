@@ -86,7 +86,9 @@ export const FileDropzone = ({
 
       switch (errorCode) {
         case "file-invalid-type":
-          setDropZoneText(`Bitte wähle eine Datei (max. 200MB) mit folgender Dateiendung: ${acceptedFileTypes}`);
+          setDropZoneText(
+            `Der Dateityp wird nicht unterstützt. Bitte wähle eine Datei (max. 200MB) mit einer der folgenden Dateiendungen: ${acceptedFileTypes}`
+          );
           break;
         case "too-many-files":
           setDropZoneText("Es kann nur eine Datei aufs Mal geprüft werden.");
@@ -97,12 +99,14 @@ export const FileDropzone = ({
           );
           break;
         default:
-          setDropZoneText(`Bitte wähle eine Datei (max. 200MB) mit folgender Dateiendung: ${acceptedFileTypes}`);
+          setDropZoneText(
+            `Bitte wähle eine Datei (max. 200MB) mit einer der folgenden Dateiendungen: ${acceptedFileTypes}`
+          );
       }
       setFileToCheck(null);
       setFileAvailable(false);
     },
-    [setFileToCheck]
+    [setFileToCheck, acceptedFileTypes]
   );
 
   const removeFile = (e) => {
