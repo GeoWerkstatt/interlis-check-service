@@ -48,13 +48,13 @@ namespace ILICheck.Web.Controllers
                 return Problem($"No job information available for job id <{jobId}>", statusCode: StatusCodes.Status404NotFound);
             }
 
-            return Ok(new
+            return Ok(new StatusResponse
             {
-                jobId,
-                status = job.Status,
-                statusMessage = job.StatusMessage,
-                logUrl = GetLogDownloadUrl(version, jobId.ToString(), LogType.Log),
-                xtfLogUrl = GetLogDownloadUrl(version, jobId.ToString(), LogType.Xtf),
+                JobId = jobId,
+                Status = job.Status,
+                StatusMessage = job.StatusMessage,
+                LogUrl = GetLogDownloadUrl(version, jobId, LogType.Log),
+                XtfLogUrl = GetLogDownloadUrl(version, jobId, LogType.Xtf),
             });
         }
 
