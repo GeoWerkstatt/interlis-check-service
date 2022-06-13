@@ -7,8 +7,6 @@ import InfoCarousel from "./infoCarousel";
 
 export const Home = (props) => {
   const {
-    connection,
-    closedConnectionId,
     clientSettings,
     nutzungsbestimmungenAvailable,
     showNutzungsbestimmungen,
@@ -46,9 +44,6 @@ export const Home = (props) => {
     resetLog();
     setTestRunning(false);
     setUploadLogsEnabled(false);
-    if (connection?.connectionId) {
-      connection.stop();
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, resetLog]);
 
@@ -109,27 +104,35 @@ export const Home = (props) => {
     uploadFile(fileToCheck);
   };
 
-  const uploadFile = (file) => {
+  async function uploadFile(file) {
     const formData = new FormData();
-    formData.append(file.name, file);
-
-    const controller = new AbortController();
-    const signal = controller.signal;
-    fetch(`api/v1/upload?connectionId=${connection.connectionId}&fileName=${file.name}`, {
+    formData.append("file", file, file.name);
+    const response = await fetch(`api/v1/upload`, {
       method: "POST",
-      signal: signal,
       body: formData,
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Datei erfolgreich hochgeladen.");
-        } else {
-          updateLog("Fehler beim Hochladen der Datei.");
-          console.log("Fehler beim Hochladen der Datei.");
-        }
-      })
-      .catch((err) => console.error(err));
-  };
+    });
+    const data = await response.json();
+    var interval = setInterval(async () => {
+      const status = await fetch(data.statusUrl, {
+        method: "GET",
+      });
+      const statusData = await status.json();
+      console.log(statusData);
+      updateLog(statusData.statusMessage);
+      if (statusData.status === "completed" || statusData.status === "completedWithErrors") {
+        clearInterval(interval);
+        setTestRunning(false);
+        console.log("clear");
+      }
+      console.log(statusData);
+    }, 1000);
+    if (response.ok) {
+      console.log("Datei erfolgreich hochgeladen.");
+    } else {
+      updateLog("Fehler beim Hochladen der Datei.");
+      console.log("Fehler beim Hochladen der Datei.");
+    }
+  }
 
   return (
     <div>
@@ -152,7 +155,6 @@ export const Home = (props) => {
           <FileDropzone
             setUploadLogsEnabled={setUploadLogsEnabled}
             setFileToCheck={setFileToCheck}
-            connection={connection}
             fileToCheck={fileToCheck}
             nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
             checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
@@ -164,13 +166,7 @@ export const Home = (props) => {
           />
         </div>
       </Container>
-      <Protokoll
-        log={log}
-        fileCheckStatus={fileCheckStatus}
-        closedConnectionId={closedConnectionId}
-        connection={connection}
-        testRunning={testRunning}
-      />
+      <Protokoll log={log} fileCheckStatus={fileCheckStatus} testRunning={testRunning} />
     </div>
   );
 };

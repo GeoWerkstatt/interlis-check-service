@@ -11,8 +11,6 @@ import { Button } from "react-bootstrap";
 
 export const Layout = (props) => {
   const {
-    connection,
-    closedConnectionId,
     log,
     updateLog,
     resetLog,
@@ -99,8 +97,6 @@ export const Layout = (props) => {
       </header>
       <main>
         <Home
-          connection={connection}
-          closedConnectionId={closedConnectionId}
           validationResult={validationResult}
           setValidationResult={setValidationResult}
           clientSettings={clientSettings}

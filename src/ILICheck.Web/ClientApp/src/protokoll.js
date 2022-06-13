@@ -6,7 +6,7 @@ import { GoFile, GoFileCode } from "react-icons/go";
 import { BsLink45Deg } from "react-icons/bs";
 
 export const Protokoll = (props) => {
-  const { log, fileCheckStatus, connection, closedConnectionId, testRunning } = props;
+  const { log, fileCheckStatus, testRunning } = props;
   const copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
   const [copyToClipboardTooltipText, setCopyToClipboardTooltipText] = useState(copyToClipboardTooltipDefaultText);
   const [indicateWaiting, setIndicateWaiting] = useState(false);
@@ -14,8 +14,8 @@ export const Protokoll = (props) => {
   const protokollFileName = "Ilivalidator_output_" + fileCheckStatus.fileName + "-" + protokollTimestamp;
   const xtfLogFileExtension = ".xtf";
   const logFileExtension = ".log";
-  const downloadAvailable = connection && fileCheckStatus.fileDownloadAvailable;
-  const downloadUrl = `api/v1/download?connectionId=${closedConnectionId}&fileExtension=`;
+  const downloadAvailable = fileCheckStatus.fileDownloadAvailable;
+  const downloadUrl = `api/v1/download?connectionId=123456789&fileExtension=`;
 
   // Copy to clipboard
   const resetToDefaultText = () => setCopyToClipboardTooltipText(copyToClipboardTooltipDefaultText);

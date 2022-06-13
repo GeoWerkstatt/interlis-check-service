@@ -33,7 +33,6 @@ const Container = styled.div`
 
 export const FileDropzone = ({
   setFileToCheck,
-  connection,
   setUploadLogsEnabled,
   fileToCheck,
   nutzungsbestimmungenAvailable,
@@ -107,7 +106,6 @@ export const FileDropzone = ({
 
   const removeFile = (e) => {
     e.stopPropagation();
-    connection.stop();
     setUploadLogsEnabled(false);
     setFileToCheck(null);
     setFileAvailable(false);
