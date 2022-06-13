@@ -38,7 +38,7 @@ namespace ILICheck.Web.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetStatus(ApiVersion version, Guid jobId)
         {
-            logger.LogTrace("Status for job id <JobId> requested.", jobId);
+            logger.LogTrace("Status for job <{JobId}> requested.", jobId);
 
             fileProvider.Initialize(jobId.ToString());
 
