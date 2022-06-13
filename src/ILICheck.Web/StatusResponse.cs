@@ -27,12 +27,12 @@ namespace ILICheck.Web
         public string StatusMessage { get; set; }
 
         /// <summary>
-        /// The log url if available; otherwise, <c>null</c>.
+        /// The log url if available; otherwise, <c>null</c>. Please be aware that the log file might not be complete while validation is still processing.
         /// </summary>
         public Uri LogUrl { get; set; }
 
         /// <summary>
-        /// The XTF log url if available; otherwise, <c>null</c>.
+        /// The XTF log url if available; otherwise, <c>null</c>. Please be aware that the log file might not be complete while validation is still processing.
         /// </summary>
         public Uri XtfLogUrl { get; set; }
     }
