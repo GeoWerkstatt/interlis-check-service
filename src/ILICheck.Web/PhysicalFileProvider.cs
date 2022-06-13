@@ -73,13 +73,13 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
-        /// <exception cref="ArgumentNullException">If <paramref name="name"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">If <paramref name="name"/> is <c>string.Empty</c>.</exception>
-        public void Initialize(string name)
+        /// <exception cref="ArgumentException">If <paramref name="id"/> is <see cref="Guid.Empty"/>.</exception>
+        public void Initialize(Guid id)
         {
-            name = Path.TrimEndingDirectorySeparator(name);
-            HomeDirectory = new DirectoryInfo(configuration.GetValue<string>(rootDirectoryEnvironmentKey)).CreateSubdirectory(name);
-            HomeDirectoryPathFormat = string.Format(CultureInfo.InvariantCulture, "${0}/{1}/", rootDirectoryEnvironmentKey, name);
+            if (id == Guid.Empty) throw new ArgumentException("The specified id is not valid.", nameof(id));
+
+            HomeDirectory = new DirectoryInfo(configuration.GetValue<string>(rootDirectoryEnvironmentKey)).CreateSubdirectory(id.ToString());
+            HomeDirectoryPathFormat = string.Format(CultureInfo.InvariantCulture, "${0}/{1}/", rootDirectoryEnvironmentKey, id);
 
             initialized = true;
         }

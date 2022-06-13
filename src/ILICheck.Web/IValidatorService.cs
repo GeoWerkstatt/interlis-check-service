@@ -15,13 +15,13 @@ namespace ILICheck.Web
         /// <param name="jobId">The job identifier.</param>
         /// <param name="action">The action to execute.</param>
         /// <returns></returns>
-        Task EnqueueJobAsync(string jobId, Func<CancellationToken, Task> action);
+        Task EnqueueJobAsync(Guid jobId, Func<CancellationToken, Task> action);
 
         /// <summary>
         /// Gets the <see cref="Status"/> for the given <paramref name="jobId"/>.
         /// </summary>
         /// <param name="jobId">The job identifier.</param>
         /// <returns>The <see cref="Status"/> for the given <paramref name="jobId"/> if the job exists; otherwise, <c>default</c>.</returns>
-        (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId);
+        (Status Status, string StatusMessage) GetJobStatusOrDefault(Guid jobId);
     }
 }

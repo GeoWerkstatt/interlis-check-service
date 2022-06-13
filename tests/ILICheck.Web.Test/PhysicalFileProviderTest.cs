@@ -18,11 +18,12 @@ namespace ILICheck.Web
         [TestMethod]
         public void Initialize()
         {
+            var id = new Guid("59da9c46-dad0-41c7-b58f-8fa356d2d9fc");
             var physicalFileProvider = new PhysicalFileProvider(CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
-            physicalFileProvider.Initialize("GREENANALYST");
+            physicalFileProvider.Initialize(id);
 
-            var expectedHomeDirectory = Path.Combine(TestContext.DeploymentDirectory, "GREENANALYST");
-            var expectedHomeDirectoryPathFormat = "$ILICHECK_UPLOADS_DIR/GREENANALYST/";
+            var expectedHomeDirectory = Path.Combine(TestContext.DeploymentDirectory, id.ToString());
+            var expectedHomeDirectoryPathFormat = "$ILICHECK_UPLOADS_DIR/59da9c46-dad0-41c7-b58f-8fa356d2d9fc/";
 
             Assert.AreEqual(expectedHomeDirectory, physicalFileProvider.HomeDirectory.FullName);
             Assert.AreEqual(expectedHomeDirectoryPathFormat, physicalFileProvider.HomeDirectoryPathFormat);
@@ -33,8 +34,7 @@ namespace ILICheck.Web
         {
             var physicalFileProvider = new PhysicalFileProvider(CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
 
-            Assert.ThrowsException<ArgumentNullException>(() => physicalFileProvider.Initialize(null));
-            Assert.ThrowsException<ArgumentException>(() => physicalFileProvider.Initialize(string.Empty));
+            Assert.ThrowsException<ArgumentException>(() => physicalFileProvider.Initialize(Guid.Empty));
         }
 
         private IConfiguration CreateConfiguration() =>

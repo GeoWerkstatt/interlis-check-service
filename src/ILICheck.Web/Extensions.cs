@@ -176,8 +176,8 @@ namespace ILICheck.Web
         /// <summary>
         /// Gets the log file for the specified <paramref name="logType"/>.
         /// </summary>
-        /// <param name="fileProvider">The file provider which provides read/write access to a predefined folder.</param>
-        /// <param name="logType">The log type.</param>
+        /// <param name="fileProvider">The <see cref="IFileProvider"/> which provides read/write access to a predefined folder.</param>
+        /// <param name="logType">The log type to download.</param>
         /// <returns>The log file for the specified <paramref name="logType"/>.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="fileProvider"/> is <c>null</c>.</exception>
         /// <exception cref="FileNotFoundException">If the log file could not be found.</exception>

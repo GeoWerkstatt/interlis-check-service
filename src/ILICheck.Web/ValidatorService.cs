@@ -14,8 +14,8 @@ namespace ILICheck.Web
     public class ValidatorService : BackgroundService, IValidatorService
     {
         private readonly ILogger<ValidatorService> logger;
-        private readonly Channel<(string Id, Func<CancellationToken, Task> Task)> queue;
-        private readonly ConcurrentDictionary<string, (Status Status, string StatusMessage)> jobs = new ();
+        private readonly Channel<(Guid Id, Func<CancellationToken, Task> Task)> queue;
+        private readonly ConcurrentDictionary<Guid, (Status Status, string StatusMessage)> jobs = new ();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidatorService"/> class.
@@ -23,7 +23,7 @@ namespace ILICheck.Web
         public ValidatorService(ILogger<ValidatorService> logger)
         {
             this.logger = logger;
-            queue = Channel.CreateUnbounded<(string, Func<CancellationToken, Task>)>();
+            queue = Channel.CreateUnbounded<(Guid, Func<CancellationToken, Task>)>();
         }
 
         /// <inheritdoc/>
@@ -71,14 +71,14 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
-        public async Task EnqueueJobAsync(string jobId, Func<CancellationToken, Task> action)
+        public async Task EnqueueJobAsync(Guid jobId, Func<CancellationToken, Task> action)
         {
             UpdateJobStatus(jobId, Status.Enqueued, "Die Validierung wird vorbereitet...");
             await queue.Writer.WriteAsync((jobId, action));
         }
 
         /// <inheritdoc/>
-        public (Status Status, string StatusMessage) GetJobStatusOrDefault(string jobId) =>
+        public (Status Status, string StatusMessage) GetJobStatusOrDefault(Guid jobId) =>
             jobs.TryGetValue(jobId, out var status) ? status : default;
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace ILICheck.Web
         /// <param name="status">The status.</param>
         /// <param name="statusMessage">The status message.</param>
         /// <param name="logMessage">Optional info log message.</param>
-        private void UpdateJobStatus(string jobId, Status status, string statusMessage, string logMessage = null)
+        private void UpdateJobStatus(Guid jobId, Status status, string statusMessage, string logMessage = null)
         {
             jobs[jobId] = (status, statusMessage);
             if (!string.IsNullOrEmpty(logMessage)) logger.LogInformation(logMessage);

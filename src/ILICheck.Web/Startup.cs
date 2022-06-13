@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -8,7 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -22,6 +26,12 @@ namespace ILICheck.Web
         }
 
         public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Gets the application name if set; otherwise, a predefined default.
+        /// </summary>
+        public string ApplicationName =>
+            Configuration.GetValue<string>("CUSTOM_APP_NAME") ?? "INTERLIS Web-Check-Service";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -63,6 +73,29 @@ namespace ILICheck.Web
             {
                 options.Limits.MaxRequestBodySize = 209715200;
             });
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = ApplicationName,
+                });
+
+                // Include existing documentation in Swagger UI.
+                options.IncludeXmlComments(
+                    Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+
+                // Custom order in Swagger UI.
+                options.OrderActionsBy(apiDescription =>
+                {
+                    var customOrder = new[] { "Upload", "Status", "Download", "Settings" };
+                    var controllerName = (apiDescription.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
+                    return $"{Array.IndexOf(customOrder, controllerName)}";
+                });
+
+                options.EnableAnnotations();
+                options.SupportNonNullableReferenceTypes();
+            });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -100,6 +133,16 @@ namespace ILICheck.Web
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapHealthChecks("/health");
+            });
+
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = "api/{documentName}/swagger.json";
+            });
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/api/v1/swagger.json", $"{ApplicationName} REST API v1");
+                options.RoutePrefix = "api";
             });
 
             app.UseSpa(spa =>

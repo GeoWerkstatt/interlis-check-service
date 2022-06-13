@@ -59,9 +59,9 @@ namespace ILICheck.Web
 
         /// <summary>
         /// Initializes this file provider. Creates and sets the <see cref="HomeDirectory"/>
-        /// to the folder with the <paramref name="name"/> specified.
+        /// to the folder with the <paramref name="id"/> specified.
         /// </summary>
-        /// <param name="name">The specified folder name to be created.</param>
-        void Initialize(string name);
+        /// <param name="id">The specified folder id to be created.</param>
+        void Initialize(Guid id);
     }
 }

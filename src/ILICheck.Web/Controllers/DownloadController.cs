@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 
 namespace ILICheck.Web.Controllers
@@ -21,19 +22,16 @@ namespace ILICheck.Web.Controllers
         /// <summary>
         /// Gets the ilivalidator log file for the specified <paramref name="jobId"/> and <paramref name="logType"/>.
         /// </summary>
-        /// <param name="jobId">The job identifier.</param>
-        /// <param name="logType">The log type (log|xtf).</param>
-        /// <response code="200">Returns the ilivalidator log file.</response>
-        /// <response code="400">The server cannot process the request due to invalid or malformed request.</response>
-        /// <response code="404">The log file for the requested <paramref name="jobId"/> cannot be found.</response>
+        /// <param name="jobId" example="2e71ae96-e6ad-4b67-b817-f09412d09a2c">The job identifier.</param>
+        /// <param name="logType">The log type to download.</param>
         /// <returns>The ilivalidator log file.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerResponse(StatusCodes.Status201Created, "Returns the ilivalidator log file.", ContentTypes = new[] { "text/xml; charset=utf-8" })]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The log file for the requested jobId cannot be found.", ContentTypes = new[] { "application/json" })]
         public IActionResult Download(Guid jobId, LogType logType)
         {
-            fileProvider.Initialize(jobId.ToString());
+            fileProvider.Initialize(jobId);
 
             try
             {

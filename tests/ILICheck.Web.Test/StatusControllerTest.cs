@@ -49,19 +49,24 @@ namespace ILICheck.Web.Controllers
         {
             var jobId = new Guid("fadc5142-9043-4fdc-aebf-36c21e13f621");
 
-            fileProviderMock.Setup(x => x.Initialize(It.Is<string>(x => x.Equals(jobId.ToString(), StringComparison.Ordinal))));
+            fileProviderMock.Setup(x => x.Initialize(It.Is<Guid>(x => x.Equals(jobId))));
             fileProviderMock.Setup(x => x.GetFiles()).Returns(new[] { "SILENTFIRE_LOG.xtf" });
             fileProviderMock.SetupGet(x => x.HomeDirectory).Returns(new DirectoryInfo(TestContext.DeploymentDirectory));
 
             validatorServiceMock
-                .Setup(x => x.GetJobStatusOrDefault(It.Is<string>(x => x.Equals(jobId.ToString(), StringComparison.Ordinal))))
+                .Setup(x => x.GetJobStatusOrDefault(It.Is<Guid>(x => x.Equals(jobId))))
                 .Returns((Status.Processing, "WAFFLESPATULA GREENNIGHT"));
 
             var response = controller.GetStatus(apiVersionMock.Object, jobId) as OkObjectResult;
 
             Assert.IsInstanceOfType(response, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(response.Value, typeof(StatusResponse));
             Assert.AreEqual(StatusCodes.Status200OK, response.StatusCode);
-            Assert.AreEqual("{ jobId = fadc5142-9043-4fdc-aebf-36c21e13f621, status = Processing, statusMessage = WAFFLESPATULA GREENNIGHT, logUrl = , xtfLogUrl = /api/v8/download?jobId=fadc5142-9043-4fdc-aebf-36c21e13f621&logType=xtf }", response.Value.ToString());
+            Assert.AreEqual(jobId, ((StatusResponse)response.Value).JobId);
+            Assert.AreEqual(Status.Processing, ((StatusResponse)response.Value).Status);
+            Assert.AreEqual("WAFFLESPATULA GREENNIGHT", ((StatusResponse)response.Value).StatusMessage);
+            Assert.AreEqual(null, ((StatusResponse)response.Value).LogUrl);
+            Assert.AreEqual($"/api/v8/download?jobId={jobId}&logType=xtf", ((StatusResponse)response.Value).XtfLogUrl.ToString());
         }
 
         [TestMethod]
@@ -69,9 +74,9 @@ namespace ILICheck.Web.Controllers
         {
             var jobId = new Guid("00000000-0000-0000-0000-000000000000");
 
-            fileProviderMock.Setup(x => x.Initialize(It.Is<string>(x => x.Equals(jobId.ToString(), StringComparison.Ordinal))));
+            fileProviderMock.Setup(x => x.Initialize(It.Is<Guid>(x => x.Equals(jobId))));
             validatorServiceMock
-                .Setup(x => x.GetJobStatusOrDefault(It.Is<string>(x => x.Equals(Guid.Empty.ToString(), StringComparison.Ordinal))))
+                .Setup(x => x.GetJobStatusOrDefault(It.Is<Guid>(x => x.Equals(Guid.Empty))))
                 .Returns((default, default));
 
             var response = controller.GetStatus(apiVersionMock.Object, default) as ObjectResult;
