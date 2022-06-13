@@ -55,7 +55,7 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
-        [DeploymentItem(@"testdata\invalid.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
+        [DeploymentItem(@"testdata/invalid.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         [ExpectedException(typeof(InvalidXmlException), "Corrupt or invalid transfer file should be rejected.")]
         public async Task ValidateXmlAsyncForInvalid()
         {
@@ -72,7 +72,7 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
-        [DeploymentItem(@"testdata\example.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
+        [DeploymentItem("testdata/example.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         public async Task ValidateXmlAsync()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("example.xtf");
@@ -104,7 +104,7 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
-        [DeploymentItem(@"testdata\example.gpkg", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
+        [DeploymentItem(@"testdata/example.gpkg", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         public async Task ReadGpkgModelNamesAsync()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("example.gpkg");
