@@ -10,15 +10,7 @@ import BannerContent from "./bannerContent";
 import { Button } from "react-bootstrap";
 
 export const Layout = (props) => {
-  const {
-    log,
-    updateLog,
-    resetLog,
-    setUploadLogsInterval,
-    validationResult,
-    setValidationResult,
-    setUploadLogsEnabled,
-  } = props;
+  const { log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled } = props;
   const [modalContent, setModalContent] = useState(false);
   const [modalContentType, setModalContentType] = useState(null);
   const [showModalContent, setShowModalContent] = useState(false);
@@ -97,8 +89,6 @@ export const Layout = (props) => {
       </header>
       <main>
         <Home
-          validationResult={validationResult}
-          setValidationResult={setValidationResult}
           clientSettings={clientSettings}
           nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
           showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent, "markdown")}

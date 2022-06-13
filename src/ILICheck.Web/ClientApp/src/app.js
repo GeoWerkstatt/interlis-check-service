@@ -6,7 +6,6 @@ function App() {
   const [log, setLog] = useState([]);
   const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
   const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
-  const [validationResult, setValidationResult] = useState(false);
 
   const resetLog = useCallback(() => setLog([]), [setLog]);
   const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
@@ -27,8 +26,6 @@ function App() {
       log={log}
       updateLog={updateLog}
       resetLog={resetLog}
-      validationResult={validationResult}
-      setValidationResult={setValidationResult}
       setUploadLogsInterval={setUploadLogsInterval}
       setUploadLogsEnabled={setUploadLogsEnabled}
     />

@@ -16,12 +16,11 @@ export const Home = (props) => {
     resetLog,
     setUploadLogsInterval,
     setUploadLogsEnabled,
-    validationResult,
-    setValidationResult,
     setShowBannerContent,
   } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
   const [testRunning, setTestRunning] = useState(false);
+  const [statusInterval, setStatusInterval] = useState(null);
   const [fileCheckStatus, setFileCheckStatus] = useState({
     text: "",
     class: "",
@@ -44,6 +43,7 @@ export const Home = (props) => {
     resetLog();
     setTestRunning(false);
     setUploadLogsEnabled(false);
+    if (statusInterval) clearInterval(statusInterval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, resetLog]);
 
@@ -56,31 +56,37 @@ export const Home = (props) => {
     }
   }, [testRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation]);
 
-  useEffect(() => {
-    if (validationResult !== "none") {
+  const checkFile = (e) => {
+    e.stopPropagation();
+    resetLog();
+    setTestRunning(true);
+    setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
+    setUploadLogsInterval(setIntervalImmediately(logUploadLogMessages, 2000));
+    uploadFile(fileToCheck);
+  };
+
+  function displayValidationResult(statusData) {
+    if (statusData) {
       let className;
       let text;
       let downloadAvailable = false;
       setTestRunning(false);
 
-      if (validationResult === "ok") {
+      if (statusData.status === "completed") {
         downloadAvailable = true;
         className = "valid";
         text = "Keine Fehler!";
-        updateLog("Die Daten sind modellkonform!");
       }
 
-      if (validationResult === "error") {
+      if (statusData.status === "completedWithErrors") {
         downloadAvailable = true;
         className = "errors";
         text = "Fehler!";
-        updateLog("Die Daten sind nicht modellkonform! Für Fehlermeldungen siehe XTF-Log-Datei.");
       }
 
-      if (validationResult === "aborted") {
+      if (statusData.status === "failed") {
         className = "errors";
         text = "Fehler!";
-        updateLog("Die Validierung wurde abgebrochen.");
       }
 
       setFileCheckStatus({
@@ -90,19 +96,8 @@ export const Home = (props) => {
         fileName: fileToCheck ? fileToCheck.name : "",
         fileDownloadAvailable: downloadAvailable,
       });
-
-      setValidationResult("none");
     }
-  }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings]);
-
-  const checkFile = (e) => {
-    e.stopPropagation();
-    resetLog();
-    setTestRunning(true);
-    setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
-    setUploadLogsInterval(setIntervalImmediately(logUploadLogMessages, 2000));
-    uploadFile(fileToCheck);
-  };
+  }
 
   async function uploadFile(file) {
     const formData = new FormData();
@@ -117,21 +112,18 @@ export const Home = (props) => {
         method: "GET",
       });
       const statusData = await status.json();
-      console.log(statusData);
       updateLog(statusData.statusMessage);
-      if (statusData.status === "completed" || statusData.status === "completedWithErrors") {
+      if (
+        statusData.status === "completed" ||
+        statusData.status === "completedWithErrors" ||
+        statusData.status === "failed"
+      ) {
         clearInterval(interval);
         setTestRunning(false);
-        console.log("clear");
+        displayValidationResult(statusData);
       }
-      console.log(statusData);
     }, 1000);
-    if (response.ok) {
-      console.log("Datei erfolgreich hochgeladen.");
-    } else {
-      updateLog("Fehler beim Hochladen der Datei.");
-      console.log("Fehler beim Hochladen der Datei.");
-    }
+    setStatusInterval(interval);
   }
 
   return (
