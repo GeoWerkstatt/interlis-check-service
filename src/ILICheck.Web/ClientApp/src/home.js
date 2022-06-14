@@ -68,11 +68,21 @@ export const Home = (props) => {
     });
     if (response.ok) {
       const data = await response.json();
-      var interval = setInterval(async () => {
+      const getStatusData = async (data) => {
         const status = await fetch(data.statusUrl, {
           method: "GET",
         });
         const statusData = await status.json();
+        return statusData;
+      };
+
+      // get first status immediately
+      const firstStatus = await getStatusData(data);
+      updateLog(firstStatus.statusMessage);
+
+      // get status continuously every 2 seconds
+      const interval = setInterval(async () => {
+        const statusData = await getStatusData(data);
         updateLog(statusData.statusMessage);
         if (
           statusData.status === "completed" ||
@@ -83,7 +93,7 @@ export const Home = (props) => {
           setValidationRunning(false);
           setStatusData(statusData);
         }
-      }, 1000);
+      }, 2000);
       setStatusInterval(interval);
     } else {
       console.log("Error while uploading file: " + response.json());
