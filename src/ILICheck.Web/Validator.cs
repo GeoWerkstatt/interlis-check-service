@@ -112,7 +112,7 @@ namespace ILICheck.Web
                 }
 
                 // Set new transfer file
-                TransferFile = fileProvider.GetFiles().Single(file => Path.GetExtension(file) == transferFileExtension);
+                TransferFile = fileProvider.GetFiles().Single(file => Path.GetExtension(file).Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase));
             }).ConfigureAwait(false);
         }
 

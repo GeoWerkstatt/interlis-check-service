@@ -32,7 +32,7 @@ namespace ILICheck.Web.Controllers
         [HttpGet("{jobId}")]
         [SwaggerResponse(StatusCodes.Status200OK, "The job with the specified jobId was found.", typeof(StatusResponse), new[] { "application/json" })]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "The job with the specified jobId cannot be found.", typeof(ProblemDetails), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The job with the specified jobId cannot be found.", typeof(ProblemDetails), new[] { "application/json" })]
         public IActionResult GetStatus(ApiVersion version, Guid jobId)
         {
             logger.LogTrace("Status for job <{JobId}> requested.", jobId);
