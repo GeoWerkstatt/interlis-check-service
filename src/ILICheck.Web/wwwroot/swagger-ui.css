@@ -1,0 +1,18 @@
+.swagger-ui .topbar {
+  background: transparent;
+}
+
+.topbar-wrapper img[alt="Swagger UI"], .topbar-wrapper span {
+  visibility: collapse;
+}
+
+/* The pseudo-element pretends from showing a broken
+    image icon if app.png is not available. */
+.topbar-wrapper .link:before {
+  content: '';
+  background: url('/app.png') left center no-repeat;
+  background-size: 160px auto;
+  width: 160px;
+  height: 60px;
+}
+
