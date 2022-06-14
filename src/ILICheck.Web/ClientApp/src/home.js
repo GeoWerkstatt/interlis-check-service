@@ -19,7 +19,7 @@ export const Home = (props) => {
     setShowBannerContent,
   } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
-  const [testRunning, setTestRunning] = useState(false);
+  const [validationRunning, setValidationRunning] = useState(false);
   const [statusInterval, setStatusInterval] = useState(null);
   const [statusData, setStatusData] = useState(null);
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
@@ -36,25 +36,25 @@ export const Home = (props) => {
   useEffect(() => {
     resetLog();
     setStatusData(null);
-    setTestRunning(false);
+    setValidationRunning(false);
     setUploadLogsEnabled(false);
     if (statusInterval) clearInterval(statusInterval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, resetLog]);
 
   useEffect(() => {
-    if (testRunning && isFirstValidation) {
+    if (validationRunning && isFirstValidation) {
       setTimeout(() => {
         setShowBannerContent(true);
         setIsFirstValidation(false);
       }, 2000);
     }
-  }, [testRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation]);
+  }, [validationRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation]);
 
   const checkFile = (e) => {
     e.stopPropagation();
     resetLog();
-    setTestRunning(true);
+    setValidationRunning(true);
     setUploadLogsInterval(setIntervalImmediately(logUploadLogMessages, 2000));
     uploadFile(fileToCheck);
   };
@@ -80,7 +80,7 @@ export const Home = (props) => {
           statusData.status === "failed"
         ) {
           clearInterval(interval);
-          setTestRunning(false);
+          setValidationRunning(false);
           setStatusData(statusData);
         }
       }, 1000);
@@ -88,7 +88,7 @@ export const Home = (props) => {
     } else {
       console.log("Error while uploading file: " + response.json());
       updateLog("Der Upload war nicht erfolgreich. Die Validierung wurde abgebrochen.");
-      setTestRunning(false);
+      setValidationRunning(false);
     }
   }
 
@@ -117,7 +117,7 @@ export const Home = (props) => {
             nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
             checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
             checkFile={checkFile}
-            testRunning={testRunning}
+            validationRunning={validationRunning}
             setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
             showNutzungsbestimmungen={showNutzungsbestimmungen}
             acceptedFileTypes={clientSettings?.acceptedFileTypes}
@@ -128,7 +128,7 @@ export const Home = (props) => {
         log={log}
         statusData={statusData}
         fileName={fileToCheck ? fileToCheck.name : ""}
-        testRunning={testRunning}
+        validationRunning={validationRunning}
       />
     </div>
   );

@@ -38,7 +38,7 @@ export const FileDropzone = ({
   nutzungsbestimmungenAvailable,
   checkedNutzungsbestimmungen,
   checkFile,
-  testRunning,
+  validationRunning,
   setCheckedNutzungsbestimmungen,
   showNutzungsbestimmungen,
   acceptedFileTypes,
@@ -160,7 +160,7 @@ export const FileDropzone = ({
             </label>
           </div>
         )}
-        {testRunning && (
+        {validationRunning && (
           <p>
             <Spinner className="spinner" animation="border" />
           </p>
@@ -168,9 +168,9 @@ export const FileDropzone = ({
         {fileAvailable && (
           <p className={!nutzungsbestimmungenAvailable && "added-margin"}>
             <Button
-              className={fileToCheck && !testRunning ? "check-button" : "invisible-check-button"}
+              className={fileToCheck && !validationRunning ? "check-button" : "invisible-check-button"}
               onClick={checkFile}
-              disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || testRunning}
+              disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || validationRunning}
             >
               Validieren
             </Button>

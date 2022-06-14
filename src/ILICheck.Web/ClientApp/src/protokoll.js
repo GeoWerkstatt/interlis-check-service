@@ -6,7 +6,7 @@ import { GoFile, GoFileCode } from "react-icons/go";
 import { BsLink45Deg } from "react-icons/bs";
 
 export const Protokoll = (props) => {
-  const { log, statusData, fileName, testRunning } = props;
+  const { log, statusData, fileName, validationRunning } = props;
   const copyToClipboardTooltipDefaultText = "XTF-Log-Datei Link in die Zwischenablage kopieren";
   const [copyToClipboardTooltipText, setCopyToClipboardTooltipText] = useState(copyToClipboardTooltipDefaultText);
   const [indicateWaiting, setIndicateWaiting] = useState(false);
@@ -28,7 +28,7 @@ export const Protokoll = (props) => {
   // Show flash dot to indicate waiting
   useEffect(() =>
     setTimeout(() => {
-      if (testRunning === true) {
+      if (validationRunning === true) {
         setIndicateWaiting(!indicateWaiting);
       } else {
         setIndicateWaiting(false);
