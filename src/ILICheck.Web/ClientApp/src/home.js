@@ -54,6 +54,7 @@ export const Home = (props) => {
   const checkFile = (e) => {
     e.stopPropagation();
     resetLog();
+    setStatusData(null);
     setValidationRunning(true);
     setUploadLogsInterval(setIntervalImmediately(logUploadLogMessages, 2000));
     uploadFile(fileToCheck);
