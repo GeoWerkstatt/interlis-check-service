@@ -7,8 +7,6 @@ import InfoCarousel from "./infoCarousel";
 
 export const Home = (props) => {
   const {
-    connection,
-    closedConnectionId,
     clientSettings,
     nutzungsbestimmungenAvailable,
     showNutzungsbestimmungen,
@@ -18,19 +16,12 @@ export const Home = (props) => {
     resetLog,
     setUploadLogsInterval,
     setUploadLogsEnabled,
-    validationResult,
-    setValidationResult,
     setShowBannerContent,
   } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
-  const [testRunning, setTestRunning] = useState(false);
-  const [fileCheckStatus, setFileCheckStatus] = useState({
-    text: "",
-    class: "",
-    testRunTime: null,
-    fileName: "",
-    fileDownloadAvailable: false,
-  });
+  const [validationRunning, setValidationRunning] = useState(false);
+  const [statusInterval, setStatusInterval] = useState(null);
+  const [statusData, setStatusData] = useState(null);
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
   const [isFirstValidation, setIsFirstValidation] = useState(true);
@@ -44,92 +35,73 @@ export const Home = (props) => {
   // Reset log and abort upload on file change
   useEffect(() => {
     resetLog();
-    setTestRunning(false);
+    setStatusData(null);
+    setValidationRunning(false);
     setUploadLogsEnabled(false);
-    if (connection?.connectionId) {
-      connection.stop();
-    }
+    if (statusInterval) clearInterval(statusInterval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileToCheck, resetLog]);
 
   useEffect(() => {
-    if (testRunning && isFirstValidation) {
+    if (validationRunning && isFirstValidation) {
       setTimeout(() => {
         setShowBannerContent(true);
         setIsFirstValidation(false);
       }, 2000);
     }
-  }, [testRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation]);
-
-  useEffect(() => {
-    if (validationResult !== "none") {
-      let className;
-      let text;
-      let downloadAvailable = false;
-      setTestRunning(false);
-
-      if (validationResult === "ok") {
-        downloadAvailable = true;
-        className = "valid";
-        text = "Keine Fehler!";
-        updateLog("Die Daten sind modellkonform!");
-      }
-
-      if (validationResult === "error") {
-        downloadAvailable = true;
-        className = "errors";
-        text = "Fehler!";
-        updateLog("Die Daten sind nicht modellkonform! Für Fehlermeldungen siehe XTF-Log-Datei.");
-      }
-
-      if (validationResult === "aborted") {
-        className = "errors";
-        text = "Fehler!";
-        updateLog("Die Validierung wurde abgebrochen.");
-      }
-
-      setFileCheckStatus({
-        text: text,
-        class: className,
-        testRunTime: new Date(),
-        fileName: fileToCheck ? fileToCheck.name : "",
-        fileDownloadAvailable: downloadAvailable,
-      });
-
-      setValidationResult("none");
-    }
-  }, [validationResult, fileToCheck, setValidationResult, updateLog, clientSettings]);
+  }, [validationRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation]);
 
   const checkFile = (e) => {
     e.stopPropagation();
     resetLog();
-    setTestRunning(true);
-    setFileCheckStatus({ text: "", class: "", testRunTime: null, fileName: "", fileDownloadAvailable: false });
+    setStatusData(null);
+    setValidationRunning(true);
     setUploadLogsInterval(setIntervalImmediately(logUploadLogMessages, 2000));
     uploadFile(fileToCheck);
   };
 
-  const uploadFile = (file) => {
+  async function uploadFile(file) {
     const formData = new FormData();
-    formData.append(file.name, file);
-
-    const controller = new AbortController();
-    const signal = controller.signal;
-    fetch(`api/v1/upload?connectionId=${connection.connectionId}&fileName=${file.name}`, {
+    formData.append("file", file, file.name);
+    const response = await fetch(`api/v1/upload`, {
       method: "POST",
-      signal: signal,
       body: formData,
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Datei erfolgreich hochgeladen.");
-        } else {
-          updateLog("Fehler beim Hochladen der Datei.");
-          console.log("Fehler beim Hochladen der Datei.");
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const getStatusData = async (data) => {
+        const status = await fetch(data.statusUrl, {
+          method: "GET",
+        });
+        const statusData = await status.json();
+        return statusData;
+      };
+
+      // get first status immediately
+      const firstStatus = await getStatusData(data);
+      updateLog(firstStatus.statusMessage);
+
+      // get status continuously every 2 seconds
+      const interval = setInterval(async () => {
+        const statusData = await getStatusData(data);
+        updateLog(statusData.statusMessage);
+        if (
+          statusData.status === "completed" ||
+          statusData.status === "completedWithErrors" ||
+          statusData.status === "failed"
+        ) {
+          clearInterval(interval);
+          setValidationRunning(false);
+          setStatusData(statusData);
         }
-      })
-      .catch((err) => console.error(err));
-  };
+      }, 2000);
+      setStatusInterval(interval);
+    } else {
+      console.log("Error while uploading file: " + response.json());
+      updateLog("Der Upload war nicht erfolgreich. Die Validierung wurde abgebrochen.");
+      setValidationRunning(false);
+    }
+  }
 
   return (
     <div>
@@ -152,12 +124,11 @@ export const Home = (props) => {
           <FileDropzone
             setUploadLogsEnabled={setUploadLogsEnabled}
             setFileToCheck={setFileToCheck}
-            connection={connection}
             fileToCheck={fileToCheck}
             nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
             checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
             checkFile={checkFile}
-            testRunning={testRunning}
+            validationRunning={validationRunning}
             setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
             showNutzungsbestimmungen={showNutzungsbestimmungen}
             acceptedFileTypes={clientSettings?.acceptedFileTypes}
@@ -166,10 +137,9 @@ export const Home = (props) => {
       </Container>
       <Protokoll
         log={log}
-        fileCheckStatus={fileCheckStatus}
-        closedConnectionId={closedConnectionId}
-        connection={connection}
-        testRunning={testRunning}
+        statusData={statusData}
+        fileName={fileToCheck ? fileToCheck.name : ""}
+        validationRunning={validationRunning}
       />
     </div>
   );
