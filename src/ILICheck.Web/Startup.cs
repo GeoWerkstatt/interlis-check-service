@@ -78,7 +78,7 @@ namespace ILICheck.Web
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = ApplicationName,
+                    Title = $"{ApplicationName} API Documentation",
                 });
 
                 // Include existing documentation in Swagger UI.
@@ -143,7 +143,10 @@ namespace ILICheck.Web
             {
                 options.SwaggerEndpoint("/api/v1/swagger.json", $"{ApplicationName} REST API v1");
                 options.RoutePrefix = "api";
-            });
+                options.DocumentTitle = $"{ApplicationName} API Documentation";
+                options.InjectStylesheet("../swagger-ui.css");
+                options.InjectJavascript("../swagger-ui.js");
+        });
 
             app.UseSpa(spa =>
             {
