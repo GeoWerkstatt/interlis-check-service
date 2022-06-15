@@ -207,7 +207,7 @@ Der INTERLIS Web-Check-Service ist seit Version 3 vollständig über eine REST A
 
 ## Health Check API
 
-Für das Monitoring im produktiven Betrieb steht unter `https://<host>:<port>/health` eine Health Check API zur verfügung. Anhand der Antwort *Healthy* (HTTP Status Code 200), resp. *Unhealthy* (HTTP Status Code 503) kann der Status der Applikation bspw. mit cURL abgefragt werden.
+Für das Monitoring im produktiven Betrieb steht unter `https://<host>:<port>/health` eine Health Check API zur Verfügung. Anhand der Antwort *Healthy* (HTTP Status Code 200), resp. *Unhealthy* (HTTP Status Code 503) kann der Status der Applikation bspw. mit cURL abgefragt werden.
 
 ```bash
 curl -f https://<host>:<port>/health || exit 1;
