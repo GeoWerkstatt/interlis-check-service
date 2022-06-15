@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Container } from "react-bootstrap";
 import { FileDropzone } from "./dropzone";
 import { Title } from "./title";
@@ -19,6 +19,7 @@ export const Home = (props) => {
     setShowBannerContent,
   } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
+  const fileToCheckRef = useRef(fileToCheck);
   const [validationRunning, setValidationRunning] = useState(false);
   const [statusInterval, setStatusInterval] = useState(null);
   const [statusData, setStatusData] = useState(null);
@@ -68,29 +69,32 @@ export const Home = (props) => {
       body: formData,
     });
     if (response.ok) {
-      const data = await response.json();
-      const getStatusData = async (data) => {
-        const status = await fetch(data.statusUrl, {
-          method: "GET",
-        });
-        const statusData = await status.json();
-        return statusData;
-      };
+      // Use ref instead of state to check current file status in async function
+      if (fileToCheckRef.current) {
+        const data = await response.json();
+        const getStatusData = async (data) => {
+          const status = await fetch(data.statusUrl, {
+            method: "GET",
+          });
+          const statusData = await status.json();
+          return statusData;
+        };
 
-      const interval = setIntervalImmediately(async () => {
-        const statusData = await getStatusData(data);
-        updateLog(statusData.statusMessage);
-        if (
-          statusData.status === "completed" ||
-          statusData.status === "completedWithErrors" ||
-          statusData.status === "failed"
-        ) {
-          clearInterval(interval);
-          setValidationRunning(false);
-          setStatusData(statusData);
-        }
-      }, 2000);
-      setStatusInterval(interval);
+        const interval = setIntervalImmediately(async () => {
+          const statusData = await getStatusData(data);
+          updateLog(statusData.statusMessage);
+          if (
+            statusData.status === "completed" ||
+            statusData.status === "completedWithErrors" ||
+            statusData.status === "failed"
+          ) {
+            clearInterval(interval);
+            setValidationRunning(false);
+            setStatusData(statusData);
+          }
+        }, 2000);
+        setStatusInterval(interval);
+      }
     } else {
       console.log("Error while uploading file: " + response.json());
       updateLog("Der Upload war nicht erfolgreich. Die Validierung wurde abgebrochen.");
@@ -118,6 +122,7 @@ export const Home = (props) => {
           setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
           showNutzungsbestimmungen={showNutzungsbestimmungen}
           acceptedFileTypes={clientSettings?.acceptedFileTypes}
+          fileToCheckRef={fileToCheckRef}
         />
       </Container>
       <Protokoll

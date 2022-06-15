@@ -41,6 +41,7 @@ export const FileDropzone = ({
   setCheckedNutzungsbestimmungen,
   showNutzungsbestimmungen,
   acceptedFileTypes,
+  fileToCheckRef,
 }) => {
   const [fileAvailable, setFileAvailable] = useState(false);
   const [dropZoneDefaultText, setDropZoneDefaultText] = useState();
@@ -70,11 +71,17 @@ export const FileDropzone = ({
         setDropZoneText(acceptedFiles[0].name);
         updateDropZoneClass();
         setFileToCheck(acceptedFiles[0]);
+        fileToCheckRef.current = acceptedFiles[0];
         setFileAvailable(true);
       }
     },
     [checkFile, checkedNutzungsbestimmungen, fileToCheckRef, nutzungsbestimmungenAvailable, setFileToCheck]
   );
+
+  const resetFileToCheck = useCallback(() => {
+    setFileToCheck(null);
+    fileToCheckRef.current = null;
+  }, [fileToCheckRef, setFileToCheck]);
 
   const onDropRejected = useCallback(
     (fileRejections) => {
@@ -100,20 +107,20 @@ export const FileDropzone = ({
             `Bitte wähle eine Datei (max. 200MB) mit einer der folgenden Dateiendungen: ${acceptedFileTypes}`
           );
       }
-      setFileToCheck(null);
+      resetFileToCheck();
       setFileAvailable(false);
     },
-    [setFileToCheck, acceptedFileTypes]
+    [resetFileToCheck, acceptedFileTypes]
   );
 
-  const removeFile = (e) => {
+  function removeFile(e) {
     e.stopPropagation();
     setUploadLogsEnabled(false);
-    setFileToCheck(null);
+    resetFileToCheck();
     setFileAvailable(false);
     setDropZoneText(dropZoneDefaultText);
     setDropZoneTextClass("dropzone dropzone-text-disabled");
-  };
+  }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDropAccepted,
