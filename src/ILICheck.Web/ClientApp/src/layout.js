@@ -1,13 +1,13 @@
-import "./app.css";
 import React, { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
+import About from "./about";
+import BannerContent from "./bannerContent";
+import Home from "./home";
+import ModalContent from "./modalContent";
 import swissMadeSwissHosted from "./img/sms-sh.png";
 import qgisLogo from "./img/qgis.png";
 import interlisLogo from "./img/interlis.svg";
-import Home from "./home";
-import About from "./about";
-import ModalContent from "./modalContent";
-import BannerContent from "./bannerContent";
-import { Button } from "react-bootstrap";
+import "./app.css";
 
 export const Layout = (props) => {
   const { log, updateLog, resetLog, setUploadLogsInterval, setUploadLogsEnabled } = props;

@@ -1,5 +1,5 @@
-import { Alert } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
+import { Alert } from "react-bootstrap";
 import { IoClose } from "react-icons/io5";
 
 export const BannerContent = (props) => {

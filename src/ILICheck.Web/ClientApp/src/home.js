@@ -1,9 +1,9 @@
-import "./app.css";
 import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { FileDropzone } from "./dropzone";
 import Protokoll from "./protokoll";
 import InfoCarousel from "./infoCarousel";
+import "./app.css";
 
 export const Home = (props) => {
   const {
