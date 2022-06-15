@@ -1,9 +1,9 @@
+import "./app.css";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { FileDropzone } from "./dropzone";
 import { Title } from "./title";
 import Protokoll from "./protokoll";
-import "./app.css";
 
 export const Home = (props) => {
   const {

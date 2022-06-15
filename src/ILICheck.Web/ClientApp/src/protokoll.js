@@ -1,9 +1,9 @@
+import "./app.css";
 import React, { useState, useRef, useEffect } from "react";
+import DayJS from "dayjs";
 import { Card, Container } from "react-bootstrap";
 import { GoFile, GoFileCode } from "react-icons/go";
 import { BsLink45Deg } from "react-icons/bs";
-import DayJS from "dayjs";
-import "./app.css";
 
 export const Protokoll = (props) => {
   const { log, statusData, fileName, validationRunning } = props;

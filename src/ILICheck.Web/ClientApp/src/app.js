@@ -1,10 +1,10 @@
+import "./app.css";
 import React, { useState, useEffect } from "react";
 import BannerContent from "./bannerContent";
 import Home from "./home";
 import ModalContent from "./modalContent";
 import Footer from "./footer";
 import Header from "./header";
-import "./app.css";
 
 export const App = () => {
   const [modalContent, setModalContent] = useState(false);

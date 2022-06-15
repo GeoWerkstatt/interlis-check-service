@@ -1,10 +1,10 @@
+import "./app.css";
 import React from "react";
-import { Button } from "react-bootstrap";
 import About from "./about";
 import swissMadeSwissHosted from "./img/sms-sh.png";
 import qgisLogo from "./img/qgis.png";
 import interlisLogo from "./img/interlis.svg";
-import "./app.css";
+import { Button } from "react-bootstrap";
 
 export const Footer = (props) => {
   const {

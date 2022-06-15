@@ -1,6 +1,6 @@
+import "./app.css";
 import React from "react";
 import { Carousel } from "react-bootstrap";
-import "./app.css";
 
 export const InfoCarousel = (props) => {
   const { content } = props;
