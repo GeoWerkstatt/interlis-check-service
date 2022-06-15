@@ -21,7 +21,7 @@ jobs:
       # the dotnet project, because the project
       # itself calls npm install if the node_modules
       # folder does not exist.
-      - name: Run fontent ci
+      - name: Run frontend ci
         working-directory: ./src/ILICheck.Web/ClientApp
         run: npm ci
 
