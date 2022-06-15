@@ -24,7 +24,7 @@ export const Footer = (props) => {
         {infoHilfeContent && (
           <Button
             variant="link"
-            className="footer-button"
+            className="footer-button no-outline-on-focus"
             onClick={() => openModalContent(infoHilfeContent, "markdown")}
           >
             INFO & HILFE
@@ -51,7 +51,7 @@ export const Footer = (props) => {
         {impressumContent && (
           <Button
             variant="link"
-            className="footer-button"
+            className="footer-button no-outline-on-focus"
             onClick={() => openModalContent(impressumContent, "markdown")}
           >
             IMPRESSUM
@@ -59,7 +59,7 @@ export const Footer = (props) => {
         )}
         <Button
           variant="link"
-          className="footer-button"
+          className="footer-button no-outline-on-focus"
           onClick={() =>
             openModalContent(
               <About clientSettings={clientSettings} licenseInfo={{ ...licenseInfoCustom, ...licenseInfo }} />,
