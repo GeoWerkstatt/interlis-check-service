@@ -77,12 +77,7 @@ export const Home = (props) => {
         return statusData;
       };
 
-      // get first status immediately
-      const firstStatus = await getStatusData(data);
-      updateLog(firstStatus.statusMessage);
-
-      // get status continuously every 2 seconds
-      const interval = setInterval(async () => {
+      const interval = setIntervalImmediately(async () => {
         const statusData = await getStatusData(data);
         updateLog(statusData.statusMessage);
         if (
