@@ -113,14 +113,14 @@ export const FileDropzone = ({
     [resetFileToCheck, acceptedFileTypes]
   );
 
-  function removeFile(e) {
+  const removeFile = (e) => {
     e.stopPropagation();
     setUploadLogsEnabled(false);
     resetFileToCheck();
     setFileAvailable(false);
     setDropZoneText(dropZoneDefaultText);
     setDropZoneTextClass("dropzone dropzone-text-disabled");
-  }
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDropAccepted,

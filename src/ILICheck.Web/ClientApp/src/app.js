@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Layout from "./layout";
 import "./app.css";
 
-function App() {
+export const App = () => {
   const [log, setLog] = useState([]);
   const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
   const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
@@ -28,6 +28,6 @@ function App() {
       setUploadLogsEnabled={setUploadLogsEnabled}
     />
   );
-}
+};
 
 export default App;

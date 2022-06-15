@@ -61,7 +61,7 @@ export const Home = (props) => {
     uploadFile(fileToCheck);
   };
 
-  async function uploadFile(file) {
+  const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file, file.name);
     const response = await fetch(`api/v1/upload`, {
@@ -100,7 +100,7 @@ export const Home = (props) => {
       updateLog("Der Upload war nicht erfolgreich. Die Validierung wurde abgebrochen.");
       setValidationRunning(false);
     }
-  }
+  };
 
   return (
     <main>
