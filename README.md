@@ -1,4 +1,4 @@
-# INTERLIS Web-Check-Service (ILICHECK)
+# INTERLIS Web-Check-Service (ILICHECK) <!-- omit in toc -->
 
 [![CI](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml)
 [![Release](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml)
@@ -7,6 +7,18 @@ Webbasierter Checkservice für INTERLIS Datenabgaben
 
 ![INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot.png)
 
+## Inhaltsverzeichnis <!-- omit in toc -->
+
+- [Quick Start](#quick-start)
+- [Individuelle Anpassung](#individuelle-anpassung)
+  - [ilivalidator](#ilivalidator)
+  - [Web-Check-Service](#web-check-service)
+- [REST API](#rest-api)
+- [Health Check API](#health-check-api)
+- [Einrichten der Entwicklungsumgebung](#einrichten-der-entwicklungsumgebung)
+- [Neue Version erstellen](#neue-version-erstellen)
+- [Lizenz](#lizenz)
+
 ## Quick Start
 
 Mit [Docker](https://www.docker.com/) kann der *INTERLIS Web-Check-Service* in einer isolierten Umgebung mit Docker Containern betrieben werden. Eine Beispiel-Konfiguration (`docker-compose.yml`) befindet sich im nächsten Abschnitt. Mit `docker-compose up` wird die Umgebung hochgefahren.
@@ -14,23 +26,23 @@ Mit [Docker](https://www.docker.com/) kann der *INTERLIS Web-Check-Service* in e
 Um einen ersten Augenschein der Applikation zu nehmen, kann der Container in der Kommandozeile wie folgt gestartet werden:
 
 ```bash
-docker run -it --rm -p 8080:80 ghcr.io/geowerkstatt/interlis-check-service
+docker run -it --rm -p 8080:80 ghcr.io/geowerkstatt/interlis-check-service:latest
 ```
 
-### docker-compose.yml
+`docker-compose.yml`
 
 ```yaml
 version: '3'
 services:
   web:
     # Docker image (NAME:TAG)
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v2
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3
     #     Stable tag for a specific major version
     #
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1.2.3
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3.2.1
     #     Stable tag for a specific version
     #
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v2-beta
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3-beta
     #     Reflects the last commit on branches matching 'releases/beta/**'
     #     May be used to preview upcoming releases
     #     Contains breaking changes and incompatibilities
@@ -45,7 +57,7 @@ services:
     #     Reflects the last commit on the default branch (main)
     #     May contain breaking changes and incompatibilities
     #     NOT RECOMMENDED!
-    image: ghcr.io/geowerkstatt/interlis-check-service:v2
+    image: ghcr.io/geowerkstatt/interlis-check-service:v3
     # Docker container restart behavior
     restart: unless-stopped
     # Mount paths as volumes
@@ -187,14 +199,34 @@ Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene
 
 ![Beispiel eines individuell angepassten INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot_customized.png)
 
+## REST API
+
+Der INTERLIS Web-Check-Service ist seit Version 3 vollständig über eine REST API steuerbar. Damit lassen sich Validierungen von INTERLIS Transferdateien in beliebige bestehende Datenfreigabe-Prozesse integrieren. Eine komplette Schnittstellenbeschreibung inkl. Code-Beispielen für verschiedene Client-Technolgien, sowie der Möglichkeit die REST Schnittstelle direkt im Browser zu testen steht unter `https://<host>:<port>/api` oder unter  [ilicop.ch/api](https://ilicop.ch/api) zur Verfügung.
+
+![REST API Schnittstellenbeschreibung](./assets/ilicheck_rest_api.png)
+
+## Health Check API
+
+Für das Monitoring im produktiven Betrieb steht unter `https://<host>:<port>/health` eine Health Check API zur Verfügung. Anhand der Antwort *Healthy* (HTTP Status Code 200), resp. *Unhealthy* (HTTP Status Code 503) kann der Status der Applikation bspw. mit cURL abgefragt werden.
+
+```bash
+curl -f https://<host>:<port>/health || exit 1;
+```
+
+Der Health Check ist auch im Docker Container integriert und kann ebenfalls über eine Shell abgefragt werden.
+
+```bash
+docker inspect --format='{{json .State.Health.Status}}' container_name
+```
+
 ## Einrichten der Entwicklungsumgebung
 
 Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 
-* Git
-* Docker
-* Visual Studio 2022 oder Visual Studio Code
-* Node.js 16 LTS
+- Git
+- Docker
+- Visual Studio 2022 oder Visual Studio Code
+- Node.js 16 LTS
 
 1. Git Repository klonen:  
    Öffne Git Shell und navigiere in den lokalen Projekt Root  
@@ -206,7 +238,7 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 
 ## Neue Version erstellen
 
-Ein neuer GitHub _Pre-release_ wird bei jeder Änderung auf [main](https://github.com/GeoWerkstatt/interlis-check-service) [automatisch](./.github/workflows/pre-release.yml) erstellt. In diesem Kontext wird auch ein neues Docker Image mit dem Tag _:edge_ erstellt und in die [GitHub Container Registry (ghcr.io)](https://github.com/geowerkstatt/interlis-check-service/pkgs/container/interlis-check-service) gepusht. Der definitve Release erfolgt, indem die Checkbox _This is a pre-release_ eines beliebigen Pre-releases entfernt wird. In der Folge wird das entsprechende Docker Image in der ghcr.io Registry mit den Tags (bspw.: _:v1_, _:v1.2.3_ und _:latest_) [ergänzt](./.github/workflows/release.yml).
+Ein neuer GitHub *Pre-release* wird bei jeder Änderung auf [main](https://github.com/GeoWerkstatt/interlis-check-service) [automatisch](./.github/workflows/pre-release.yml) erstellt. In diesem Kontext wird auch ein neues Docker Image mit dem Tag *:edge* erstellt und in die [GitHub Container Registry (ghcr.io)](https://github.com/geowerkstatt/interlis-check-service/pkgs/container/interlis-check-service) gepusht. Der definitve Release erfolgt, indem die Checkbox *This is a pre-release* eines beliebigen Pre-releases entfernt wird. In der Folge wird das entsprechende Docker Image in der ghcr.io Registry mit den Tags (bspw.: *:v1*, *:v1.2.3* und *:latest*) [ergänzt](./.github/workflows/release.yml).
 
 ## Lizenz
 

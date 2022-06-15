@@ -2,13 +2,13 @@ version: '3'
 services:
   web:
     # Docker image (NAME:TAG)
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v2
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3
     #     Stable tag for a specific major version
     #
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v1.2.3
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3.2.1
     #     Stable tag for a specific version
     #
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v2-beta
+    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3-beta
     #     Reflects the last commit on branches matching 'releases/beta/**'
     #     May be used to preview upcoming releases
     #     Contains breaking changes and incompatibilities
