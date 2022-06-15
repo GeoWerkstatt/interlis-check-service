@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { FileDropzone } from "./dropzone";
+import { Title } from "./title";
 import Protokoll from "./protokoll";
-import InfoCarousel from "./infoCarousel";
 import "./app.css";
 
 export const Home = (props) => {
@@ -99,36 +99,26 @@ export const Home = (props) => {
   }
 
   return (
-    <div>
+    <main>
       <Container className="main-container">
-        <div className="title-wrapper">
-          <div className="app-subtitle">Online Validierung von INTERLIS Daten</div>
-          <div>
-            <img
-              className="app-logo"
-              src="/app.png"
-              alt="App Logo"
-              onLoad={() => setCustomAppLogoPresent(true)}
-              onError={(e) => (e.target.style.display = "none")}
-            />
-          </div>
-          {!customAppLogoPresent && <div className="app-title">{clientSettings?.applicationName}</div>}
-          {quickStartContent && <InfoCarousel content={quickStartContent} />}
-        </div>
-        <div className="dropzone-wrapper">
-          <FileDropzone
-            setUploadLogsEnabled={setUploadLogsEnabled}
-            setFileToCheck={setFileToCheck}
-            fileToCheck={fileToCheck}
-            nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
-            checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
-            checkFile={checkFile}
-            validationRunning={validationRunning}
-            setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
-            showNutzungsbestimmungen={showNutzungsbestimmungen}
-            acceptedFileTypes={clientSettings?.acceptedFileTypes}
-          />
-        </div>
+        <Title
+          clientSettings={clientSettings}
+          customAppLogoPresent={customAppLogoPresent}
+          setCustomAppLogoPresent={setCustomAppLogoPresent}
+          quickStartContent={quickStartContent}
+        ></Title>
+        <FileDropzone
+          setUploadLogsEnabled={setUploadLogsEnabled}
+          setFileToCheck={setFileToCheck}
+          fileToCheck={fileToCheck}
+          nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
+          checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
+          checkFile={checkFile}
+          validationRunning={validationRunning}
+          setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
+          showNutzungsbestimmungen={showNutzungsbestimmungen}
+          acceptedFileTypes={clientSettings?.acceptedFileTypes}
+        />
       </Container>
       <Protokoll
         log={log}
@@ -136,7 +126,7 @@ export const Home = (props) => {
         fileName={fileToCheck ? fileToCheck.name : ""}
         validationRunning={validationRunning}
       />
-    </div>
+    </main>
   );
 };
 

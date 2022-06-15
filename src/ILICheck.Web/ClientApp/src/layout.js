@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
-import About from "./about";
 import BannerContent from "./bannerContent";
 import Home from "./home";
 import ModalContent from "./modalContent";
-import swissMadeSwissHosted from "./img/sms-sh.png";
-import qgisLogo from "./img/qgis.png";
-import interlisLogo from "./img/interlis.svg";
+import Footer from "./footer";
+import Header from "./header";
 import "./app.css";
 
 export const Layout = (props) => {
@@ -75,105 +72,29 @@ export const Layout = (props) => {
 
   return (
     <div className="app">
-      <header>
-        <a href={clientSettings?.vendorLink} target="_blank" rel="noreferrer">
-          <img
-            className="vendor-logo"
-            src="/vendor.png"
-            alt="Vendor Logo"
-            onError={(e) => {
-              e.target.style.display = "none";
-            }}
-          />
-        </a>
-      </header>
-      <main>
-        <Home
-          clientSettings={clientSettings}
-          nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
-          showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent, "markdown")}
-          quickStartContent={quickStartContent}
-          log={log}
-          updateLog={updateLog}
-          resetLog={resetLog}
-          setUploadLogsInterval={setUploadLogsInterval}
-          setUploadLogsEnabled={setUploadLogsEnabled}
-          setShowBannerContent={setShowBannerContent}
-        />
-      </main>
-      <footer className="footer-style">
-        <div>
-          {infoHilfeContent && (
-            <Button
-              variant="link"
-              className="footer-button"
-              onClick={() => openModalContent(infoHilfeContent, "markdown")}
-            >
-              INFO & HILFE
-            </Button>
-          )}
-          {nutzungsbestimmungenContent && (
-            <Button
-              variant="link"
-              className="footer-button no-outline-on-focus"
-              onClick={() => openModalContent(nutzungsbestimmungenContent, "markdown")}
-            >
-              NUTZUNGSBESTIMMUNGEN
-            </Button>
-          )}
-          {datenschutzContent && (
-            <Button
-              variant="link"
-              className="footer-button no-outline-on-focus"
-              onClick={() => openModalContent(datenschutzContent, "markdown")}
-            >
-              DATENSCHUTZ
-            </Button>
-          )}
-          {impressumContent && (
-            <Button
-              variant="link"
-              className="footer-button"
-              onClick={() => openModalContent(impressumContent, "markdown")}
-            >
-              IMPRESSUM
-            </Button>
-          )}
-          <Button
-            variant="link"
-            className="footer-button"
-            onClick={() =>
-              openModalContent(
-                <About clientSettings={clientSettings} licenseInfo={{ ...licenseInfoCustom, ...licenseInfo }} />,
-                "raw"
-              )
-            }
-          >
-            ABOUT
-          </Button>
-        </div>
-        <div className="footer-icons">
-          <a href="https://interlis.ch/" title="Link zu interlis" target="_blank" rel="noreferrer">
-            <img className="footer-icon" src={interlisLogo} alt="Interlis Logo" />
-          </a>
-          <a
-            href="https://plugins.qgis.org/plugins/xtflog_checker/"
-            title="Link zum QGIS Plugin XTFLog Checker"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img className="footer-icon" src={qgisLogo} alt="QGIS Logo" />
-          </a>
-          <a
-            href="https://www.swissmadesoftware.org/en/home/swiss-hosting.html"
-            title="Link zu Swiss Hosting"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
-          </a>
-        </div>
-      </footer>
+      <Header clientSettings={clientSettings}></Header>
+      <Home
+        clientSettings={clientSettings}
+        nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
+        showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent, "markdown")}
+        quickStartContent={quickStartContent}
+        log={log}
+        updateLog={updateLog}
+        resetLog={resetLog}
+        setUploadLogsInterval={setUploadLogsInterval}
+        setUploadLogsEnabled={setUploadLogsEnabled}
+        setShowBannerContent={setShowBannerContent}
+      />
+      <Footer
+        openModalContent={openModalContent}
+        infoHilfeContent={infoHilfeContent}
+        nutzungsbestimmungenContent={nutzungsbestimmungenContent}
+        datenschutzContent={datenschutzContent}
+        impressumContent={impressumContent}
+        clientSettings={clientSettings}
+        licenseInfoCustom={licenseInfoCustom}
+        licenseInfo={licenseInfo}
+      ></Footer>
       <ModalContent
         className="modal"
         show={showModalContent}

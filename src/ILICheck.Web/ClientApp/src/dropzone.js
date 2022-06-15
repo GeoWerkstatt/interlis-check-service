@@ -126,61 +126,63 @@ export const FileDropzone = ({
   });
 
   return (
-    <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
-      <input {...getInputProps()} />
-      <div className={dropZoneTextClass}>
-        {fileAvailable && (
-          <span onClick={removeFile}>
-            <MdCancel className="dropzone-icon" />
-          </span>
-        )}
-        {dropZoneText}
-        {!fileAvailable && (
-          <p className="drop-icon">
-            <MdFileUpload />
-          </p>
-        )}
-        {fileToCheck && nutzungsbestimmungenAvailable && (
-          <div onClick={(e) => e.stopPropagation()} className="terms-of-use">
-            <label>
-              <input
-                type="checkbox"
-                defaultChecked={checkedNutzungsbestimmungen}
-                onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
-              />
-              <span className="nutzungsbestimmungen-input">
-                Ich akzeptiere die{" "}
-                <Button
-                  variant="link"
-                  className="terms-of-use link"
-                  onClick={() => {
-                    showNutzungsbestimmungen();
-                  }}
-                >
-                  Nutzungsbestimmungen
-                </Button>
-                .
-              </span>
-            </label>
-          </div>
-        )}
-        {validationRunning && (
-          <div>
-            <Spinner className="spinner" animation="border" />
-          </div>
-        )}
-        {fileAvailable && (
-          <p className={!nutzungsbestimmungenAvailable && "added-margin"}>
-            <Button
-              className={fileToCheck && !validationRunning ? "check-button" : "invisible-check-button"}
-              onClick={checkFile}
-              disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || validationRunning}
-            >
-              Validieren
-            </Button>
-          </p>
-        )}
-      </div>
-    </Container>
+    <div className="dropzone-wrapper">
+      <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
+        <input {...getInputProps()} />
+        <div className={dropZoneTextClass}>
+          {fileAvailable && (
+            <span onClick={removeFile}>
+              <MdCancel className="dropzone-icon" />
+            </span>
+          )}
+          {dropZoneText}
+          {!fileAvailable && (
+            <p className="drop-icon">
+              <MdFileUpload />
+            </p>
+          )}
+          {fileToCheck && nutzungsbestimmungenAvailable && (
+            <div onClick={(e) => e.stopPropagation()} className="terms-of-use">
+              <label>
+                <input
+                  type="checkbox"
+                  defaultChecked={checkedNutzungsbestimmungen}
+                  onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
+                />
+                <span className="nutzungsbestimmungen-input">
+                  Ich akzeptiere die{" "}
+                  <Button
+                    variant="link"
+                    className="terms-of-use link"
+                    onClick={() => {
+                      showNutzungsbestimmungen();
+                    }}
+                  >
+                    Nutzungsbestimmungen
+                  </Button>
+                  .
+                </span>
+              </label>
+            </div>
+          )}
+          {validationRunning && (
+            <div>
+              <Spinner className="spinner" animation="border" />
+            </div>
+          )}
+          {fileAvailable && (
+            <p className={!nutzungsbestimmungenAvailable && "added-margin"}>
+              <Button
+                className={fileToCheck && !validationRunning ? "check-button" : "invisible-check-button"}
+                onClick={checkFile}
+                disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || validationRunning}
+              >
+                Validieren
+              </Button>
+            </p>
+          )}
+        </div>
+      </Container>
+    </div>
   );
 };
