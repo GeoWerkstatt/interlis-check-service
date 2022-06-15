@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { FileDropzone } from "./dropzone";
 import { Title } from "./title";
@@ -11,11 +11,6 @@ export const Home = (props) => {
     nutzungsbestimmungenAvailable,
     showNutzungsbestimmungen,
     quickStartContent,
-    log,
-    updateLog,
-    resetLog,
-    setUploadLogsInterval,
-    setUploadLogsEnabled,
     setShowBannerContent,
   } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
@@ -26,6 +21,25 @@ export const Home = (props) => {
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
   const [isFirstValidation, setIsFirstValidation] = useState(true);
+  const [log, setLog] = useState([]);
+  const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
+  const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
+
+  // Enable Upload logging
+  useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
+  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled, uploadLogsInterval]);
+
+  const resetLog = useCallback(() => setLog([]), [setLog]);
+  const updateLog = useCallback(
+    (message, { disableUploadLogs = true } = {}) => {
+      if (disableUploadLogs) setUploadLogsEnabled(false);
+      setLog((log) => {
+        if (message === log[log.length - 1]) return log;
+        else return [...log, message];
+      });
+    },
+    [setUploadLogsEnabled]
+  );
 
   // Reset log and abort upload on file change
   useEffect(() => {
@@ -35,8 +49,9 @@ export const Home = (props) => {
     setUploadLogsEnabled(false);
     if (statusInterval) clearInterval(statusInterval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileToCheck, resetLog]);
+  }, [fileToCheck]);
 
+  // Show banner on first validation
   useEffect(() => {
     if (validationRunning && isFirstValidation) {
       setTimeout(() => {
@@ -51,7 +66,6 @@ export const Home = (props) => {
     func();
     return setInterval(func, interval);
   };
-
   const checkFile = (e) => {
     e.stopPropagation();
     resetLog();
