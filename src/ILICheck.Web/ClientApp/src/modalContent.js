@@ -1,6 +1,5 @@
 import ReactMarkdown from "react-markdown";
 import { Modal, Button } from "react-bootstrap";
-import "./app.css";
 
 export const ModalContent = (props) => {
   const { content, type } = props;

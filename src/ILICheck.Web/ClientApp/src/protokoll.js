@@ -41,7 +41,7 @@ export const Protokoll = (props) => {
 
   return (
     <Container>
-      {log?.length > 0 && (
+      {log.length > 0 && (
         <Card className="protokoll-card">
           <Card.Body>
             <div className="protokoll">

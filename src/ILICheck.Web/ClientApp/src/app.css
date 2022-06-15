@@ -113,20 +113,20 @@ input {
   justify-content: center;
 }
 
-.dropzone-wrapper .dropzone-text-disabled {
+.dropzone-text-disabled {
   color: #7c7c7c !important;
 }
 
-.dropzone-wrapper .dropzone-text-file {
+.dropzone-text-file {
   color: #313131 !important;
 }
 
-.dropzone-wrapper .dropzone-text-error {
+.dropzone-text-error {
   color: #c10026 !important;
   border-color: #c10026 !important;
 }
 
-.dropzone-wrapper .dropzone-icon {
+.dropzone-icon {
   margin-right: 10px;
 }
 
@@ -134,11 +134,11 @@ input {
   font-size: 0.8rem;
 }
 
-.dropzone-wrapper .drop-icon {
+.drop-icon {
   font-size: 35px;
 }
 
-.dropzone-wrapper .spinner {
+.spinner {
   margin-top: 1rem;
   align-self: center;
 }
@@ -158,7 +158,7 @@ input {
   .title-wrapper {
     margin-top: 12vh;
   }
-  .dropzone-wrapper .dropzone {
+  .dropzone {
     min-height: 12vh !important;
     margin-top: 3vh;
     font-size: 1rem;
@@ -237,7 +237,7 @@ input {
   font-size: 1.2rem;
 }
 
-.check-button.btn {
+.check-button {
   font-family: "Dosis", sans-serif;
   border: none;
   background-color: #007cc3;
@@ -246,17 +246,17 @@ input {
   margin-top: 1rem;
 }
 
-.check-button.btn:disabled {
+.check-button:disabled {
   background-color: #007cc396;
   border-color: #007cc396;
 }
 
-.check-button.btn:hover {
+.check-button:hover {
   background-color: #005485;
   border-color: #005485;
 }
 
-.invisible-check-button.btn {
+.invisible-check-button {
   display: none;
 }
 
@@ -264,12 +264,12 @@ input {
   margin-top: 2rem;
 }
 
-.icon-tooltip .download-icon {
+.download-icon {
   font-size: 30px;
   margin-left: 10px;
 }
 
-.icon-tooltip .download-icon :hover {
+.download-icon :hover {
   color: #555;
 }
 
@@ -413,7 +413,7 @@ footer {
 
 /************ Banner ************/
 
-.banner.alert {
+.banner {
   font-family: "Dosis", sans-serif;
   color: white;
   position: fixed;
