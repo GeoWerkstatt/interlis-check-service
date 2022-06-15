@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import { Alert } from "react-bootstrap";
 import { IoClose } from "react-icons/io5";
+import "./app.css";
 
 export const BannerContent = (props) => {
   const { content } = props;

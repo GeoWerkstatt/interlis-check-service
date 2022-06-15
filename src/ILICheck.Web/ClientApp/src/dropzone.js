@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { MdCancel, MdFileUpload } from "react-icons/md";
 import { Button, Spinner } from "react-bootstrap";
 import styled from "styled-components";
+import "./app.css";
 
 const getColor = (props) => {
   if (props.isDragActive) {
