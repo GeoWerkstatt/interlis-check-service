@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { MdCancel, MdFileUpload } from "react-icons/md";
@@ -57,16 +56,15 @@ export const FileDropzone = ({
   );
   useEffect(() => setDropZoneText(dropZoneDefaultText), [dropZoneDefaultText]);
 
-  const updateDropZoneClass = () => {
-    if (!checkFile || (nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen)) {
-      setDropZoneTextClass("dropzone dropzone-text-disabled");
-    } else {
-      setDropZoneTextClass("dropzone dropzone-text-file");
-    }
-  };
-
   const onDropAccepted = useCallback(
     (acceptedFiles) => {
+      const updateDropZoneClass = () => {
+        if (!checkFile || (nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen)) {
+          setDropZoneTextClass("dropzone dropzone-text-disabled");
+        } else {
+          setDropZoneTextClass("dropzone dropzone-text-file");
+        }
+      };
       updateDropZoneClass();
       if (acceptedFiles.length === 1) {
         setDropZoneText(acceptedFiles[0].name);
@@ -75,7 +73,7 @@ export const FileDropzone = ({
         setFileAvailable(true);
       }
     },
-    [setFileToCheck]
+    [checkFile, checkedNutzungsbestimmungen, fileToCheckRef, nutzungsbestimmungenAvailable, setFileToCheck]
   );
 
   const onDropRejected = useCallback(
