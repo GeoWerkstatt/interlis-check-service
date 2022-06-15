@@ -7,6 +7,9 @@ export const App = () => {
   const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
   const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
 
+  useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
+  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled, uploadLogsInterval]);
+
   const resetLog = useCallback(() => setLog([]), [setLog]);
   const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
     if (disableUploadLogs) setUploadLogsEnabled(false);
@@ -15,9 +18,6 @@ export const App = () => {
       else return [...log, message];
     });
   }, []);
-
-  useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
-  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled, uploadLogsInterval]);
 
   return (
     <Layout

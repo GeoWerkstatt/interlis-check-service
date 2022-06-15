@@ -27,12 +27,6 @@ export const Home = (props) => {
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
   const [isFirstValidation, setIsFirstValidation] = useState(true);
 
-  const logUploadLogMessages = () => updateLog(`${fileToCheck.name} hochladen...`, { disableUploadLogs: false });
-  const setIntervalImmediately = (func, interval) => {
-    func();
-    return setInterval(func, interval);
-  };
-
   // Reset log and abort upload on file change
   useEffect(() => {
     resetLog();
@@ -51,6 +45,12 @@ export const Home = (props) => {
       }, 2000);
     }
   }, [validationRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation]);
+
+  const logUploadLogMessages = () => updateLog(`${fileToCheck.name} hochladen...`, { disableUploadLogs: false });
+  const setIntervalImmediately = (func, interval) => {
+    func();
+    return setInterval(func, interval);
+  };
 
   const checkFile = (e) => {
     e.stopPropagation();
