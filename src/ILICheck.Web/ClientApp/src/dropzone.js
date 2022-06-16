@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { MdCancel, MdFileUpload } from "react-icons/md";
@@ -42,6 +41,7 @@ export const FileDropzone = ({
   setCheckedNutzungsbestimmungen,
   showNutzungsbestimmungen,
   acceptedFileTypes,
+  fileToCheckRef,
 }) => {
   const [fileAvailable, setFileAvailable] = useState(false);
   const [dropZoneDefaultText, setDropZoneDefaultText] = useState();
@@ -57,26 +57,31 @@ export const FileDropzone = ({
   );
   useEffect(() => setDropZoneText(dropZoneDefaultText), [dropZoneDefaultText]);
 
-  const updateDropZoneClass = () => {
-    if (!checkFile || (nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen)) {
-      setDropZoneTextClass("dropzone dropzone-text-disabled");
-    } else {
-      setDropZoneTextClass("dropzone dropzone-text-file");
-    }
-  };
-
   const onDropAccepted = useCallback(
     (acceptedFiles) => {
+      const updateDropZoneClass = () => {
+        if (!checkFile || (nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen)) {
+          setDropZoneTextClass("dropzone dropzone-text-disabled");
+        } else {
+          setDropZoneTextClass("dropzone dropzone-text-file");
+        }
+      };
       updateDropZoneClass();
       if (acceptedFiles.length === 1) {
         setDropZoneText(acceptedFiles[0].name);
         updateDropZoneClass();
         setFileToCheck(acceptedFiles[0]);
+        fileToCheckRef.current = acceptedFiles[0];
         setFileAvailable(true);
       }
     },
-    [setFileToCheck]
+    [checkFile, checkedNutzungsbestimmungen, fileToCheckRef, nutzungsbestimmungenAvailable, setFileToCheck]
   );
+
+  const resetFileToCheck = useCallback(() => {
+    setFileToCheck(null);
+    fileToCheckRef.current = null;
+  }, [fileToCheckRef, setFileToCheck]);
 
   const onDropRejected = useCallback(
     (fileRejections) => {
@@ -102,16 +107,16 @@ export const FileDropzone = ({
             `Bitte wähle eine Datei (max. 200MB) mit einer der folgenden Dateiendungen: ${acceptedFileTypes}`
           );
       }
-      setFileToCheck(null);
+      resetFileToCheck();
       setFileAvailable(false);
     },
-    [setFileToCheck, acceptedFileTypes]
+    [resetFileToCheck, acceptedFileTypes]
   );
 
   const removeFile = (e) => {
     e.stopPropagation();
     setUploadLogsEnabled(false);
-    setFileToCheck(null);
+    resetFileToCheck();
     setFileAvailable(false);
     setDropZoneText(dropZoneDefaultText);
     setDropZoneTextClass("dropzone dropzone-text-disabled");
@@ -126,61 +131,63 @@ export const FileDropzone = ({
   });
 
   return (
-    <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
-      <input {...getInputProps()} />
-      <div className={dropZoneTextClass}>
-        {fileAvailable && (
-          <span onClick={removeFile}>
-            <MdCancel className="dropzone-icon" />
-          </span>
-        )}
-        {dropZoneText}
-        {!fileAvailable && (
-          <p className="drop-icon">
-            <MdFileUpload />
-          </p>
-        )}
-        {fileToCheck && nutzungsbestimmungenAvailable && (
-          <div onClick={(e) => e.stopPropagation()} className="terms-of-use">
-            <label>
-              <input
-                type="checkbox"
-                defaultChecked={checkedNutzungsbestimmungen}
-                onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
-              />
-              <span className="nutzungsbestimmungen-input">
-                Ich akzeptiere die{" "}
-                <Button
-                  variant="link"
-                  className="terms-of-use link"
-                  onClick={() => {
-                    showNutzungsbestimmungen();
-                  }}
-                >
-                  Nutzungsbestimmungen
-                </Button>
-                .
-              </span>
-            </label>
-          </div>
-        )}
-        {validationRunning && (
-          <div>
-            <Spinner className="spinner" animation="border" />
-          </div>
-        )}
-        {fileAvailable && (
-          <p className={!nutzungsbestimmungenAvailable && "added-margin"}>
-            <Button
-              className={fileToCheck && !validationRunning ? "check-button" : "invisible-check-button"}
-              onClick={checkFile}
-              disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || validationRunning}
-            >
-              Validieren
-            </Button>
-          </p>
-        )}
-      </div>
-    </Container>
+    <div className="dropzone-wrapper">
+      <Container className={dropZoneTextClass} {...getRootProps({ isDragActive })}>
+        <input {...getInputProps()} />
+        <div className={dropZoneTextClass}>
+          {fileAvailable && (
+            <span onClick={removeFile}>
+              <MdCancel className="dropzone-icon" />
+            </span>
+          )}
+          {dropZoneText}
+          {!fileAvailable && (
+            <p className="drop-icon">
+              <MdFileUpload />
+            </p>
+          )}
+          {fileToCheck && nutzungsbestimmungenAvailable && (
+            <div onClick={(e) => e.stopPropagation()} className="terms-of-use">
+              <label>
+                <input
+                  type="checkbox"
+                  defaultChecked={checkedNutzungsbestimmungen}
+                  onChange={() => setCheckedNutzungsbestimmungen(!checkedNutzungsbestimmungen)}
+                />
+                <span className="nutzungsbestimmungen-input">
+                  Ich akzeptiere die{" "}
+                  <Button
+                    variant="link"
+                    className="terms-of-use link"
+                    onClick={() => {
+                      showNutzungsbestimmungen();
+                    }}
+                  >
+                    Nutzungsbestimmungen
+                  </Button>
+                  .
+                </span>
+              </label>
+            </div>
+          )}
+          {validationRunning && (
+            <div>
+              <Spinner className="spinner" animation="border" />
+            </div>
+          )}
+          {fileAvailable && (
+            <p className={!nutzungsbestimmungenAvailable && "added-margin"}>
+              <Button
+                className={fileToCheck && !validationRunning ? "check-button" : "invisible-check-button"}
+                onClick={checkFile}
+                disabled={(nutzungsbestimmungenAvailable && !checkedNutzungsbestimmungen) || validationRunning}
+              >
+                Validieren
+              </Button>
+            </p>
+          )}
+        </div>
+      </Container>
+    </div>
   );
 };

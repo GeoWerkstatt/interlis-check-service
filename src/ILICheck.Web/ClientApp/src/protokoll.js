@@ -12,17 +12,9 @@ export const Protokoll = (props) => {
   const [indicateWaiting, setIndicateWaiting] = useState(false);
   const protokollTimestamp = DayJS(new Date()).format("YYYYMMDDHHmm");
   const protokollFileName = "Ilivalidator_output_" + fileName + "_" + protokollTimestamp;
-
-  // Copy to clipboard
-  const resetToDefaultText = () => setCopyToClipboardTooltipText(copyToClipboardTooltipDefaultText);
-  const currentUrl = window.location.toString();
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(currentUrl.slice(0, currentUrl.length - 1) + statusData.xtfLogUrl);
-    setCopyToClipboardTooltipText("Link wurde kopiert");
-  };
+  const logEndRef = useRef(null);
 
   // Autoscroll protokoll log
-  const logEndRef = useRef(null);
   useEffect(() => logEndRef.current?.scrollIntoView({ behavior: "smooth" }), [log]);
 
   // Show flash dot to indicate waiting
@@ -35,6 +27,14 @@ export const Protokoll = (props) => {
       }
     }, 500)
   );
+
+  // Copy to clipboard
+  const resetToDefaultText = () => setCopyToClipboardTooltipText(copyToClipboardTooltipDefaultText);
+  const currentUrl = window.location.toString();
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(currentUrl.slice(0, currentUrl.length - 1) + statusData.xtfLogUrl);
+    setCopyToClipboardTooltipText("Link wurde kopiert");
+  };
 
   const statusClass = statusData && statusData.status === "completed" ? "valid" : "errors";
   const statusText = statusData && statusData.status === "completed" ? "Keine Fehler!" : "Fehler!";

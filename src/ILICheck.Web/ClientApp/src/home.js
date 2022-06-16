@@ -1,9 +1,9 @@
 import "./app.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { FileDropzone } from "./dropzone";
+import { Title } from "./title";
 import Protokoll from "./protokoll";
-import InfoCarousel from "./infoCarousel";
 
 export const Home = (props) => {
   const {
@@ -11,26 +11,35 @@ export const Home = (props) => {
     nutzungsbestimmungenAvailable,
     showNutzungsbestimmungen,
     quickStartContent,
-    log,
-    updateLog,
-    resetLog,
-    setUploadLogsInterval,
-    setUploadLogsEnabled,
     setShowBannerContent,
   } = props;
   const [fileToCheck, setFileToCheck] = useState(null);
+  const fileToCheckRef = useRef(fileToCheck);
   const [validationRunning, setValidationRunning] = useState(false);
   const [statusInterval, setStatusInterval] = useState(null);
   const [statusData, setStatusData] = useState(null);
   const [customAppLogoPresent, setCustomAppLogoPresent] = useState(false);
   const [checkedNutzungsbestimmungen, setCheckedNutzungsbestimmungen] = useState(false);
   const [isFirstValidation, setIsFirstValidation] = useState(true);
+  const [log, setLog] = useState([]);
+  const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
+  const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
 
-  const logUploadLogMessages = () => updateLog(`${fileToCheck.name} hochladen...`, { disableUploadLogs: false });
-  const setIntervalImmediately = (func, interval) => {
-    func();
-    return setInterval(func, interval);
-  };
+  // Enable Upload logging
+  useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
+  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled, uploadLogsInterval]);
+
+  const resetLog = useCallback(() => setLog([]), [setLog]);
+  const updateLog = useCallback(
+    (message, { disableUploadLogs = true } = {}) => {
+      if (disableUploadLogs) setUploadLogsEnabled(false);
+      setLog((log) => {
+        if (message === log[log.length - 1]) return log;
+        else return [...log, message];
+      });
+    },
+    [setUploadLogsEnabled]
+  );
 
   // Reset log and abort upload on file change
   useEffect(() => {
@@ -40,8 +49,9 @@ export const Home = (props) => {
     setUploadLogsEnabled(false);
     if (statusInterval) clearInterval(statusInterval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileToCheck, resetLog]);
+  }, [fileToCheck]);
 
+  // Show banner on first validation
   useEffect(() => {
     if (validationRunning && isFirstValidation) {
       setTimeout(() => {
@@ -51,6 +61,11 @@ export const Home = (props) => {
     }
   }, [validationRunning, isFirstValidation, setShowBannerContent, setIsFirstValidation]);
 
+  const logUploadLogMessages = () => updateLog(`${fileToCheck.name} hochladen...`, { disableUploadLogs: false });
+  const setIntervalImmediately = (func, interval) => {
+    func();
+    return setInterval(func, interval);
+  };
   const checkFile = (e) => {
     e.stopPropagation();
     resetLog();
@@ -60,7 +75,7 @@ export const Home = (props) => {
     uploadFile(fileToCheck);
   };
 
-  async function uploadFile(file) {
+  const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file, file.name);
     const response = await fetch(`api/v1/upload`, {
@@ -68,72 +83,61 @@ export const Home = (props) => {
       body: formData,
     });
     if (response.ok) {
-      const data = await response.json();
-      const getStatusData = async (data) => {
-        const status = await fetch(data.statusUrl, {
-          method: "GET",
-        });
-        const statusData = await status.json();
-        return statusData;
-      };
+      // Use ref instead of state to check current file status in async function
+      if (fileToCheckRef.current) {
+        const data = await response.json();
+        const getStatusData = async (data) => {
+          const status = await fetch(data.statusUrl, {
+            method: "GET",
+          });
+          const statusData = await status.json();
+          return statusData;
+        };
 
-      // get first status immediately
-      const firstStatus = await getStatusData(data);
-      updateLog(firstStatus.statusMessage);
-
-      // get status continuously every 2 seconds
-      const interval = setInterval(async () => {
-        const statusData = await getStatusData(data);
-        updateLog(statusData.statusMessage);
-        if (
-          statusData.status === "completed" ||
-          statusData.status === "completedWithErrors" ||
-          statusData.status === "failed"
-        ) {
-          clearInterval(interval);
-          setValidationRunning(false);
-          setStatusData(statusData);
-        }
-      }, 2000);
-      setStatusInterval(interval);
+        const interval = setIntervalImmediately(async () => {
+          const statusData = await getStatusData(data);
+          updateLog(statusData.statusMessage);
+          if (
+            statusData.status === "completed" ||
+            statusData.status === "completedWithErrors" ||
+            statusData.status === "failed"
+          ) {
+            clearInterval(interval);
+            setValidationRunning(false);
+            setStatusData(statusData);
+          }
+        }, 2000);
+        setStatusInterval(interval);
+      }
     } else {
       console.log("Error while uploading file: " + response.json());
       updateLog("Der Upload war nicht erfolgreich. Die Validierung wurde abgebrochen.");
       setValidationRunning(false);
     }
-  }
+  };
 
   return (
-    <div>
+    <main>
       <Container className="main-container">
-        <div className="title-wrapper">
-          <div className="app-subtitle">Online Validierung von INTERLIS Daten</div>
-          <div>
-            <img
-              className="app-logo"
-              src="/app.png"
-              alt="App Logo"
-              onLoad={() => setCustomAppLogoPresent(true)}
-              onError={(e) => (e.target.style.display = "none")}
-            />
-          </div>
-          {!customAppLogoPresent && <div className="app-title">{clientSettings?.applicationName}</div>}
-          {quickStartContent && <InfoCarousel content={quickStartContent} />}
-        </div>
-        <div className="dropzone-wrapper">
-          <FileDropzone
-            setUploadLogsEnabled={setUploadLogsEnabled}
-            setFileToCheck={setFileToCheck}
-            fileToCheck={fileToCheck}
-            nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
-            checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
-            checkFile={checkFile}
-            validationRunning={validationRunning}
-            setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
-            showNutzungsbestimmungen={showNutzungsbestimmungen}
-            acceptedFileTypes={clientSettings?.acceptedFileTypes}
-          />
-        </div>
+        <Title
+          clientSettings={clientSettings}
+          customAppLogoPresent={customAppLogoPresent}
+          setCustomAppLogoPresent={setCustomAppLogoPresent}
+          quickStartContent={quickStartContent}
+        ></Title>
+        <FileDropzone
+          setUploadLogsEnabled={setUploadLogsEnabled}
+          setFileToCheck={setFileToCheck}
+          fileToCheck={fileToCheck}
+          nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
+          checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
+          checkFile={checkFile}
+          validationRunning={validationRunning}
+          setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
+          showNutzungsbestimmungen={showNutzungsbestimmungen}
+          acceptedFileTypes={clientSettings?.acceptedFileTypes}
+          fileToCheckRef={fileToCheckRef}
+        />
       </Container>
       <Protokoll
         log={log}
@@ -141,7 +145,7 @@ export const Home = (props) => {
         fileName={fileToCheck ? fileToCheck.name : ""}
         validationRunning={validationRunning}
       />
-    </div>
+    </main>
   );
 };
 

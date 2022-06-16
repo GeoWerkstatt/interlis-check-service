@@ -341,7 +341,7 @@ footer {
   font-stretch: expanded;
 }
 
-.footer-button {
+.footer-button.btn-link {
   color: white;
   border: none;
   text-decoration-line: none;
