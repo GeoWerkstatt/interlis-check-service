@@ -6,6 +6,10 @@ set -e
   options=${@%"$transfer_file_name"} && \
   is_gpkg=$([[ $transfer_file_name == *.gpkg ]] && echo true || echo false )
 
+# Include optional suitables xml catalogue files for xtf transfer files
+catalogue_files=$([[ $transfer_file_name == *.xtf ]] && \
+  find `dirname $transfer_file_name` -maxdepth 1 -type f -iname "*.xml" || true)
+
 proxy_port=$(echo $PROXY | grep -Eo '[0-9]+' | tail -1)
 proxy_host=${PROXY%":$(echo ${PROXY##*:})"} # remove port
 proxy_host=${proxy_host#*://} # remove protocol
@@ -26,5 +30,5 @@ then
   java -jar $ILITOOLS_HOME_DIR/ili2gpkg/$ILI2GPKG_VERSION/ili2gpkg-$ILI2GPKG_VERSION.jar --validate $options --dbfile $transfer_file_name
 else
   set -x #echo on
-  java -jar $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar --allObjectsAccessible  $options $transfer_file_name
+  java -jar $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_VERSION/ilivalidator-$ILIVALIDATOR_VERSION.jar --allObjectsAccessible $options $transfer_file_name $catalogue_files
 fi
