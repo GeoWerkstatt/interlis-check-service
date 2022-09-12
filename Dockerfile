@@ -47,12 +47,12 @@ ENV ILITOOLS_HOME_DIR=/ilitools
 ENV ILITOOLS_CONFIG_DIR=/config
 WORKDIR ${ILICHECK_APP_HOME_DIR}
 
-# Install missing packages (curl unzip jre sudo vim htop cron)
+# Install missing packages
 RUN \
   DEBIAN_FRONTEND=noninteractive && \
   mkdir -p /usr/share/man/man1 /usr/share/man/man2 && \
   apt-get update && \
-  apt-get install -y curl unzip default-jre-headless sudo vim htop cron && \
+  apt-get install -y curl unzip default-jre-headless sudo vim htop cron libcap2-bin && \
   rm -rf /var/lib/apt/lists/*
 
 # Add non-root user and create our folders
@@ -75,6 +75,9 @@ VOLUME $ILITOOLS_CONFIG_DIR
 # Set default locale
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
+
+# Allow dotnet to bind to well known ports
+RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/share/dotnet/dotnet
 
 COPY --from=build /app/publish $ILICHECK_APP_HOME_DIR
 COPY docker-entrypoint.sh /entrypoint.sh
