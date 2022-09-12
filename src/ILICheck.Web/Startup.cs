@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -21,6 +22,8 @@ namespace ILICheck.Web
 {
     public class Startup
     {
+        private const int MaxRequestBodySize = 209715200;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -68,11 +71,11 @@ namespace ILICheck.Web
             });
             services.Configure<FormOptions>(options =>
             {
-                options.MultipartBodyLengthLimit = 209715200;
+                options.MultipartBodyLengthLimit = MaxRequestBodySize;
             });
             services.Configure<KestrelServerOptions>(options =>
             {
-                options.Limits.MaxRequestBodySize = 209715200;
+                options.Limits.MaxRequestBodySize = MaxRequestBodySize;
             });
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             services.AddSwaggerGen(options =>
@@ -111,6 +114,19 @@ namespace ILICheck.Web
         {
             // Setup logging
             loggerFactory.AddFile(Configuration.GetSection("Logging"));
+
+            // By default Kestrel responds with a HTTP 400 if payload is too large.
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.ContentLength > MaxRequestBodySize)
+                {
+                    context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
+                    await context.Response.WriteAsync("Payload Too Large");
+                    return;
+                }
+
+                await next.Invoke();
+            });
 
             if (env.IsDevelopment())
             {
