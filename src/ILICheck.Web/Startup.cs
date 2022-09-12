@@ -146,7 +146,7 @@ namespace ILICheck.Web
                 options.DocumentTitle = $"{ApplicationName} API Documentation";
                 options.InjectStylesheet("../swagger-ui.css");
                 options.InjectJavascript("../swagger-ui.js");
-        });
+            });
 
             app.UseSpa(spa =>
             {
