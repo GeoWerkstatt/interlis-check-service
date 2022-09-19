@@ -1,91 +1,106 @@
-import './app.css';
-import React, { useState, useEffect, useCallback } from 'react';
-import { HubConnectionBuilder } from '@microsoft/signalr';
-import Layout from './layout';
+import "./app.css";
+import React, { useState, useEffect } from "react";
+import BannerContent from "./bannerContent";
+import Home from "./home";
+import ModalContent from "./modalContent";
+import Footer from "./footer";
+import Header from "./header";
 
-function App() {
-  const [connection, setConnection] = useState(null);
-  const [log, setLog] = useState([]);
-  const [closedConnectionId, setClosedConnectionId] = useState("");
-  const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
-  const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
-  const [validationResult, setValidationResult] = useState(false);
+export const App = () => {
+  const [modalContent, setModalContent] = useState(false);
+  const [modalContentType, setModalContentType] = useState(null);
+  const [showModalContent, setShowModalContent] = useState(false);
+  const [showBannerContent, setShowBannerContent] = useState(false);
+  const [clientSettings, setClientSettings] = useState(null);
+  const [datenschutzContent, setDatenschutzContent] = useState(null);
+  const [impressumContent, setImpressumContent] = useState(null);
+  const [infoHilfeContent, setInfoHilfeContent] = useState(null);
+  const [bannerContent, setBannerContent] = useState(null);
+  const [nutzungsbestimmungenContent, setNutzungsbestimmungenContent] = useState(null);
+  const [quickStartContent, setQuickStartContent] = useState(null);
+  const [licenseInfo, setLicenseInfo] = useState(null);
+  const [licenseInfoCustom, setLicenseInfoCustom] = useState(null);
 
-  const resetLog = useCallback(() => setLog([]), [setLog]);
-  const updateLog = useCallback((message, { disableUploadLogs = true } = {}) => {
-    if (disableUploadLogs) setUploadLogsEnabled(false);
-    setLog(log => {
-       if (message === log[log.length -1]) return log
-       else return [...log, message]
-    });
+  // Update HTML title property
+  useEffect(() => (document.title = clientSettings?.applicationName), [clientSettings]);
+
+  // Fetch client settings
+  useEffect(() => {
+    fetch("api/v1/settings")
+      .then((res) => res.headers.get("content-type")?.includes("application/json") && res.json())
+      .then((json) => setClientSettings(json));
   }, []);
 
-  useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => !uploadLogsEnabled && clearInterval(uploadLogsInterval), [uploadLogsEnabled]);
-
+  // Fetch optional custom content
   useEffect(() => {
-    const connection = new HubConnectionBuilder()
-      .withUrl("/hub")
-      .build();
+    fetch("impressum.md")
+      .then((res) => res.headers.get("content-type")?.includes("ext/markdown") && res.text())
+      .then((text) => setImpressumContent(text));
 
-    async function start() {
-      try {
-        await connection.start().then(() => {
-          if (connection.connectionId) connection.invoke('SendConnectionId', connection.connectionId);
-        });
-      } catch (err) {
-        console.log(err);
-        setTimeout(start, 5000);
-      }
-    };
+    fetch("datenschutz.md")
+      .then((res) => res.headers.get("content-type")?.includes("ext/markdown") && res.text())
+      .then((text) => setDatenschutzContent(text));
 
-    connection.on('confirmConnection', (message) => {
-      console.log('Message:', message);
-    });
+    fetch("info-hilfe.md")
+      .then((res) => res.headers.get("content-type")?.includes("ext/markdown") && res.text())
+      .then((text) => setInfoHilfeContent(text));
 
-    connection.on('updateLog', (message) => updateLog(message));
+    fetch("nutzungsbestimmungen.md")
+      .then((res) => res.headers.get("content-type")?.includes("ext/markdown") && res.text())
+      .then((text) => setNutzungsbestimmungenContent(text));
 
-    connection.on('stopConnection', () => {
-      setClosedConnectionId(connection.connectionId)
-      connection.stop();
-    });
+    fetch("banner.md")
+      .then((res) => res.headers.get("content-type")?.includes("ext/markdown") && res.text())
+      .then((text) => setBannerContent(text));
 
-    connection.on('validatedWithErrors', (message) => {
-      updateLog(message)
-      setValidationResult("error")
-    });
+    fetch("quickstart.txt")
+      .then((res) => res.headers.get("content-type")?.includes("text/plain") && res.text())
+      .then((text) => setQuickStartContent(text));
 
-    connection.on('validatedWithoutErrors', (message) => {
-      updateLog(message)
-      setValidationResult("ok")
-    });
+    fetch("license.json")
+      .then((res) => res.headers.get("content-type")?.includes("application/json") && res.json())
+      .then((json) => setLicenseInfo(json));
 
-    connection.on('validationAborted', (message) => {
-      message && updateLog(message)
-      setValidationResult("aborted")
-    });
+    fetch("license.custom.json")
+      .then((res) => res.headers.get("content-type")?.includes("application/json") && res.json())
+      .then((json) => setLicenseInfoCustom(json));
+  }, []);
 
-    connection.onclose(async () => {
-      await start();
-    });
-
-    start();
-
-    setConnection(connection)
-  }, [updateLog])
+  const openModalContent = (content, type) =>
+    setModalContent(content) & setModalContentType(type) & setShowModalContent(true);
 
   return (
-    <Layout connection={connection}
-      closedConnectionId={closedConnectionId}
-      log={log} updateLog={updateLog}
-      resetLog={resetLog}
-      validationResult={validationResult}
-      setValidationResult={setValidationResult}
-      setUploadLogsInterval={setUploadLogsInterval}
-      setUploadLogsEnabled={setUploadLogsEnabled} />
+    <div className="app">
+      <Header clientSettings={clientSettings}></Header>
+      <Home
+        clientSettings={clientSettings}
+        nutzungsbestimmungenAvailable={nutzungsbestimmungenContent ? true : false}
+        showNutzungsbestimmungen={() => openModalContent(nutzungsbestimmungenContent, "markdown")}
+        quickStartContent={quickStartContent}
+        setShowBannerContent={setShowBannerContent}
+      />
+      <Footer
+        openModalContent={openModalContent}
+        infoHilfeContent={infoHilfeContent}
+        nutzungsbestimmungenContent={nutzungsbestimmungenContent}
+        datenschutzContent={datenschutzContent}
+        impressumContent={impressumContent}
+        clientSettings={clientSettings}
+        licenseInfoCustom={licenseInfoCustom}
+        licenseInfo={licenseInfo}
+      ></Footer>
+      <ModalContent
+        className="modal"
+        show={showModalContent}
+        content={modalContent}
+        type={modalContentType}
+        onHide={() => setShowModalContent(false)}
+      />
+      {bannerContent && showBannerContent && (
+        <BannerContent className="banner" content={bannerContent} onHide={() => setShowBannerContent(false)} />
+      )}
+    </div>
   );
-}
+};
 
 export default App;

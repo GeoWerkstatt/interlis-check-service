@@ -6,7 +6,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    name: Run dotnet build and test
+    name: Run build, test and lint
 
     steps:
       - name: Checkout repository
@@ -17,11 +17,27 @@ jobs:
         with:
           dotnet-version: '6.0'
 
+      # Run the npm ci command before building
+      # the dotnet project, because the project
+      # itself calls npm install if the node_modules
+      # folder does not exist.
+      - name: Run frontend ci
+        working-directory: ./src/ILICheck.Web/ClientApp
+        run: npm ci
+
       - name: Install dependencies
         run: dotnet restore
 
-      - name: Build
+      - name: Build dotnet
         run: dotnet build
 
       - name: Test
         run: dotnet test
+
+      - name: Build frontend
+        working-directory: ./src/ILICheck.Web/ClientApp
+        run: npm run build --if-present
+
+      - name: Lint frontend
+        working-directory: ./src/ILICheck.Web/ClientApp
+        run: npm run lint

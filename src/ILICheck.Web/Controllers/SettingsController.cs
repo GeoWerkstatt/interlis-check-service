@@ -1,35 +1,43 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
-using static ILICheck.Web.Extensions;
+using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
+using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class SettingsController : Controller
     {
+        private readonly ILogger<SettingsController> logger;
         private readonly IConfiguration configuration;
-        public SettingsController(IConfiguration configuration)
+
+        public SettingsController(ILogger<SettingsController> logger, IConfiguration configuration)
         {
+            this.logger = logger;
             this.configuration = configuration;
         }
 
         /// <summary>
-        /// Action to get client application settings.
+        /// Gets the application settings.
         /// </summary>
         /// <returns>JSON-formatted client application settings.</returns>
         [HttpGet]
-        public IActionResult Get()
+        [SwaggerResponse(StatusCodes.Status200OK, "The the application settings which can be used to configure a client.", typeof(SettingsResponse), new[] { "application/json" })]
+        public IActionResult GetSettings()
         {
-            return new JsonResult(new
+            logger.LogTrace("Application configuration requested.");
+
+            return Ok(new SettingsResponse
             {
-                applicationName = Environment.GetEnvironmentVariable("CUSTOM_APP_NAME", EnvironmentVariableTarget.Process) ?? "INTERLIS Web-Check-Service",
-                applicationVersion = Environment.GetEnvironmentVariable("ILICHECK_APP_VERSION", EnvironmentVariableTarget.Process) ?? "undefined",
-                vendorLink = Environment.GetEnvironmentVariable("CUSTOM_VENDOR_LINK", EnvironmentVariableTarget.Process),
-                ilivalidatorVersion = Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION", EnvironmentVariableTarget.Process) ?? "undefined",
-                ili2gpkgVersion = Environment.GetEnvironmentVariable("ILI2GPKG_VERSION", EnvironmentVariableTarget.Process) ?? "undefined/not configured",
-                acceptedFileTypes = string.Join(", ", GetAcceptedFileExtensionsForUserUploads()),
+                ApplicationName = configuration.GetValue<string>("CUSTOM_APP_NAME") ?? "INTERLIS Web-Check-Service",
+                ApplicationVersion = configuration.GetValue<string>("ILICHECK_APP_VERSION") ?? "undefined",
+                VendorLink = configuration.GetValue<string>("CUSTOM_VENDOR_LINK"),
+                IlivalidatorVersion = configuration.GetValue<string>("ILIVALIDATOR_VERSION") ?? "undefined",
+                Ili2gpkgVersion = configuration.GetValue<string>("ILI2GPKG_VERSION") ?? "undefined/not configured",
+                AcceptedFileTypes = GetAcceptedFileExtensionsForUserUploads(configuration).JoinNonEmpty(", "),
             });
         }
     }

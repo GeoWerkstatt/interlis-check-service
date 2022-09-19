@@ -1,18 +1,29 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SignalR.Hubs;
+using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ILICheck.Web
 {
     public class Startup
     {
+        private const int MaxRequestBodySize = 209715200;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -20,10 +31,25 @@ namespace ILICheck.Web
 
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Gets the application name if set; otherwise, a predefined default.
+        /// </summary>
+        public string ApplicationName =>
+            Configuration.GetValue<string>("CUSTOM_APP_NAME") ?? "INTERLIS Web-Check-Service";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
+            services.AddHealthChecks().AddCheck<IlivalidatorHealthCheck>("Ilivalidator");
+            services.AddApiVersioning(config =>
+            {
+                config.AssumeDefaultVersionWhenUnspecified = true;
+                config.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+                config.ReportApiVersions = true;
+                config.ApiVersionReader = new HeaderApiVersionReader("api-version");
+            });
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsSettings", policy =>
@@ -35,15 +61,45 @@ namespace ILICheck.Web
                         .WithOrigins("https://localhost:44302");
                 });
             });
-            services.AddSignalR();
-            services.AddSingleton(typeof(SignalRConnectionHelper));
+            services.AddSingleton<IValidatorService, ValidatorService>();
+            services.AddHostedService(services => (ValidatorService)services.GetService<IValidatorService>());
+            services.AddTransient<IValidator, Validator>();
+            services.AddTransient<IFileProvider, PhysicalFileProvider>(x => new PhysicalFileProvider(x.GetRequiredService<IConfiguration>(), "ILICHECK_UPLOADS_DIR"));
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+            });
             services.Configure<FormOptions>(options =>
             {
-                options.MultipartBodyLengthLimit = 209715200;
+                options.MultipartBodyLengthLimit = MaxRequestBodySize;
             });
             services.Configure<KestrelServerOptions>(options =>
             {
-                options.Limits.MaxRequestBodySize = 209715200;
+                options.Limits.MaxRequestBodySize = MaxRequestBodySize;
+            });
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = $"{ApplicationName} API Documentation",
+                });
+
+                // Include existing documentation in Swagger UI.
+                options.IncludeXmlComments(
+                    Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+
+                // Custom order in Swagger UI.
+                options.OrderActionsBy(apiDescription =>
+                {
+                    var customOrder = new[] { "Upload", "Status", "Download", "Settings" };
+                    var controllerName = (apiDescription.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
+                    return $"{Array.IndexOf(customOrder, controllerName)}";
+                });
+
+                options.EnableAnnotations();
+                options.SupportNonNullableReferenceTypes();
             });
 
             // In production, the React files will be served from this directory
@@ -58,6 +114,19 @@ namespace ILICheck.Web
         {
             // Setup logging
             loggerFactory.AddFile(Configuration.GetSection("Logging"));
+
+            // By default Kestrel responds with a HTTP 400 if payload is too large.
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.ContentLength > MaxRequestBodySize)
+                {
+                    context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
+                    await context.Response.WriteAsync("Payload Too Large");
+                    return;
+                }
+
+                await next.Invoke();
+            });
 
             if (env.IsDevelopment())
             {
@@ -80,10 +149,21 @@ namespace ILICheck.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapHub<SignalRHub>("/hub");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapHealthChecks("/health");
+            });
+
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = "api/{documentName}/swagger.json";
+            });
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/api/v1/swagger.json", $"{ApplicationName} REST API v1");
+                options.RoutePrefix = "api";
+                options.DocumentTitle = $"{ApplicationName} API Documentation";
+                options.InjectStylesheet("../swagger-ui.css");
+                options.InjectJavascript("../swagger-ui.js");
             });
 
             app.UseSpa(spa =>
