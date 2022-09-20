@@ -84,3 +84,4 @@ This Log shows all major changes and enhancements of INTERLIS webcheck service (
 - Support for download of log- and xtflog-files from client
 - Enhanced parameter set for calling ilivalidator
 - dockerised
+- Added version to frontend
