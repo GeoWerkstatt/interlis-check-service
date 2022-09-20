@@ -42,7 +42,7 @@ This Log shows all major changes and enhancements of INTERLIS webcheck service (
 
 - contains new UI design
 - Enhanced support of frontend customization
-- Improved error logs in the case of unaccessible logfiles
+- Improved error logs in the case of unavailable logfiles
 - Improved status logs and display
 
 ## 0.10.42 (2021-11-09)
