@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 ARG VERSION
 ARG REVISION
@@ -31,7 +31,7 @@ RUN npx license-checker --json --production \
   --customPath licenseCustomFormat.json \
   --out ${PUBLISH_DIR}/ClientApp/build/license.json
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 ARG VERSION
 ARG REVISION
 ENV HOME=/app
