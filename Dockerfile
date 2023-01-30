@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 ARG VERSION
 ARG REVISION
@@ -7,7 +7,7 @@ ARG REVISION
 SHELL ["/bin/bash", "-c"]
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 
 # Restore dependencies and tools
@@ -31,7 +31,7 @@ RUN npx license-checker --json --production \
   --customPath licenseCustomFormat.json \
   --out ${PUBLISH_DIR}/ClientApp/build/license.json
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 ARG VERSION
 ARG REVISION
 ENV HOME=/app
