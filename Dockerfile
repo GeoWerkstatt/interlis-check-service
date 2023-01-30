@@ -7,7 +7,7 @@ ARG REVISION
 SHELL ["/bin/bash", "-c"]
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 
 # Restore dependencies and tools
