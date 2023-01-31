@@ -19,6 +19,7 @@ proxy_host=${proxy_host#*://} # remove protocol
 [[ -n $proxy_host ]] && options+=" --proxy $proxy_host"
 [[ -n $proxy_port ]] && options+=" --proxyPort $proxy_port"
 [[ $ILIVALIDATOR_ENABLE_TRACE = true ]] && options+=" --trace"
+[[ $(find $ILITOOLS_PLUGINS_DIR -maxdepth 1 -type f -iname "*.jar" | grep .) ]] && [[ $is_gpkg = false ]] && options+=" --plugins $ILITOOLS_PLUGINS_DIR"
 
 # Print executed commands to the Docker container log output
 exec {BASH_XTRACEFD}> >(sudo tee /proc/1/fd/2)

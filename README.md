@@ -75,6 +75,9 @@ services:
     #   - /path/to/models:/models
     #     Folder containing optional ili files
     #
+    #   - /path/to/plugins:/plugins
+    #     Folder containing optional ilivalidator plugins (jar files)
+    #
     #   - /path/to/web-assets:/web-assets
     #     Folder containing optional custom web assets
     #     examples: - favicon.ico
@@ -92,6 +95,7 @@ services:
       - ./uploads:/uploads
       - ./config:/config
       - ./models:/models
+      - ./plugins:/plugins
       - ./web-assets:/web-assets
     # Add environment variables
     #
