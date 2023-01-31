@@ -72,6 +72,9 @@ services:
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
     #
+    #   - /path/to/models:/models
+    #     Folder containing optional ili files
+    #
     #   - /path/to/web-assets:/web-assets
     #     Folder containing optional custom web assets
     #     examples: - favicon.ico
@@ -88,6 +91,7 @@ services:
       - ./logs:/logs
       - ./uploads:/uploads
       - ./config:/config
+      - ./models:/models
       - ./web-assets:/web-assets
     # Add environment variables
     #
@@ -130,7 +134,7 @@ services:
     #     Optional, Enable validation trace messages, Default false
     #
     #   - ILIVALIDATOR_MODEL_DIR=https://models.example.com;http://models.interlis.ch/
-    #     Optional semicolon-separated list of repositories with ili-files
+    #     Optional semicolon-separated list of external repositories with ili-files
     #     Default http://models.interlis.ch/
     #
     #   - ENABLE_GPKG_VALIDATION=true

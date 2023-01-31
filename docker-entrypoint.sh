@@ -9,7 +9,7 @@ set -e
   HTTPS_PROXY=$PROXY
 
 # Set default values (if not specified in docker-compose)
-export ILIVALIDATOR_MODEL_DIR="%ITF_DIR;${ILIVALIDATOR_MODEL_DIR:-http://models.interlis.ch/}"
+export ILIVALIDATOR_MODEL_DIR="%ITF_DIR;$ILITOOLS_MODELS_DIR;${ILIVALIDATOR_MODEL_DIR:-http://models.interlis.ch/}"
 export DELETE_TRANSFER_FILES=${DELETE_TRANSFER_FILES:-false}
 export ENABLE_GPKG_VALIDATION=${ENABLE_GPKG_VALIDATION:-false}
 
@@ -54,6 +54,7 @@ echo -n "Fix permissions for mounted volumes ..." && \
   chown -R abc:abc $ILICHECK_WEB_ASSETS_DIR && \
   chown -R abc:abc $ILITOOLS_HOME_DIR && \
   chown -R abc:abc $ILITOOLS_CONFIG_DIR && \
+  chown -R abc:abc $ILITOOLS_MODELS_DIR && \
   echo "done!"
 
 # Export current environment for all users and cron jobs
