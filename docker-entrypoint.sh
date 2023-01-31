@@ -55,6 +55,7 @@ echo -n "Fix permissions for mounted volumes ..." && \
   chown -R abc:abc $ILITOOLS_HOME_DIR && \
   chown -R abc:abc $ILITOOLS_CONFIG_DIR && \
   chown -R abc:abc $ILITOOLS_MODELS_DIR && \
+  chown -R abc:abc $ILITOOLS_PLUGINS_DIR && \
   echo "done!"
 
 # Export current environment for all users and cron jobs
