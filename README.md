@@ -141,6 +141,9 @@ services:
     #     Optional semicolon-separated list of external repositories with ili-files
     #     Default http://models.interlis.ch/
     #
+    #   - ILIVALIDATOR_PLUGIN_DIR=/plugins
+    #     Optional, provides the directory containing plugin jars.
+    #
     #   - ENABLE_GPKG_VALIDATION=true
     #     Optional, Default false
     #
