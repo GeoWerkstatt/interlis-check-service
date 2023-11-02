@@ -8,7 +8,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Install Node.js
 RUN apt-get update && \
-    apt-get install -y ca-certificates curl gnupg && \
+    apt-get install -y gnupg && \
     mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
     NODE_MAJOR=20 && \
