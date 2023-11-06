@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Web;
 
 namespace ILICheck.Web.Controllers
 {
@@ -35,7 +36,7 @@ namespace ILICheck.Web.Controllers
 
             try
             {
-                logger.LogInformation("Log file (<{LogType}>) for job identifier <{JobId}> requested.", logType, jobId);
+                logger.LogInformation("Log file (<{LogType}>) for job identifier <{JobId}> requested.", HttpUtility.HtmlEncode(logType), jobId);
                 return File(fileProvider.OpenText(fileProvider.GetLogFile(logType)).BaseStream, "text/xml; charset=utf-8");
             }
             catch (Exception)
