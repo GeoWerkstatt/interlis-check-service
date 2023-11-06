@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using System.Web;
 using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web.Controllers
@@ -85,7 +86,7 @@ namespace ILICheck.Web.Controllers
             var httpRequest = httpContextAccessor.HttpContext.Request;
 
             logger.LogInformation("Start uploading <{TransferFile}> to <{HomeDirectory}>", file.FileName, fileProvider.HomeDirectory);
-            logger.LogInformation("Transfer file size: {ContentLength}", httpRequest.ContentLength);
+            logger.LogInformation("Transfer file size: {ContentLength}", HttpUtility.HtmlEncode(httpRequest.ContentLength));
             logger.LogInformation("Start time: {Timestamp}", DateTime.Now);
 
             try
