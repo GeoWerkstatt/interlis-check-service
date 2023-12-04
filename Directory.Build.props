@@ -7,11 +7,10 @@
     <Authors>GeoWerkstatt GmbH</Authors>
     <Company>GeoWerkstatt GmbH</Company>
     <Copyright>© GeoWerkstatt GmbH</Copyright>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)/artifacts</PackageOutputPath>
     <PackageProjectUrl>https://github.com/GeoWerkstatt/interlis-check-service</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GeoWerkstatt/interlis-check-service.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AnalysisLevel>latest-Recommended</AnalysisLevel>
+    <AnalysisLevel>7.0-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
