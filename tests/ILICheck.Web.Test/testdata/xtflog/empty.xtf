@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<DATASECTION>
+    <IliVErrors.ErrorLog BID="1">
+    </IliVErrors.ErrorLog>
+</DATASECTION>
+</TRANSFER>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<DATASECTION>
+    <IliVErrors.ErrorLog BID="1">
+        <IliVErrors.ErrorLog.Error TID="1">
+            <Message>Error message 1</Message>
+            <Type>Error</Type>
+            <ObjTag>Model.Topic.Class</ObjTag>
+            <DataSource>Data source 1</DataSource>
+            <Line>11</Line>
+            <TechDetails>Technical details 1</TechDetails>
+            <Geometry>
+                <COORD>
+                    <C1>123.456</C1>
+                    <C2>234.567</C2>
+                </COORD>
+            </Geometry>
+        </IliVErrors.ErrorLog.Error>
+        <IliVErrors.ErrorLog.Error TID="2">
+            <Message>Info message 2</Message>
+            <Type>Info</Type>
+        </IliVErrors.ErrorLog.Error>
+    </IliVErrors.ErrorLog>
+</DATASECTION>
+</TRANSFER>
