@@ -2,6 +2,15 @@
 
 This Log shows all major changes and enhancements of INTERLIS webcheck service (ilicop)
 
+## 3.0.98 (2024-03-18)
+
+- Add support for additional catalogue files pre-configured in the backend. Which means that the user does not have to upload required catalogue files along with the transfer file in a ZIP file for every validation anymore. The backend will automatically use the pre-configured catalogue files for validation if the user does not provide them in a ZIP file.
+
+## 3.0.85 (2023-01-31)
+
+- Add support for additional ilivalidator plugins.
+- Add support for local INTERLIS models.
+
 ## 3.0.74 (2022-09-19)
 
 ### Features
@@ -77,7 +86,7 @@ This Log shows all major changes and enhancements of INTERLIS webcheck service (
 
 ### Fixes
 
-- fixes issue at upload of zip files
+- fixes issue at upload of ZIP files
 
 ### Feature
 

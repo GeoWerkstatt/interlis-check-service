@@ -72,6 +72,11 @@ services:
     #   - /path/to/config:/config
     #     Config folder with TOML files to control validation
     #
+    #   - /path/to/catalogues:/catalogues
+    #     Folder containing additional catalogue files
+    #     The backend will automatically apply these catalogue files (.xml) for every validation if the user
+    #     does not provide them in a ZIP file.
+    #
     #   - /path/to/models:/models
     #     Folder containing optional ili files
     #
@@ -94,6 +99,7 @@ services:
       - ./logs:/logs
       - ./uploads:/uploads
       - ./config:/config
+      - ./catalogues:/catalogues
       - ./models:/models
       - ./plugins:/plugins
       - ./web-assets:/web-assets
@@ -188,8 +194,11 @@ Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene
 
 - Einzelne Prüfungen ein oder ausschalten
 - Eigene Fehlermeldungen inkl. Attributwerte definieren
-- Prüfung gegen weitere Interlis-Modelle
+- Prüfung gegen weitere INTERLIS-Modelle
 - Konfiguration der verwendeten ilivalidator Version
+- Unterstützung von ilivalidator Plugins
+- Unterstützung von zusätzlichen INTERLIS-Modellen (serverseitig)
+- Unterstützung von zusätzlichen Katalogdateien (serverseitig)
 
 ### Web-Check-Service
 

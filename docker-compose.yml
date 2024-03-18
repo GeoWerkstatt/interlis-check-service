@@ -67,6 +67,7 @@ services:
       - ./src/ILICheck.Web/Logs:/logs
       - ./src/ILICheck.Web/Uploads:/uploads
       - ./src/ILICheck.Web/Config:/config
+      - ./src/ILICheck.Web/Catalogues:/catalogues
       - ./src/ILICheck.Web/Models:/models
       - ./src/ILICheck.Web/Plugins:/plugins
       - ./src/ILICheck.Web/Web-Assets:/web-assets

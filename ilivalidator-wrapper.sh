@@ -8,7 +8,8 @@ set -e
 
 # Include optional suitables xml catalogue files for xtf transfer files
 catalogue_files=$([[ $transfer_file_name == *.xtf ]] && \
-  find `dirname $transfer_file_name` -maxdepth 1 -type f -iname "*.xml" || true)
+  (find `dirname $transfer_file_name` -maxdepth 1 -type f -iname "*.xml" | grep . || \
+  find $ILITOOLS_CATALOGUES_DIR -maxdepth 1 -type f -iname "*.xml") || true)
 
 proxy_port=$(echo $PROXY | grep -Eo '[0-9]+' | tail -1)
 proxy_host=${PROXY%":$(echo ${PROXY##*:})"} # remove port

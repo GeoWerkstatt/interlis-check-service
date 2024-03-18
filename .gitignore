@@ -22,8 +22,9 @@ x86/
 [Uu]ploads/
 [Ww]eb-[Aa]ssets/
 [Cc]onfig/
+[Cc]atalogs/
 [Mm]odels/
-[Pp]lugins
+[Pp]lugins/
 bld/
 bin/
 Bin/
