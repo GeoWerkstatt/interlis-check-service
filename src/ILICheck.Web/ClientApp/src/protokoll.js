@@ -4,6 +4,7 @@ import DayJS from "dayjs";
 import { Card, Container } from "react-bootstrap";
 import { GoFile, GoFileCode } from "react-icons/go";
 import { BsLink45Deg } from "react-icons/bs";
+import { LogDisplay } from "./logDisplay";
 
 export const Protokoll = (props) => {
   const { log, statusData, fileName, validationRunning } = props;
@@ -99,6 +100,7 @@ export const Protokoll = (props) => {
           </Card.Body>
         </Card>
       )}
+      {statusData && <LogDisplay statusData={statusData} />}
     </Container>
   );
 };

@@ -81,6 +81,48 @@ header {
   text-align: left;
 }
 
+/************ Log ************/
+
+.log-card {
+  max-width: 95vw;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.log-entry {
+  margin: 0;
+  padding: 0.5rem;
+  display: flex;
+}
+
+.log-entry.expandable {
+  cursor: pointer;
+}
+
+.log-entry > .icon {
+  display: inline-block;
+  width: 16px;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.log-entry > .chevron > svg {
+  transition: 0.2s ease transform;
+}
+
+.log-entry > .chevron.open > svg {
+  transform: rotate(90deg);
+}
+
+.log-entry > .title {
+  word-break: break-word;
+}
+
+.log-entry-container {
+  margin-left: 12px;
+  padding-bottom: 8px;
+}
+
 /************ Carousel ************/
 
 .carousel {
