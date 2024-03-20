@@ -41,3 +41,7 @@ jobs:
       - name: Lint frontend
         working-directory: ./src/ILICheck.Web/ClientApp
         run: npm run lint
+
+      - name: Test frontend
+        working-directory: ./src/ILICheck.Web/ClientApp
+        run: npm run test
