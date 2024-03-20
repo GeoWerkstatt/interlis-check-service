@@ -16,12 +16,14 @@ const customConstraintMessagePattern = /^(.*) (\w+\.\w+\.\w+\.\w+) \(.*\)$/;
 const constraintNamePattern = /\s(\w+\.\w+\.\w+\.\w+)\s/;
 
 export function createLogHierarchy(logData) {
-  const constraintEntries = collectLogEntries(logData);
-  return buildHierarchicalLogEntries(constraintEntries.values());
+  const [constraintEntries, otherEntries] = collectLogEntries(logData);
+  return buildHierarchicalLogEntries(constraintEntries.values(), otherEntries);
 }
 
 function collectLogEntries(entries) {
   const constraintEntries = new Map();
+  const otherWarnings = new Set();
+  const otherErrors = new Set();
 
   for (const entry of entries) {
     let constraintFound = false;
@@ -54,12 +56,18 @@ function collectLogEntries(entries) {
         if (nameMatch) {
           const constraintName = nameMatch[1];
           addOrReplaceLogEntry(constraintEntries, "", constraintName, entry);
+        } else if (entry.type === "Error") {
+          otherErrors.add(entry.message);
+        } else {
+          otherWarnings.add(entry.message);
         }
       }
     }
   }
 
-  return constraintEntries;
+  const errors = Array.from(otherErrors).map((message) => ({ message, type: "Error" }));
+  const warnings = Array.from(otherWarnings).map((message) => ({ message, type: "Warning" }));
+  return [constraintEntries, errors.concat(warnings)];
 }
 
 function addOrReplaceLogEntry(entries, contraintType, constraintName, entry) {
@@ -77,7 +85,7 @@ function addOrReplaceLogEntry(entries, contraintType, constraintName, entry) {
   }
 }
 
-function buildHierarchicalLogEntries(constraintEntries) {
+function buildHierarchicalLogEntries(constraintEntries, otherEntries) {
   const hierarchicalEntries = [];
   const modelGroups = groupBy(constraintEntries, (e) => getFirstPart(e.name));
   for (const modelName of Object.keys(modelGroups)) {
@@ -120,6 +128,14 @@ function buildHierarchicalLogEntries(constraintEntries) {
         });
       }
     }
+  }
+
+  if (otherEntries.length > 0) {
+    hierarchicalEntries.push({
+      message: "Weitere Meldungen",
+      type: otherEntries.find((e) => e.type === "Error") ? "Error" : "Warning",
+      values: otherEntries,
+    });
   }
 
   return hierarchicalEntries;

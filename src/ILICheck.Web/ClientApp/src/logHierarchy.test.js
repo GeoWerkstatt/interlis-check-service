@@ -140,4 +140,96 @@ describe("transform log data to hierarchy", () => {
 
     expect(hierarchy).toStrictEqual(expected);
   });
+
+  test("additional warnings", () => {
+    const data = [
+      {
+        tid: "o1",
+        message: "validate set constraint ModelA.TopicA.ClassA.ConstraintName...",
+        type: "Info",
+      },
+      {
+        tid: "o2",
+        message: "Duplicate warning",
+        type: "Warning",
+      },
+      {
+        tid: "o3",
+        message: "Another warning",
+        type: "Warning",
+      },
+      {
+        tid: "o4",
+        message: "Duplicate warning",
+        type: "Warning",
+      },
+    ];
+
+    const expected = [
+      {
+        message: "ModelA",
+        type: "Info",
+        values: [
+          {
+            message: "TopicA.ClassA",
+            type: "Info",
+            values: [{ message: "Set Constraint ConstraintName", type: "Info" }],
+          },
+        ],
+      },
+      {
+        message: "Weitere Meldungen",
+        type: "Warning",
+        values: [
+          { message: "Duplicate warning", type: "Warning" },
+          { message: "Another warning", type: "Warning" },
+        ],
+      },
+    ];
+
+    const hierarchy = createLogHierarchy(data);
+
+    expect(hierarchy).toStrictEqual(expected);
+  });
+
+  test("additional warnings and errors", () => {
+    const data = [
+      {
+        tid: "o1",
+        message: "Duplicate warning",
+        type: "Warning",
+      },
+      {
+        tid: "o2",
+        message: "Another warning",
+        type: "Warning",
+      },
+      {
+        tid: "o3",
+        message: "Duplicate warning",
+        type: "Warning",
+      },
+      {
+        tid: "o4",
+        message: "Some error",
+        type: "Error",
+      },
+    ];
+
+    const expected = [
+      {
+        message: "Weitere Meldungen",
+        type: "Error",
+        values: [
+          { message: "Some error", type: "Error" },
+          { message: "Duplicate warning", type: "Warning" },
+          { message: "Another warning", type: "Warning" },
+        ],
+      },
+    ];
+
+    const hierarchy = createLogHierarchy(data);
+
+    expect(hierarchy).toStrictEqual(expected);
+  });
 });
