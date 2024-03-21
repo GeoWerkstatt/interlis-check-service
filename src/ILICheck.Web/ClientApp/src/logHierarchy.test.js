@@ -45,7 +45,7 @@ describe("transform log data to hierarchy", () => {
       {
         tid: "o3",
         message:
-          "Existence constraint ModelA.TopicA.ClassA.ConstraintName is violated! The value of the attribute Test of t1 was not found in the condition class.",
+          "Existence constraint ModelA.TopicA.ClassA.ConstraintName (EXISTENCE CONSTRAINT Test REQUIRED IN OtherClass:Test;) is violated! The value of the attribute Test of t1 was not found in the condition class.",
         type: "Error",
       },
     ];

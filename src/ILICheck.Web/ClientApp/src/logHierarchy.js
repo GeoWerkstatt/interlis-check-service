@@ -1,19 +1,17 @@
 import groupBy from "object.groupby";
 
 const constraintPatterns = [
-  ["Mandatory Constraint", /^validate mandatory constraint (\S+)\.\.\.$/, /^Mandatory Constraint (\S+) is not true\.$/],
-  [
-    "Plausibility Constraint",
-    /^validate plausibility constraint (\S+)\.\.\.$/,
-    /^Plausibility Constraint (\S+) is not true\.$/,
-  ],
-  ["Existence Constraint", /^validate existence constraint (\S+)\.\.\.$/, /^Existence constraint (\S+) is violated/],
-  ["Uniqueness Constraint", /^validate unique constraint (\S+)\.\.\.$/, /^Unique constraint (\S+) is violated/],
-  ["Set Constraint", /^validate set constraint (\S+)\.\.\.$/, /^Set Constraint (\S+) is not true\.$/],
+  ["Mandatory Constraint", /^validate mandatory constraint (\S+)\.\.\.$/],
+  ["Plausibility Constraint", /^validate plausibility constraint (\S+)\.\.\.$/],
+  ["Existence Constraint", /^validate existence constraint (\S+)\.\.\.$/],
+  ["Uniqueness Constraint", /^validate unique constraint (\S+)\.\.\.$/],
+  ["Set Constraint", /^validate set constraint (\S+)\.\.\.$/],
 ];
 
+// e.g. "Custom message ModelA.TopicA.ClassA.ConstraintName (ILI syntax)" will result in "Custom message"
 const customConstraintMessagePattern = /^(.*) (\w+\.\w+\.\w+\.\w+) \(.*\)$/;
-const constraintNamePattern = /\s(\w+\.\w+\.\w+\.\w+)\s/;
+// e.g. " ModelA.TopicA.ClassA.ConstraintName (ILI syntax) " (ILI syntax is optional and will be removed from the message)
+const constraintNamePattern = /\s(\w+\.\w+\.\w+\.\w+)(\s\(.+\))?\s/;
 
 export function createLogHierarchy(logData) {
   const [constraintEntries, otherEntries] = collectLogEntries(logData);
@@ -26,35 +24,29 @@ function collectLogEntries(entries) {
   const otherErrors = new Set();
 
   for (const entry of entries) {
-    let constraintFound = false;
-    for (const [name, infoPattern, errorPattern] of constraintPatterns) {
-      let match;
-      if (entry.type === "Info") {
-        match = infoPattern.exec(entry.message);
-      } else if (entry.type === "Error") {
-        match = errorPattern.exec(entry.message);
-      } else {
-        continue;
+    if (entry.type === "Info") {
+      for (const [name, infoPattern] of constraintPatterns) {
+        const match = infoPattern.exec(entry.message);
+        if (match) {
+          const constraintName = match[1];
+          addOrReplaceLogEntry(constraintEntries, name, constraintName, entry);
+          break;
+        }
       }
-
-      if (match) {
-        const constraintName = match[1];
-        addOrReplaceLogEntry(constraintEntries, name, constraintName, entry);
-        constraintFound = true;
-        break;
-      }
-    }
-
-    if (!constraintFound && entry.type !== "Info") {
-      const match = customConstraintMessagePattern.exec(entry.message);
-      if (match) {
-        entry.message = match[1];
-        const constraintName = match[2];
+    } else {
+      const customMessageMatch = customConstraintMessagePattern.exec(entry.message);
+      if (customMessageMatch) {
+        entry.message = customMessageMatch[1];
+        const constraintName = customMessageMatch[2];
         addOrReplaceLogEntry(constraintEntries, "", constraintName, entry);
       } else {
         const nameMatch = constraintNamePattern.exec(entry.message);
         if (nameMatch) {
           const constraintName = nameMatch[1];
+          const iliSyntax = nameMatch[2];
+          if (iliSyntax) {
+            entry.message = entry.message.replace(iliSyntax, "");
+          }
           addOrReplaceLogEntry(constraintEntries, "", constraintName, entry);
         } else if (entry.type === "Error") {
           otherErrors.add(entry.message);

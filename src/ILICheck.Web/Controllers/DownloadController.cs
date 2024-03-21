@@ -50,12 +50,12 @@ namespace ILICheck.Web.Controllers
         }
 
         /// <summary>
-        /// Gets the log of the specified <paramref name="jobId"/> in JSON format.
+        /// Gets the log data of the specified <paramref name="jobId"/> in JSON format.
         /// </summary>
         /// <param name="jobId">The job identifier.</param>
         /// <returns>The log data for the specified <paramref name="jobId"/>.</returns>
         [HttpGet("json")]
-        [SwaggerResponse(StatusCodes.Status200OK, "Returns the ilivalidator log file in JSON format.", typeof(IEnumerable<LogError>), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns the ilivalidator log data in JSON format.", typeof(IEnumerable<LogError>), new[] { "application/json" })]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ValidationProblemDetails), new[] { "application/json" })]
         [SwaggerResponse(StatusCodes.Status404NotFound, "The log file for the requested jobId cannot be found.", ContentTypes = new[] { "application/json" })]
         public IActionResult GetJsonLog(Guid jobId)
