@@ -46,21 +46,21 @@ namespace ILICheck.Web
         public void GetIlivalidatorCommand()
         {
             AssertGetIlivalidatorCommand(
-                "dada hopp monkey:latest sh ilivalidator --log \"/PEEVEDBAGEL/ANT_log.log\" --xtflog \"/PEEVEDBAGEL/ANT_log.xtf\" \"/PEEVEDBAGEL/ANT.XTF\"",
+                "dada hopp monkey:latest sh ilivalidator --log \"/PEEVEDBAGEL/ANT_log.log\" --xtflog \"/PEEVEDBAGEL/ANT_log.xtf\" --verbose \"/PEEVEDBAGEL/ANT.XTF\"",
                 "dada hopp monkey:latest sh {0}",
                 "/PEEVEDBAGEL/",
                 "ANT.XTF",
                 null);
 
             AssertGetIlivalidatorCommand(
-                "#ilivalidator --log \"foo/bar/SETNET_log.log\" --xtflog \"foo/bar/SETNET_log.xtf\" --models \"ANGRY;SQUIRREL\" \"foo/bar/SETNET.abc\"|",
+                "#ilivalidator --log \"foo/bar/SETNET_log.log\" --xtflog \"foo/bar/SETNET_log.xtf\" --verbose --models \"ANGRY;SQUIRREL\" \"foo/bar/SETNET.abc\"|",
                 "#{0}|",
                 "foo/bar",
                 "SETNET.abc",
                 "ANGRY;SQUIRREL");
 
             AssertGetIlivalidatorCommand(
-                "ilivalidator --log \"$SEA/RED/WATCH_log.log\" --xtflog \"$SEA/RED/WATCH_log.xtf\" \"$SEA/RED/WATCH.GPKG\"",
+                "ilivalidator --log \"$SEA/RED/WATCH_log.log\" --xtflog \"$SEA/RED/WATCH_log.xtf\" --verbose \"$SEA/RED/WATCH.GPKG\"",
                 "{0}",
                 "$SEA/RED/",
                 "WATCH.GPKG",

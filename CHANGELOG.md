@@ -2,6 +2,13 @@
 
 This Log shows all major changes and enhancements of INTERLIS webcheck service (ilicop)
 
+## _[Unreleased]_
+
+### Features
+
+- Visualize log entries of validation in a tree view
+- Add `--verbose` flag when calling ilivalidator
+
 ## 3.0.98 (2024-03-18)
 
 - Add support for additional catalogue files pre-configured in the backend. Which means that the user does not have to upload required catalogue files along with the transfer file in a ZIP file for every validation anymore. The backend will automatically use the pre-configured catalogue files for validation if the user does not provide them in a ZIP file.

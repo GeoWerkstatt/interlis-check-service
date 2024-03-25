@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ILICheck.Web.XtfLog;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Web;
 
 namespace ILICheck.Web.Controllers
@@ -43,6 +46,35 @@ namespace ILICheck.Web.Controllers
             {
                 Response.StatusCode = 404;
                 return View("PageNotFound", "Die gesuchte Log-Datei wurde nicht gefunden. Möglicherweise wurde sie bereits gelöscht.");
+            }
+        }
+
+        /// <summary>
+        /// Gets the log data of the specified <paramref name="jobId"/> in JSON format.
+        /// </summary>
+        /// <param name="jobId">The job identifier.</param>
+        /// <returns>The log data for the specified <paramref name="jobId"/>.</returns>
+        [HttpGet("json")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns the ilivalidator log data in JSON format.", typeof(IEnumerable<LogError>), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ValidationProblemDetails), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The log file for the requested jobId cannot be found.", ContentTypes = new[] { "application/json" })]
+        public IActionResult GetJsonLog(Guid jobId)
+        {
+            logger.LogTrace("JSON log for job <{JobId}> requested.", jobId);
+
+            fileProvider.Initialize(jobId);
+
+            try
+            {
+                var xtfLogFile = fileProvider.GetLogFile(LogType.Xtf);
+                using var reader = fileProvider.OpenText(xtfLogFile);
+
+                var result = XtfLogParser.Parse(reader);
+                return Ok(result);
+            }
+            catch (FileNotFoundException)
+            {
+                return Problem($"No xtf log available for job id <{jobId}>", statusCode: StatusCodes.Status404NotFound);
             }
         }
     }

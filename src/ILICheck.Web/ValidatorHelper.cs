@@ -70,7 +70,7 @@ namespace ILICheck.Web
             var xtfLogPath = $"{homeDirectory}/{transferFileNameWithoutExtension}_log.xtf";
             var transferFilePath = $"{homeDirectory}/{transferFile}";
             var commandFormat = configuration.GetSection("Validation")["CommandFormat"];
-            var options = $"--log \"{logPath}\" --xtflog \"{xtfLogPath}\"";
+            var options = $"--log \"{logPath}\" --xtflog \"{xtfLogPath}\" --verbose";
             if (!string.IsNullOrEmpty(gpkgModelNames)) options = $"{options} --models \"{gpkgModelNames}\"";
 
             return string.Format(

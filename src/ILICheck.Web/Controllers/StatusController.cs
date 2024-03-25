@@ -52,6 +52,7 @@ namespace ILICheck.Web.Controllers
                 StatusMessage = job.StatusMessage,
                 LogUrl = GetLogDownloadUrl(version, jobId, LogType.Log),
                 XtfLogUrl = GetLogDownloadUrl(version, jobId, LogType.Xtf),
+                JsonLogUrl = GetJsonLogUrl(version, jobId),
             });
         }
 
@@ -80,6 +81,27 @@ namespace ILICheck.Web.Controllers
                 version.MajorVersion,
                 jobId,
                 logType.ToString().ToLowerInvariant()),
+                UriKind.Relative);
+        }
+
+        private Uri GetJsonLogUrl(ApiVersion version, Guid jobId)
+        {
+            try
+            {
+                // JSON log is generated from the xtf log
+                _ = fileProvider.GetLogFile(LogType.Xtf);
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+
+            var logUrlTemplate = "/api/v{0}/download/json?jobId={1}";
+            return new Uri(string.Format(
+                CultureInfo.InvariantCulture,
+                logUrlTemplate,
+                version.MajorVersion,
+                jobId),
                 UriKind.Relative);
         }
     }
