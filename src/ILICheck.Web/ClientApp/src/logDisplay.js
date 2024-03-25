@@ -3,10 +3,14 @@ import { Card } from "react-bootstrap";
 import LogDisplayEntry from "./logDisplayEntry";
 import { createLogHierarchy } from "./logHierarchy";
 
+/**
+ * Displays the log entries of a validation in a hierarchical structure.
+ */
 export const LogDisplay = ({ statusData }) => {
   const jsonLogUrl = statusData?.jsonLogUrl;
   const [logData, setLogData] = useState(null);
 
+  // Fetch validator log and convert it to a hierarchical structure
   useEffect(() => {
     (async () => {
       if (jsonLogUrl) {
@@ -24,8 +28,8 @@ export const LogDisplay = ({ statusData }) => {
     logData.length > 0 && (
       <Card className="log-card">
         <Card.Body>
-          {logData.map((log) => (
-            <LogDisplayEntry key={log.message} {...log} />
+          {logData.map((logEntry) => (
+            <LogDisplayEntry key={logEntry.message} {...logEntry} />
           ))}
         </Card.Body>
       </Card>
