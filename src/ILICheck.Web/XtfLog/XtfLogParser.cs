@@ -5,8 +5,16 @@ using System.Xml.Serialization;
 
 namespace ILICheck.Web.XtfLog
 {
+    /// <summary>
+    /// Provides a method to parse XTF log files.
+    /// </summary>
     public static class XtfLogParser
     {
+        /// <summary>
+        /// Parses an XTF log file.
+        /// </summary>
+        /// <param name="xtfLogReader">Reader of an XTF log file.</param>
+        /// <returns>The entries of the log basket.</returns>
         public static IList<LogError> Parse(TextReader xtfLogReader)
         {
             using var xmlReader = XmlReader.Create(xtfLogReader);
