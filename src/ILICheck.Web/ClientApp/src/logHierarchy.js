@@ -8,137 +8,183 @@ const constraintPatterns = [
   ["Set Constraint", /^validate set constraint (\S+)\.\.\.$/],
 ];
 
-// e.g. "Custom message ModelA.TopicA.ClassA.ConstraintName (ILI syntax)" will result in "Custom message"
+/**
+ * Pattern to extract the custom error message of a constraint from a log entry.
+ * Requires verbose logging to be enabled that the qualified name and INTERLIS syntax of the constraint is included.
+ * e.g. "Custom message ModelA.TopicA.ClassA.ConstraintName (INTERLIS syntax)" will result in "Custom message"
+ */
 const customConstraintMessagePattern = /^(.*) (\w+\.\w+\.\w+\.\w+) \(.*\)$/;
-// e.g. " ModelA.TopicA.ClassA.ConstraintName (ILI syntax) " (ILI syntax is optional and will be removed from the message)
+/**
+ * Pattern to detect a message related to a constraint from a log entry.
+ * e.g. " ModelA.TopicA.ClassA.ConstraintName (INTERLIS syntax) " (the INTERLIS syntax is optional and will be removed from the message)
+ */
 const constraintNamePattern = /\s(\w+\.\w+\.\w+\.\w+)(\s\(.+\))?\s/;
 
-export function createLogHierarchy(logData) {
-  const [constraintEntries, otherEntries] = collectLogEntries(logData);
-  return buildHierarchicalLogEntries(constraintEntries.values(), otherEntries);
+/**
+ * Converts the given log entries into a hierarchical structure grouped by model and class.
+ * @param {*[]} logEntries Entries of the validator log.
+ * @returns {*[]} Hierarchical log entries.
+ */
+export function createLogHierarchy(logEntries) {
+  const logBuilder = new LogHierarchyBuilder(logEntries);
+  return logBuilder.buildHierarchicalLogEntries();
 }
 
-function collectLogEntries(entries) {
-  const constraintEntries = new Map();
-  const otherWarnings = new Set();
-  const otherErrors = new Set();
+class LogHierarchyBuilder {
+  constraintEntries = new Map();
+  otherErrorMessages = new Set();
+  otherWarningMessages = new Set();
 
-  for (const entry of entries) {
-    if (entry.type === "Info") {
-      for (const [name, infoPattern] of constraintPatterns) {
-        const match = infoPattern.exec(entry.message);
-        if (match) {
-          const constraintName = match[1];
-          addOrReplaceLogEntry(constraintEntries, name, constraintName, entry);
-          break;
-        }
-      }
-    } else {
-      const customMessageMatch = customConstraintMessagePattern.exec(entry.message);
-      if (customMessageMatch) {
-        entry.message = customMessageMatch[1];
-        const constraintName = customMessageMatch[2];
-        addOrReplaceLogEntry(constraintEntries, "", constraintName, entry);
-      } else {
-        const nameMatch = constraintNamePattern.exec(entry.message);
-        if (nameMatch) {
-          const constraintName = nameMatch[1];
-          const iliSyntax = nameMatch[2];
-          if (iliSyntax) {
-            entry.message = entry.message.replace(iliSyntax, "");
-          }
-          addOrReplaceLogEntry(constraintEntries, "", constraintName, entry);
-        } else if (entry.type === "Error") {
-          otherErrors.add(entry.message);
-        } else {
-          otherWarnings.add(entry.message);
-        }
-      }
-    }
+  constructor(logEntries) {
+    this.collectConstraintInfos(logEntries);
+    this.collectWarningsAndErrors(logEntries);
   }
 
-  const errors = Array.from(otherErrors).map((message) => ({ message, type: "Error" }));
-  const warnings = Array.from(otherWarnings).map((message) => ({ message, type: "Warning" }));
-  return [constraintEntries, errors.concat(warnings)];
-}
-
-function addOrReplaceLogEntry(entries, contraintType, constraintName, entry) {
-  const existingEntry = entries.get(constraintName);
-  if (existingEntry) {
-    existingEntry.type = entry.type;
-    existingEntry.message = entry.message;
-  } else {
-    entries.set(constraintName, {
-      name: constraintName,
-      type: entry.type,
-      contraintType,
-      message: contraintType + " " + constraintName,
-    });
-  }
-}
-
-function buildHierarchicalLogEntries(constraintEntries, otherEntries) {
-  const hierarchicalEntries = [];
-  const modelGroups = groupBy(constraintEntries, (e) => getFirstPart(e.name));
-  for (const modelName of Object.keys(modelGroups)) {
-    const modelGroup = modelGroups[modelName];
-    const modelEntry = {
-      message: modelName,
-      type: "Info",
-      values: [],
-    };
-    hierarchicalEntries.push(modelEntry);
-
-    const classGroups = groupBy(modelGroup, (e) => getAllExceptLastPart(e.name));
-    for (const fullClassName of Object.keys(classGroups)) {
-      const classGroup = classGroups[fullClassName];
-      const className = fullClassName.substring(modelName.length + 1);
-      const classEntry = {
-        message: className,
+  /**
+   * Converts the collected log entries into a hierarchical structure.
+   * @returns {*[]} Hierarchical log entries.
+   */
+  buildHierarchicalLogEntries() {
+    const hierarchicalEntries = [];
+    const modelGroups = groupBy(this.constraintEntries.values(), (e) => getModelName(e.constraintName));
+    for (const modelName of Object.keys(modelGroups)) {
+      const modelGroup = modelGroups[modelName];
+      const modelEntry = {
+        message: modelName,
         type: "Info",
         values: [],
       };
-      modelEntry.values.push(classEntry);
+      hierarchicalEntries.push(modelEntry);
 
-      for (const item of classGroup) {
-        const message = item.message;
-        const type = item.type;
+      const classGroups = groupBy(modelGroup, (e) => getClassNameOfConstraint(e.constraintName));
+      for (const fullClassName of Object.keys(classGroups)) {
+        const classGroup = classGroups[fullClassName];
+        const className = fullClassName.substring(modelName.length + 1);
+        const classEntry = {
+          message: className,
+          type: classGroup.reduce((type, e) => reduceType(type, e.type), "Info"),
+          values: classGroup.map((e) => ({
+            message: e.message.replaceAll(fullClassName + ".", ""),
+            type: e.type,
+          })),
+        };
+        modelEntry.type = reduceType(modelEntry.type, classEntry.type);
+        modelEntry.values.push(classEntry);
+      }
+    }
 
-        // Propagate the highest log type (ok, warning or error)
-        if (type === "Error") {
-          classEntry.type = type;
-          modelEntry.type = type;
-        } else if (type === "Warning" && classEntry.type !== "Error") {
-          classEntry.type = type;
-        } else if (type === "Warning" && modelEntry.type !== "Error") {
-          modelEntry.type = type;
+    if (this.otherErrorMessages.size > 0 || this.otherWarningMessages.size > 0) {
+      const errors = Array.from(this.otherErrorMessages).map((message) => ({ message, type: "Error" }));
+      const warnings = Array.from(this.otherWarningMessages).map((message) => ({ message, type: "Warning" }));
+
+      hierarchicalEntries.push({
+        message: "Weitere Meldungen",
+        type: this.otherErrorMessages.size > 0 ? "Error" : "Warning",
+        values: errors.concat(warnings),
+      });
+    }
+
+    return hierarchicalEntries;
+  }
+
+  /**
+   * Collects all constraints from the given logEntries without checking their validation results.
+   * @private
+   * @param {*[]} logEntries Entries of the validator log.
+   */
+  collectConstraintInfos(logEntries) {
+    for (const logEntry of logEntries) {
+      if (logEntry.type === "Info") {
+        for (const [constraintType, pattern] of constraintPatterns) {
+          const constraintMatch = pattern.exec(logEntry.message);
+          if (constraintMatch) {
+            const constraintName = constraintMatch[1];
+            const message = constraintType + " " + constraintName;
+            this.updateLogEntry(constraintName, logEntry.type, message);
+            break;
+          }
         }
-
-        classEntry.values.push({
-          message: message.replaceAll(fullClassName + ".", ""),
-          type: type,
-        });
       }
     }
   }
 
-  if (otherEntries.length > 0) {
-    hierarchicalEntries.push({
-      message: "Weitere Meldungen",
-      type: otherEntries.find((e) => e.type === "Error") ? "Error" : "Warning",
-      values: otherEntries,
-    });
+  /**
+   * Collects warnings and errors of the constraints and other entries from the given logEntries.
+   * @private
+   * @param {*[]} logEntries Entries of the validator log.
+   */
+  collectWarningsAndErrors(logEntries) {
+    for (const logEntry of logEntries) {
+      if (logEntry.type !== "Info") {
+        const customMessageMatch = customConstraintMessagePattern.exec(logEntry.message);
+        if (customMessageMatch) {
+          const customMessage = customMessageMatch[1];
+          const constraintName = customMessageMatch[2];
+          this.updateLogEntry(constraintName, logEntry.type, customMessage);
+        } else {
+          const nameMatch = constraintNamePattern.exec(logEntry.message);
+          if (nameMatch) {
+            const constraintName = nameMatch[1];
+            const interlisSyntax = nameMatch[2];
+            const logMessage = interlisSyntax ? logEntry.message.replace(interlisSyntax, "") : logEntry.message;
+            this.updateLogEntry(constraintName, logEntry.type, logMessage);
+          } else if (logEntry.type === "Error") {
+            this.otherErrorMessages.add(logEntry.message);
+          } else {
+            this.otherWarningMessages.add(logEntry.message);
+          }
+        }
+      }
+    }
   }
 
-  return hierarchicalEntries;
+  /**
+   * Updates the log entry of the constraint with the given name.
+   * @private
+   * @param {string} constraintName The qualified name of the constraint.
+   * @param {string} type The log entry type.
+   * @param {string} message The log message.
+   */
+  updateLogEntry(constraintName, type, message) {
+    this.constraintEntries.set(constraintName, {
+      constraintName,
+      type,
+      message,
+    });
+  }
 }
 
-function getFirstPart(name) {
-  const index = name.indexOf(".");
-  return index === -1 ? name : name.substring(0, index);
+/**
+ * Reduces the given types (Error, Warning or Info) to the type with higher priority.
+ * @param {string} typeA The first type.
+ * @param {string} typeB The second type.
+ * @returns The type with higher priority.
+ */
+function reduceType(typeA, typeB) {
+  if (typeA === "Error" || typeB === "Error") {
+    return "Error";
+  } else if (typeA === "Warning" || typeB === "Warning") {
+    return "Warning";
+  }
+  return "Info";
 }
 
-function getAllExceptLastPart(name) {
-  const index = name.lastIndexOf(".");
-  return index === -1 ? name : name.substring(0, index);
+/**
+ * Gets the model name of the given qualified constraint name.
+ * @param {string} qualifiedName The qualified name of the constraint.
+ * @returns {string} The model name of the constraint.
+ */
+function getModelName(qualifiedName) {
+  const index = qualifiedName.indexOf(".");
+  return index === -1 ? qualifiedName : qualifiedName.substring(0, index);
+}
+
+/**
+ * Gets the class name of the given qualified constraint name.
+ * @param {string} qualifiedName The qualified name of the constraint.
+ * @returns {string} The class name of the constraint.
+ */
+function getClassNameOfConstraint(qualifiedName) {
+  const index = qualifiedName.lastIndexOf(".");
+  return index === -1 ? qualifiedName : qualifiedName.substring(0, index);
 }
