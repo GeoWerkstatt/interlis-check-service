@@ -2,7 +2,7 @@
 
 This Log shows all major changes and enhancements of INTERLIS webcheck service (ilicop)
 
-## _[Unreleased]_
+## 3.0.100 (2024-03-25)
 
 ### Features
 
