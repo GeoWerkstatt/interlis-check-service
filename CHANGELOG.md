@@ -2,6 +2,13 @@
 
 This Log shows all major changes and enhancements of INTERLIS webcheck service (ilicop)
 
+## _[Unreleased]_
+
+### Features
+
+- Visualize log entries of validation in a tree view
+- Added `--verbose` flag when calling ilivalidator
+
 ## 3.0.74 (2022-09-19)
 
 ### Features
