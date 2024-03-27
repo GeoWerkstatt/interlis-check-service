@@ -67,6 +67,8 @@ namespace ILICheck.Web.Controllers
             Assert.AreEqual("WAFFLESPATULA GREENNIGHT", ((StatusResponse)response.Value).StatusMessage);
             Assert.AreEqual(null, ((StatusResponse)response.Value).LogUrl);
             Assert.AreEqual($"/api/v8/download?jobId={jobId}&logType=xtf", ((StatusResponse)response.Value).XtfLogUrl.ToString());
+            Assert.AreEqual($"/api/v8/download/json?jobId={jobId}", ((StatusResponse)response.Value).JsonLogUrl.ToString());
+            Assert.AreEqual($"/api/v8/download/geojson?jobId={jobId}", ((StatusResponse)response.Value).GeoJsonLogUrl.ToString());
         }
 
         [TestMethod]

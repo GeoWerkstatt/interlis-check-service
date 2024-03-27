@@ -45,14 +45,18 @@ namespace ILICheck.Web.Controllers
                 return Problem($"No job information available for job id <{jobId}>", statusCode: StatusCodes.Status404NotFound);
             }
 
+            var xtfLogUrl = GetLogDownloadUrl(version, jobId, LogType.Xtf);
             return Ok(new StatusResponse
             {
                 JobId = jobId,
                 Status = job.Status,
                 StatusMessage = job.StatusMessage,
                 LogUrl = GetLogDownloadUrl(version, jobId, LogType.Log),
-                XtfLogUrl = GetLogDownloadUrl(version, jobId, LogType.Xtf),
-                JsonLogUrl = GetJsonLogUrl(version, jobId),
+                XtfLogUrl = xtfLogUrl,
+
+                // JSON and GeoJSON are generated from the XTF log file
+                JsonLogUrl = xtfLogUrl == null ? null : GetJsonLogUrl(version, jobId),
+                GeoJsonLogUrl = xtfLogUrl == null ? null : GetGeoJsonLogUrl(version, jobId),
             });
         }
 
@@ -86,17 +90,18 @@ namespace ILICheck.Web.Controllers
 
         private Uri GetJsonLogUrl(ApiVersion version, Guid jobId)
         {
-            try
-            {
-                // JSON log is generated from the xtf log
-                _ = fileProvider.GetLogFile(LogType.Xtf);
-            }
-            catch (FileNotFoundException)
-            {
-                return null;
-            }
-
             var logUrlTemplate = "/api/v{0}/download/json?jobId={1}";
+            return new Uri(string.Format(
+                CultureInfo.InvariantCulture,
+                logUrlTemplate,
+                version.MajorVersion,
+                jobId),
+                UriKind.Relative);
+        }
+
+        private Uri GetGeoJsonLogUrl(ApiVersion version, Guid jobId)
+        {
+            var logUrlTemplate = "/api/v{0}/download/geojson?jobId={1}";
             return new Uri(string.Format(
                 CultureInfo.InvariantCulture,
                 logUrlTemplate,

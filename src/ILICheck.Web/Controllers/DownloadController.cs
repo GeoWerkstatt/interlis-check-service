@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.Features;
+using NetTopologySuite.Geometries;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web;
 
 namespace ILICheck.Web.Controllers
@@ -76,6 +79,64 @@ namespace ILICheck.Web.Controllers
             {
                 return Problem($"No xtf log available for job id <{jobId}>", statusCode: StatusCodes.Status404NotFound);
             }
+        }
+
+        /// <summary>
+        /// Gets the geographic log data of the specified <paramref name="jobId"/> in GeoJSON (RFC 7946) format.
+        /// </summary>
+        /// <remarks>
+        /// The Coordinate Reference System of the uploaded data is used and log entries without coordinates are ignored.
+        /// </remarks>
+        /// <param name="jobId">The job identifier.</param>
+        /// <returns>A FeatureCollection for the log data of the specified <paramref name="jobId"/>.</returns>
+        [HttpGet("geojson")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns the geographic ilivalidator log data in GeoJSON format.", ContentTypes = new[] { "application/geo+json" })]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ValidationProblemDetails), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The log file for the requested jobId cannot be found.", ContentTypes = new[] { "application/json" })]
+        public IActionResult GetGeoJson(Guid jobId)
+        {
+            logger.LogTrace("GeoJSON log for job <{JobId}> requested.", jobId);
+
+            fileProvider.Initialize(jobId);
+
+            try
+            {
+                var xtfLogFile = fileProvider.GetLogFile(LogType.Xtf);
+                using var reader = fileProvider.OpenText(xtfLogFile);
+                var logResult = XtfLogParser.Parse(reader);
+
+                var featureCollection = CreateFeatureCollection(logResult);
+
+                Response.Headers.ContentType = "application/geo+json";
+                return Ok(featureCollection);
+            }
+            catch (FileNotFoundException)
+            {
+                return Problem($"No xtf log available for job id <{jobId}>", statusCode: StatusCodes.Status404NotFound);
+            }
+        }
+
+        internal static FeatureCollection CreateFeatureCollection(IEnumerable<LogError> logResult)
+        {
+            var features = logResult
+                    .Where(log => log.Geometry?.Coord != null)
+                    .Select(log => new Feature(new Point((double)log.Geometry.Coord.C1, (double)log.Geometry.Coord.C2), new AttributesTable(new KeyValuePair<string, object>[]
+                    {
+                        new ("type", log.Type),
+                        new ("message", log.Message),
+                        new ("objTag", log.ObjTag),
+                        new ("dataSource", log.DataSource),
+                        new ("line", log.Line),
+                        new ("techDetails", log.TechDetails),
+                    })));
+
+            var featureCollection = new FeatureCollection();
+            foreach (var feature in features)
+            {
+                featureCollection.Add(feature);
+            }
+
+            return featureCollection;
         }
     }
 }
