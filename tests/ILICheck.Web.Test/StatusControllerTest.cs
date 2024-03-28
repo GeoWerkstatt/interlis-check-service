@@ -68,7 +68,28 @@ namespace ILICheck.Web.Controllers
             Assert.AreEqual(null, ((StatusResponse)response.Value).LogUrl);
             Assert.AreEqual($"/api/v8/download?jobId={jobId}&logType=xtf", ((StatusResponse)response.Value).XtfLogUrl.ToString());
             Assert.AreEqual($"/api/v8/download/json?jobId={jobId}", ((StatusResponse)response.Value).JsonLogUrl.ToString());
-            Assert.AreEqual($"/api/v8/download/geojson?jobId={jobId}", ((StatusResponse)response.Value).GeoJsonLogUrl.ToString());
+            Assert.IsNull(((StatusResponse)response.Value).GeoJsonLogUrl);
+        }
+
+        [TestMethod]
+        public void GetStatusWithGeoJson()
+        {
+            var jobId = new Guid("E0305248-907F-47FF-9B97-995EB4D92033");
+
+            fileProviderMock.Setup(x => x.Initialize(jobId));
+            fileProviderMock.Setup(x => x.GetFiles()).Returns(new[] { "SILENTFIRE_LOG.xtf", "SILENTFIRE_LOG.geojson" });
+            fileProviderMock.SetupGet(x => x.HomeDirectory).Returns(new DirectoryInfo(TestContext.DeploymentDirectory));
+
+            validatorServiceMock
+                .Setup(x => x.GetJobStatusOrDefault(jobId))
+                .Returns((Status.Processing, "WAFFLESPATULA GREENNIGHT"));
+
+            var response = controller.GetStatus(apiVersionMock.Object, jobId) as OkObjectResult;
+
+            Assert.IsInstanceOfType(response, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(response.Value, typeof(StatusResponse));
+            Assert.AreEqual(StatusCodes.Status200OK, response.StatusCode);
+            Assert.AreEqual($"/api/v8/download?jobId={jobId}&logType=geojson", ((StatusResponse)response.Value).GeoJsonLogUrl.ToString());
         }
 
         [TestMethod]

@@ -53,10 +53,8 @@ namespace ILICheck.Web.Controllers
                 StatusMessage = job.StatusMessage,
                 LogUrl = GetLogDownloadUrl(version, jobId, LogType.Log),
                 XtfLogUrl = xtfLogUrl,
-
-                // JSON and GeoJSON are generated from the XTF log file
-                JsonLogUrl = xtfLogUrl == null ? null : GetJsonLogUrl(version, jobId),
-                GeoJsonLogUrl = xtfLogUrl == null ? null : GetGeoJsonLogUrl(version, jobId),
+                JsonLogUrl = xtfLogUrl == null ? null : GetJsonLogUrl(version, jobId), // JSON is generated from the XTF log file
+                GeoJsonLogUrl = GetLogDownloadUrl(version, jobId, LogType.GeoJson),
             });
         }
 
@@ -91,17 +89,6 @@ namespace ILICheck.Web.Controllers
         private Uri GetJsonLogUrl(ApiVersion version, Guid jobId)
         {
             var logUrlTemplate = "/api/v{0}/download/json?jobId={1}";
-            return new Uri(string.Format(
-                CultureInfo.InvariantCulture,
-                logUrlTemplate,
-                version.MajorVersion,
-                jobId),
-                UriKind.Relative);
-        }
-
-        private Uri GetGeoJsonLogUrl(ApiVersion version, Guid jobId)
-        {
-            var logUrlTemplate = "/api/v{0}/download/geojson?jobId={1}";
             return new Uri(string.Format(
                 CultureInfo.InvariantCulture,
                 logUrlTemplate,

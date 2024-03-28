@@ -1,12 +1,16 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using ILICheck.Web.XtfLog;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -22,6 +26,7 @@ namespace ILICheck.Web
         private readonly ILogger<Validator> logger;
         private readonly IConfiguration configuration;
         private readonly IFileProvider fileProvider;
+        private readonly JsonOptions jsonOptions;
 
         /// <inheritdoc/>
         public virtual Guid Id { get; } = Guid.NewGuid();
@@ -38,11 +43,12 @@ namespace ILICheck.Web
         /// <summary>
         /// Initializes a new instance of the <see cref="Validator"/> class.
         /// </summary>
-        public Validator(ILogger<Validator> logger, IConfiguration configuration, IFileProvider fileProvider)
+        public Validator(ILogger<Validator> logger, IConfiguration configuration, IFileProvider fileProvider, IOptions<JsonOptions> jsonOptions)
         {
             this.logger = logger;
             this.configuration = configuration;
             this.fileProvider = fileProvider;
+            this.jsonOptions = jsonOptions.Value;
 
             this.fileProvider.Initialize(Id);
         }
@@ -194,6 +200,8 @@ namespace ILICheck.Web
                 GpkgModelNames);
 
             var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
+
+            await GenerateGeoJsonAsync().ConfigureAwait(false);
             if (exitCode != 0)
             {
                 throw new ValidationFailedException("The ilivalidator found errors in the file. Validation failed.");
@@ -234,6 +242,32 @@ namespace ILICheck.Web
 
             var reader = command.ExecuteReader();
             while (reader.Read()) yield return reader["modelName"].ToString();
+        }
+
+        /// <summary>
+        /// Asynchronously generates a GeoJSON file from the XTF log file.
+        /// </summary>
+        private async Task GenerateGeoJsonAsync()
+        {
+            var xtfLogFile = fileProvider.GetLogFile(LogType.Xtf);
+            if (!fileProvider.Exists(xtfLogFile)) return;
+
+            logger.LogInformation("Generating GeoJSON file from XTF log file <{XtfLogFile}>", xtfLogFile);
+
+            using var reader = fileProvider.OpenText(xtfLogFile);
+            var logResult = XtfLogParser.Parse(reader);
+
+            var featureCollection = GeoJsonHelper.CreateFeatureCollection(logResult);
+            if (featureCollection == null)
+            {
+                logger.LogInformation("No or unknown coordinates found in XTF log file <{XtfLogFile}>. Skipping GeoJSON generation.", xtfLogFile);
+                return;
+            }
+
+            var geoJsonLogFile = Path.ChangeExtension(xtfLogFile, ".geojson");
+
+            using var geoJsonStream = fileProvider.CreateFile(geoJsonLogFile);
+            await JsonSerializer.SerializeAsync(geoJsonStream, featureCollection, jsonOptions.JsonSerializerOptions).ConfigureAwait(false);
         }
     }
 }
