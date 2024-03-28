@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import DayJS from "dayjs";
 import { Card, Container } from "react-bootstrap";
 import { GoFile, GoFileCode } from "react-icons/go";
-import { BsLink45Deg } from "react-icons/bs";
+import { BsGeoAlt, BsLink45Deg } from "react-icons/bs";
 import { LogDisplay } from "./logDisplay";
 
 export const Protokoll = (props) => {
@@ -92,6 +92,20 @@ export const Protokoll = (props) => {
                         <BsLink45Deg />
                         <span className="icon-tooltip-text">{copyToClipboardTooltipText}</span>
                       </div>
+                    </span>
+                  )}
+                  {statusData.geoJsonLogUrl && (
+                    <span className="icon-tooltip">
+                      <a
+                        download={protokollFileName + ".geojson"}
+                        className={statusClass + " download-icon"}
+                        href={statusData.geoJsonLogUrl}
+                      >
+                        <BsGeoAlt />
+                      </a>
+                      <span className="icon-tooltip-text">
+                        Positionsbezogene Log-Daten als GeoJSON-Datei herunterladen
+                      </span>
                     </span>
                   )}
                 </span>
