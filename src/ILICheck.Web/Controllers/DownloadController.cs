@@ -30,7 +30,7 @@ namespace ILICheck.Web.Controllers
         /// <param name="logType">The log type to download.</param>
         /// <returns>The ilivalidator log file.</returns>
         [HttpGet]
-        [SwaggerResponse(StatusCodes.Status201Created, "Returns the ilivalidator log file.", ContentTypes = new[] { "text/xml; charset=utf-8" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns the ilivalidator log file.", ContentTypes = new[] { "text/xml; charset=utf-8", "application/geo+json" })]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
         [SwaggerResponse(StatusCodes.Status404NotFound, "The log file for the requested jobId cannot be found.", ContentTypes = new[] { "application/json" })]
         public IActionResult Download(Guid jobId, LogType logType)
@@ -40,7 +40,8 @@ namespace ILICheck.Web.Controllers
             try
             {
                 logger.LogInformation("Log file (<{LogType}>) for job identifier <{JobId}> requested.", HttpUtility.HtmlEncode(logType), jobId);
-                return File(fileProvider.OpenText(fileProvider.GetLogFile(logType)).BaseStream, "text/xml; charset=utf-8");
+                var contentType = logType == LogType.GeoJson ? "application/geo+json" : "text/xml; charset=utf-8";
+                return File(fileProvider.OpenText(fileProvider.GetLogFile(logType)).BaseStream, contentType);
             }
             catch (Exception)
             {

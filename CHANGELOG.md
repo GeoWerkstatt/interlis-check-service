@@ -2,6 +2,12 @@
 
 This Log shows all major changes and enhancements of INTERLIS webcheck service (ilicop)
 
+## _Unreleased_
+
+### Features
+
+- Validation log entries with coordinates using the LV95 Reference System can be downloaded as GeoJSON
+
 ## 3.0.100 (2024-03-25)
 
 ### Features

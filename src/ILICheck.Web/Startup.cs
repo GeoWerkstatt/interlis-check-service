@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NetTopologySuite.IO.Converters;
 using System;
 using System.IO;
 using System.Reflection;
@@ -68,6 +69,7 @@ namespace ILICheck.Web
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                options.JsonSerializerOptions.Converters.Add(new GeoJsonConverterFactory());
             });
             services.Configure<FormOptions>(options =>
             {

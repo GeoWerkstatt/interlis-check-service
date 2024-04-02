@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -14,6 +16,7 @@ namespace ILICheck.Web
     {
         private readonly string jobId = "2b005f1a-4eac-4d05-8ac6-c9221250f5a0";
 
+        private JsonOptions jsonOptions;
         private Mock<ILogger<Validator>> loggerMock;
         private Mock<PhysicalFileProvider> fileProviderMock;
         private Mock<Validator> validatorMock;
@@ -23,9 +26,10 @@ namespace ILICheck.Web
         [TestInitialize]
         public void Initialize()
         {
+            jsonOptions = new JsonOptions();
             loggerMock = new Mock<ILogger<Validator>>();
             fileProviderMock = new Mock<PhysicalFileProvider>(MockBehavior.Strict, CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
-            validatorMock = new Mock<Validator>(MockBehavior.Strict, loggerMock.Object, CreateConfiguration(), fileProviderMock.Object);
+            validatorMock = new Mock<Validator>(MockBehavior.Strict, loggerMock.Object, CreateConfiguration(), fileProviderMock.Object, Options.Create(jsonOptions));
 
             validatorMock.SetupGet(x => x.Id).Returns(new Guid(jobId));
         }

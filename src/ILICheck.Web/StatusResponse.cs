@@ -40,5 +40,10 @@ namespace ILICheck.Web
         /// The JSON log url if available; otherwise, <c>null</c>. Please be aware that the log file might not be complete while validation is still processing.
         /// </summary>
         public Uri JsonLogUrl { get; set; }
+
+        /// <summary>
+        /// The GeoJSON log url if available; otherwise, <c>null</c>. Please be aware that the log file might not be complete while validation is still processing.
+        /// </summary>
+        public Uri GeoJsonLogUrl { get; set; }
     }
 }
