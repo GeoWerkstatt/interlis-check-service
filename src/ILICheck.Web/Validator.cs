@@ -249,25 +249,32 @@ namespace ILICheck.Web
         /// </summary>
         private async Task GenerateGeoJsonAsync()
         {
-            var xtfLogFile = fileProvider.GetLogFile(LogType.Xtf);
-            if (!fileProvider.Exists(xtfLogFile)) return;
-
-            logger.LogInformation("Generating GeoJSON file from XTF log file <{XtfLogFile}>", xtfLogFile);
-
-            using var reader = fileProvider.OpenText(xtfLogFile);
-            var logResult = XtfLogParser.Parse(reader);
-
-            var featureCollection = GeoJsonHelper.CreateFeatureCollection(logResult);
-            if (featureCollection == null)
+            try
             {
-                logger.LogInformation("No or unknown coordinates found in XTF log file <{XtfLogFile}>. Skipping GeoJSON generation.", xtfLogFile);
-                return;
+                var xtfLogFile = fileProvider.GetLogFile(LogType.Xtf);
+                if (!fileProvider.Exists(xtfLogFile)) return;
+
+                logger.LogInformation("Generating GeoJSON file from XTF log file <{XtfLogFile}>", xtfLogFile);
+
+                using var reader = fileProvider.OpenText(xtfLogFile);
+                var logResult = XtfLogParser.Parse(reader);
+
+                var featureCollection = GeoJsonHelper.CreateFeatureCollection(logResult);
+                if (featureCollection == null)
+                {
+                    logger.LogInformation("No or unknown coordinates found in XTF log file <{XtfLogFile}>. Skipping GeoJSON generation.", xtfLogFile);
+                    return;
+                }
+
+                var geoJsonLogFile = Path.ChangeExtension(xtfLogFile, ".geojson");
+
+                using var geoJsonStream = fileProvider.CreateFile(geoJsonLogFile);
+                await JsonSerializer.SerializeAsync(geoJsonStream, featureCollection, jsonOptions.JsonSerializerOptions).ConfigureAwait(false);
             }
-
-            var geoJsonLogFile = Path.ChangeExtension(xtfLogFile, ".geojson");
-
-            using var geoJsonStream = fileProvider.CreateFile(geoJsonLogFile);
-            await JsonSerializer.SerializeAsync(geoJsonStream, featureCollection, jsonOptions.JsonSerializerOptions).ConfigureAwait(false);
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to generate the GeoJSON file from the XTF log file for id <{Id}>.", Id);
+            }
         }
     }
 }
