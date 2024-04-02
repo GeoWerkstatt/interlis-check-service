@@ -18,7 +18,7 @@ namespace ILICheck.Web
         /// Converts XTF log entries to a GeoJSON feature collection.
         /// </summary>
         /// <param name="logResult">The XTF log entries.</param>
-        /// <returns>A feature collection containing the log entries.</returns>
+        /// <returns>A feature collection containing the log entries or <c>null</c> if the log entries contain either no coordinates or coordinates outside of the LV95 bounds.</returns>
         public static FeatureCollection CreateFeatureCollection(IEnumerable<LogError> logResult)
         {
             if (!AllCoordinatesAreLv95(logResult))
@@ -27,16 +27,16 @@ namespace ILICheck.Web
             }
 
             var features = logResult
-                    .Where(log => log.Geometry?.Coord != null)
-                    .Select(log => new Feature(ProjectLv95ToWgs84(log.Geometry.Coord), new AttributesTable(new KeyValuePair<string, object>[]
-                    {
-                        new ("type", log.Type),
-                        new ("message", log.Message),
-                        new ("objTag", log.ObjTag),
-                        new ("dataSource", log.DataSource),
-                        new ("line", log.Line),
-                        new ("techDetails", log.TechDetails),
-                    })));
+                .Where(log => log.Geometry?.Coord != null)
+                .Select(log => new Feature(ProjectLv95ToWgs84(log.Geometry.Coord), new AttributesTable(new KeyValuePair<string, object>[]
+                {
+                    new ("type", log.Type),
+                    new ("message", log.Message),
+                    new ("objTag", log.ObjTag),
+                    new ("dataSource", log.DataSource),
+                    new ("line", log.Line),
+                    new ("techDetails", log.TechDetails),
+                })));
 
             var featureCollection = new FeatureCollection();
             foreach (var feature in features)
@@ -54,12 +54,12 @@ namespace ILICheck.Web
         /// <returns><c>true</c> if the log entries contain coordinates and all are in the LV95 bounds; otherwise, <c>false</c>.</returns>
         private static bool AllCoordinatesAreLv95(IEnumerable<LogError> logResult)
         {
-            var hasCoordinates = false;
+            var hasLv95Coordinates = false;
             foreach (var logEntry in logResult)
             {
                 if (logEntry.Geometry?.Coord != null)
                 {
-                    hasCoordinates = true;
+                    hasLv95Coordinates = true;
                     if (!IsLv95Coordinate(logEntry.Geometry.Coord))
                     {
                         return false;
@@ -67,7 +67,7 @@ namespace ILICheck.Web
                 }
             }
 
-            return hasCoordinates;
+            return hasLv95Coordinates;
         }
 
         /// <summary>
