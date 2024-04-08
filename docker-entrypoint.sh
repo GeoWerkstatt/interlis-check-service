@@ -25,9 +25,14 @@ download_and_configure_ilitool () {
     echo "done!" || exit 1
 }
 
-ILIVALIDATOR_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ilivalidator --silent | grep -Po '(?<=ilivalidator-)\d+.\d+.\d+' | head -n 1)
-export ILIVALIDATOR_VERSION=${ILIVALIDATOR_VERSION:-$ILIVALIDATOR_LATEST_VERSION}
-download_and_configure_ilitool ilivalidator $ILIVALIDATOR_VERSION $ILITOOLS_HOME_DIR
+if [[ -n $ILIVALIDATOR_SNAPSHOT_VERSION ]]; then
+  export ILIVALIDATOR_VERSION=$ILIVALIDATOR_SNAPSHOT_VERSION
+  cp -r $ILIVALIDATOR_SNAPSHOT_DIR $ILITOOLS_HOME_DIR/ilivalidator/$ILIVALIDATOR_SNAPSHOT_VERSION
+else
+  ILIVALIDATOR_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ilivalidator --silent | grep -Po '(?<=ilivalidator-)\d+.\d+.\d+' | head -n 1)
+  export ILIVALIDATOR_VERSION=${ILIVALIDATOR_VERSION:-$ILIVALIDATOR_LATEST_VERSION}
+  download_and_configure_ilitool ilivalidator $ILIVALIDATOR_VERSION $ILITOOLS_HOME_DIR
+fi
 
 [[ $ENABLE_GPKG_VALIDATION = true ]] && \
   ILI2GPKG_LATEST_VERSION=$(curl https://www.interlis.ch/downloads/ili2db --silent | grep -Po '(?<=ili2gpkg-)\d+.\d+.\d+' | head -n 1) && \
