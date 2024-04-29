@@ -82,11 +82,16 @@ namespace ILICheck.Web
                 await ValidateXmlAsync().ConfigureAwait(false);
             }
 
-            // Execute validation with ilivalidator
-            await ValidateAsync(cancellationToken).ConfigureAwait(false);
-
-            // Clean up user uploaded/uncompressed files
-            await CleanUploadDirectoryAsync().ConfigureAwait(false);
+            try
+            {
+                // Execute validation with ilivalidator
+                await ValidateAsync(cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                // Clean up user uploaded/uncompressed files
+                await CleanUploadDirectoryAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
