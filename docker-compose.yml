@@ -1,4 +1,3 @@
-version: '3'
 services:
   web:
     # Docker image (NAME:TAG)
