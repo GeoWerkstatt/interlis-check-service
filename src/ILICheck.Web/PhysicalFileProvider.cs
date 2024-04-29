@@ -45,7 +45,7 @@ namespace ILICheck.Web
         }
 
         /// <inheritdoc/>
-        public StreamReader OpenText(string file)
+        public virtual StreamReader OpenText(string file)
         {
             if (!initialized) throw new InvalidOperationException("The file provider needs to be initialized first.");
             return File.OpenText(Path.Combine(HomeDirectory.FullName, file));
