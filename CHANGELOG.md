@@ -4,6 +4,10 @@ This Log shows all major changes and enhancements of INTERLIS webcheck service (
 
 ## [Unreleased]
 
+### Changes
+
+- Switch to the built-in `Parallel.ForEachAsync` method for parallel processing of validation background tasks.
+
 ### Fixes
 
 - Fixed the HTTP Content-Type header for the _ilivalidator_ plain text log files.

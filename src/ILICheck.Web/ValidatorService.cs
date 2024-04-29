@@ -29,7 +29,7 @@ namespace ILICheck.Web
         /// <inheritdoc/>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await queue.Reader.ReadAllAsync(stoppingToken).ParallelForEachAsync(async item =>
+            await Parallel.ForEachAsync(queue.Reader.ReadAllAsync(stoppingToken), stoppingToken, async (item, stoppingToken) =>
             {
                 try
                 {
@@ -67,7 +67,7 @@ namespace ILICheck.Web
                     UpdateJobStatus(item.Id, Status.Failed, $"Unbekannter Fehler. Fehler-Id: <{traceId}>");
                     logger.LogError(ex, "Unhandled exception TraceId: <{TraceId}> Message: <{ErrorMessage}>", traceId, ex.Message);
                 }
-            }, stoppingToken);
+            });
         }
 
         /// <inheritdoc/>
