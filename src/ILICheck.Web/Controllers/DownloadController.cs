@@ -6,6 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Mime;
 using System.Web;
 
 namespace ILICheck.Web.Controllers
@@ -40,8 +41,14 @@ namespace ILICheck.Web.Controllers
             try
             {
                 logger.LogInformation("Log file (<{LogType}>) for job identifier <{JobId}> requested.", HttpUtility.HtmlEncode(logType), jobId);
-                var contentType = logType == LogType.GeoJson ? "application/geo+json" : "text/xml; charset=utf-8";
-                return File(fileProvider.OpenText(fileProvider.GetLogFile(logType)).BaseStream, contentType);
+                var fileStream = fileProvider.OpenText(fileProvider.GetLogFile(logType)).BaseStream;
+                return logType switch
+                {
+                    LogType.Log => File(fileStream, MediaTypeNames.Text.Plain),
+                    LogType.Xtf => File(fileStream, "text/xml; charset=utf-8"),
+                    LogType.GeoJson => File(fileStream, "application/geo+json"),
+                    _ => throw new NotSupportedException($"Log type <{logType}> is not supported."),
+                };
             }
             catch (Exception)
             {

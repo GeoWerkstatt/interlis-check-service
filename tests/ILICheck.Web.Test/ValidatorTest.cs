@@ -64,6 +64,7 @@ namespace ILICheck.Web
         public async Task ValidateXmlAsyncForInvalid()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.xtf");
+            fileProviderMock.Setup(x => x.OpenText("invalid.xtf")).CallBase();
             await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
@@ -72,6 +73,7 @@ namespace ILICheck.Web
         public async Task ValidateXmlAsyncForFileNotFound()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("unavailable.xtf");
+            fileProviderMock.Setup(x => x.OpenText("unavailable.xtf")).CallBase();
             await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
@@ -80,6 +82,7 @@ namespace ILICheck.Web
         public async Task ValidateXmlAsync()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("example.xtf");
+            fileProviderMock.Setup(x => x.OpenText("example.xtf")).CallBase();
             await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
         }
 
