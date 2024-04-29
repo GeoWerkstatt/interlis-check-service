@@ -2,6 +2,12 @@
 
 This Log shows all major changes and enhancements of INTERLIS webcheck service (ilicop)
 
+## [Unreleased]
+
+### Fixes
+
+- Fixed the HTTP Content-Type header for the _ilivalidator_ plain text log files.
+
 ## 3.0.103 (2024-04-02)
 
 ### Features
