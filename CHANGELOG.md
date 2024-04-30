@@ -11,6 +11,7 @@ This Log shows all major changes and enhancements of INTERLIS webcheck service (
 ### Fixes
 
 - Fixed the HTTP Content-Type header for the _ilivalidator_ plain text log files.
+- Fixed transfer files not getting deleted after failed validations.
 
 ## 3.0.103 (2024-04-02)
 
