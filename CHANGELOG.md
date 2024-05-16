@@ -7,6 +7,7 @@
 - Visualize log entries in a tree view.
 - Log entries with coordinates using the LV95 Reference System can now be downloaded as GeoJSON.
 - Added `--verbose` flag when calling _ilivalidator_ to get a more detailed output about constraints and errors.
+- When releasing a GitHub pre-release, the release notes are automatically updated with the corresponding entries from the `CHANGELOG.md` file.
 
 ### Changed
 
