@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## v3.0.110 - 2024-05-16
+
 ### Added
 
 - Visualize log entries in a tree view.
