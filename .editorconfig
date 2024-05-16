@@ -22,6 +22,9 @@ insert_final_newline = true
 [*.md]
 trim_trailing_whitespace = false
 
+[CHANGELOG.md]
+end_of_line = lf
+
 [*.{cs,sql,config,csx,fsx}]
 ; https://github.com/editorconfig/editorconfig/issues/297
 charset = utf-8-bom
