@@ -75,4 +75,5 @@
 *.svg         text eol=lf
 
 # *nix shell scripts always use LF (see .editorconfig)
-*.sh eol=lf
+*.sh          text eol=lf
+CHANGELOG.md  text eol=lf
