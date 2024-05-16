@@ -1,120 +1,118 @@
-# Change Log
-
-This Log shows all major changes and enhancements of INTERLIS webcheck service (ilicop)
+# Changelog
 
 ## [Unreleased]
 
-### Changes
+### Added
+
+- Visualize log entries in a tree view.
+- Log entries with coordinates using the LV95 Reference System can now be downloaded as GeoJSON.
+- Added `--verbose` flag when calling _ilivalidator_ to get a more detailed output about constraints and errors.
+
+### Changed
 
 - Switch to the built-in `Parallel.ForEachAsync` method for parallel processing of validation background tasks.
 
-### Fixes
+### Fixed
 
 - Fixed the HTTP Content-Type header for the _ilivalidator_ plain text log files.
 - Fixed transfer files not getting deleted after failed validations.
 
-## 3.0.103 (2024-04-02)
+## v3.0.98 (2024-03-18)
 
-### Features
+### Added
 
-- Validation log entries with coordinates using the LV95 Reference System can be downloaded as GeoJSON
+- Added support for additional catalogue files pre-configured in the backend. Which means that the user does not have to upload required catalogue files along with the transfer file in a ZIP file for every validation anymore. The backend will automatically use the pre-configured catalogue files for validation if the user does not provide them in a ZIP file.
 
-## 3.0.100 (2024-03-25)
+## v3.0.85 (2023-01-31)
 
-### Features
+### Added
 
-- Visualize log entries of validation in a tree view
-- Add `--verbose` flag when calling ilivalidator
+- Added support for additional ilivalidator plugins.
+- Added support for local INTERLIS models.
 
-## 3.0.98 (2024-03-18)
+## v3.0.74 (2022-09-19)
 
-- Add support for additional catalogue files pre-configured in the backend. Which means that the user does not have to upload required catalogue files along with the transfer file in a ZIP file for every validation anymore. The backend will automatically use the pre-configured catalogue files for validation if the user does not provide them in a ZIP file.
-
-## 3.0.85 (2023-01-31)
-
-- Add support for additional ilivalidator plugins.
-- Add support for local INTERLIS models.
-
-## 3.0.74 (2022-09-19)
-
-### Features
+### Added
 
 - Support REST API
 - Communication of HTML-Client switched to RESTful (before: SignalR)
 - Support validation against local catalogue files
 - Support validation against catalogue files delivered by ZIP
 
-## 2.1.69 (2022-05-11)
+## v2.1.69 (2022-05-11)
 
-### Features
+### Added
 
 - Support INTERLIS 1 transfer files
 - Support validation against own models (ili) delivered by ZIP
 - Version- and License information included at client
 
-## 2.1.56 (2022-05-11)
+## v2.1.56 (2022-05-11)
 
-### Fixes
+### Fixed
 
-- TOML configuration option fixed
+- Fixed TOML configuration option
 
-## 2.1.54 (2022-02-28)
+## v2.1.54 (2022-02-28)
 
-### Features
+### Added
 
 - Support of validation of Geopackage databases (containing an ili2db schema)
 
-## 2.0.46 (2022-02-09)
+## v2.0.46 (2022-02-09)
 
-### Fixes
+### Fixed
 
-- fixes an issue where network disconnects stops validations
-- fixes an issue with transferfiles containing a blank space
+- Fixed an issue where network disconnects stops validations
+- Fixed an issue with transferfiles containing a blank space
 
-### Feature
+### Added
 
-- contains new UI design
+- Added a new UI design
 - Enhanced support of frontend customization
 - Improved error logs in the case of unavailable logfiles
 - Improved status logs and display
 
-## 0.10.42 (2021-11-09)
+## v0.10.42 (2021-11-09)
 
-### Fixes
-
-- Improved scrollbar position
-- fixes status in the case of a connection timeout
-- fixes an issue with deletes in the case of an invalid upload
-- css issues
-
-### Feature
+### Added
 
 - Support for automatic deletes of logfiles
 
-## 0.9.29 (2021-09-08)
+### Fixed
 
-### Fixes
+- Improved scrollbar position
+- Fixed status in the case of a connection timeout
+- Fixed an issue with deletes in the case of an invalid upload
+- Fixed some CSS issues
 
-- Improved wrong content-type/encoding of logfiles
-- fixes issue with too large request bodies
-- fixes issue with upper case extensions of transferfiles
+## v0.9.29 (2021-09-08)
 
-### Feature
+### Added
 
 - Improved filename specification for logfiles
 - Support for automatically deletes of transferfiles after validations
 - Added option to provide path to xtf-logfile to clipboard
 - Added controller logs
 
-## 0.9.12 (2021-08-18)
+### Changed
 
-### Fixes
+- Improved wrong content-type/encoding of logfiles
 
-- fixes issue at upload of ZIP files
+### Fixed
 
-### Feature
+- Fixed an issue with too large request bodies
+- Fixed an issue with upper case extensions of transferfiles
+
+## v0.9.12 (2021-08-18)
+
+### Added
 
 - Support for download of log- and xtflog-files from client
 - Enhanced parameter set for calling ilivalidator
-- dockerised
+- Add support to run ilicop in a Docker container
 - Added version to frontend
+
+### Fixed
+
+- Fixed an issue while uploading ZIP files
