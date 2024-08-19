@@ -32,7 +32,7 @@ namespace ILICheck.Web.Controllers
         /// <returns>The ilivalidator log file.</returns>
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK, "Returns the ilivalidator log file.", ContentTypes = new[] { "text/xml; charset=utf-8", "application/geo+json" })]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), "application/json")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "The log file for the requested jobId cannot be found.", ContentTypes = new[] { "application/json" })]
         public IActionResult Download(Guid jobId, LogType logType)
         {
@@ -63,8 +63,8 @@ namespace ILICheck.Web.Controllers
         /// <param name="jobId">The job identifier.</param>
         /// <returns>The log data for the specified <paramref name="jobId"/>.</returns>
         [HttpGet("json")]
-        [SwaggerResponse(StatusCodes.Status200OK, "Returns the ilivalidator log data in JSON format.", typeof(IEnumerable<LogError>), new[] { "application/json" })]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ValidationProblemDetails), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns the ilivalidator log data in JSON format.", typeof(IEnumerable<LogError>), "application/json")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ValidationProblemDetails), "application/json")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "The log file for the requested jobId cannot be found.", ContentTypes = new[] { "application/json" })]
         public IActionResult GetJsonLog(Guid jobId)
         {

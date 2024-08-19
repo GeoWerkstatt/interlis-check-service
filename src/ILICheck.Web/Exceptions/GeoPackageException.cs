@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace ILICheck.Web
 {
@@ -35,15 +34,6 @@ namespace ILICheck.Web
         /// <param name="innerException">The exception that is the cause of the current exception.</param>
         public GeoPackageException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GeoPackageException"/> class
-        /// with serialized data.
-        /// </summary>
-        protected GeoPackageException(SerializationInfo info, StreamingContext streamingContext)
-            : base(info, streamingContext)
         {
         }
     }

@@ -25,7 +25,7 @@ namespace ILICheck.Web.Controllers
         /// </summary>
         /// <returns>JSON-formatted client application settings.</returns>
         [HttpGet]
-        [SwaggerResponse(StatusCodes.Status200OK, "The the application settings which can be used to configure a client.", typeof(SettingsResponse), new[] { "application/json" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "The the application settings which can be used to configure a client.", typeof(SettingsResponse), "application/json")]
         public IActionResult GetSettings()
         {
             logger.LogTrace("Application configuration requested.");

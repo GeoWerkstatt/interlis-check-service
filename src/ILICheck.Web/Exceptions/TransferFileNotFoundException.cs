@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace ILICheck.Web
 {
@@ -35,15 +34,6 @@ namespace ILICheck.Web
         /// <param name="innerException">The exception that is the cause of the current exception.</param>
         public TransferFileNotFoundException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TransferFileNotFoundException"/> class
-        /// with serialized data.
-        /// </summary>
-        protected TransferFileNotFoundException(SerializationInfo info, StreamingContext streamingContext)
-            : base(info, streamingContext)
         {
         }
     }

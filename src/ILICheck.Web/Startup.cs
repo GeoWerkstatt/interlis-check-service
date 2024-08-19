@@ -38,6 +38,8 @@ namespace ILICheck.Web
         public string ApplicationName =>
             Configuration.GetValue<string>("CUSTOM_APP_NAME") ?? "INTERLIS Web-Check-Service";
 
+        private static readonly string[] swaggerCustomOrder = new[] { "Upload", "Status", "Download", "Settings" };
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -95,9 +97,8 @@ namespace ILICheck.Web
                 // Custom order in Swagger UI.
                 options.OrderActionsBy(apiDescription =>
                 {
-                    var customOrder = new[] { "Upload", "Status", "Download", "Settings" };
                     var controllerName = (apiDescription.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
-                    return $"{Array.IndexOf(customOrder, controllerName)}";
+                    return $"{Array.IndexOf(swaggerCustomOrder, controllerName)}";
                 });
 
                 options.EnableAnnotations();
