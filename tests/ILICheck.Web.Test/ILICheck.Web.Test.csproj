@@ -1,13 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-
+    <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
-
     <AssemblyName>ILICheck.Web.Test</AssemblyName>
-
     <RootNamespace>ILICheck.Web</RootNamespace>
+    <NoWarn>CA1861</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/GeoWerkstatt/interlis-check-service</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GeoWerkstatt/interlis-check-service.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AnalysisLevel>7.0-recommended</AnalysisLevel>
+    <AnalysisLevel>8.0-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
