@@ -40,23 +40,17 @@ download_and_configure_ilitool ilivalidator $ILIVALIDATOR_VERSION $ILITOOLS_HOME
   cp -f $ILICHECK_WEB_ASSETS_DIR/* $ILICHECK_APP_HOME_DIR/ClientApp/build/ && \
   echo "done!"
 
-# Use default user:group if no $PUID and/or $PGID is provided.
-groupmod -o -g ${PUID:-941} abc && \
-  usermod -o -u ${PGID:-941} abc &> /dev/null && \
-  usermod -aG sudo abc && \
-  echo "abc ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
 # Change owner for our folders
 echo -n "Fix permissions for mounted volumes ..." && \
-  chown -R abc:abc $ILICHECK_APP_HOME_DIR && \
-  chown -R abc:abc $ILICHECK_APP_LOG_DIR && \
-  chown -R abc:abc $ILICHECK_UPLOADS_DIR && \
-  chown -R abc:abc $ILICHECK_WEB_ASSETS_DIR && \
-  chown -R abc:abc $ILITOOLS_HOME_DIR && \
-  chown -R abc:abc $ILITOOLS_CONFIG_DIR && \
-  chown -R abc:abc $ILITOOLS_CATALOGUES_DIR && \
-  chown -R abc:abc $ILITOOLS_MODELS_DIR && \
-  chown -R abc:abc $ILITOOLS_PLUGINS_DIR && \
+  chown -R app:app $ILICHECK_APP_HOME_DIR && \
+  chown -R app:app $ILICHECK_APP_LOG_DIR && \
+  chown -R app:app $ILICHECK_UPLOADS_DIR && \
+  chown -R app:app $ILICHECK_WEB_ASSETS_DIR && \
+  chown -R app:app $ILITOOLS_HOME_DIR && \
+  chown -R app:app $ILITOOLS_CONFIG_DIR && \
+  chown -R app:app $ILITOOLS_CATALOGUES_DIR && \
+  chown -R app:app $ILITOOLS_MODELS_DIR && \
+  chown -R app:app $ILITOOLS_PLUGINS_DIR && \
   echo "done!"
 
 # Export current environment for all users and cron jobs
@@ -82,11 +76,11 @@ ilivalidator model repositories:  $ILIVALIDATOR_MODEL_DIR
 ilivalidator trace messages:      $([[ $ILIVALIDATOR_ENABLE_TRACE = true ]] && echo enabled || echo disabled)
 http proxy:                       ${PROXY:-no proxy set}
 http proxy exceptions:            $([[ -n $NO_PROXY ]] && echo $NO_PROXY || echo undefined)
-user uid:                         $(id -u abc)
-user gid:                         $(id -g abc)
+user uid:                         $(id -u app)
+user gid:                         $(id -g app)
 timezone:                         $TZ
 --------------------------------------------------------------------------
 "
 
 echo -e "INTERLIS web check service app is up and running!\n" && \
-  sudo -H --preserve-env --user abc dotnet ILICheck.Web.dll
+  sudo -H --preserve-env --user app dotnet ILICheck.Web.dll

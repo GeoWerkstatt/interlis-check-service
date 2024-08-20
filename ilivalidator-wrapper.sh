@@ -22,9 +22,6 @@ proxy_host=${proxy_host#*://} # remove protocol
 [[ $ILIVALIDATOR_ENABLE_TRACE = true ]] && options+=" --trace"
 [[ $(find $ILITOOLS_PLUGINS_DIR -maxdepth 1 -type f -iname "*.jar" | grep .) ]] && [[ $is_gpkg = false ]] && options+=" --plugins $ILITOOLS_PLUGINS_DIR"
 
-# Print executed commands to the Docker container log output
-exec {BASH_XTRACEFD}> >(sudo tee /proc/1/fd/2)
-
 # Execute ilivalidator/ili2gpkg with the given options
 if [[ $ENABLE_GPKG_VALIDATION = true && $is_gpkg = true ]]
 then
