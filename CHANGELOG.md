@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Updated to .NET 8.0.
+- The app now runs on port 8080 inside the docker container.
+
 ## v3.0.110 - 2024-05-16
 
 ### Added
