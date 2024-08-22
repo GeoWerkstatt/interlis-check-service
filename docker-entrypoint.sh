@@ -40,6 +40,10 @@ download_and_configure_ilitool ilivalidator $ILIVALIDATOR_VERSION $ILITOOLS_HOME
   cp -f $ILICHECK_WEB_ASSETS_DIR/* $ILICHECK_APP_HOME_DIR/ClientApp/build/ && \
   echo "done!"
 
+# Use default user:group if no $PUID and/or $PGID is provided.
+groupmod -o -g ${PUID:-1654} app && \
+  usermod -o -u ${PGID:-1654} app &> /dev/null
+
 # Change owner for our folders
 echo -n "Fix permissions for mounted volumes ..." && \
   chown -R app:app $ILICHECK_APP_HOME_DIR && \

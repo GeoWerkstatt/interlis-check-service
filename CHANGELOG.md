@@ -6,6 +6,7 @@
 
 - Updated to .NET 8.0.
 - The app now runs on port 8080 inside the docker container.
+- Default uid & gid of container user changed to 1654.
 
 ## v3.0.110 - 2024-05-16
 

@@ -106,6 +106,16 @@ services:
     # Add environment variables
     #
     # environment:
+    #   - PUID=1000
+    #     Optional, Default user id 1654
+    #     Using PUID and PGID allows to map the container's internal user to a user on the
+    #     host machine which prevents permisson issues when writing files to the mounted volume
+    #
+    #   - PGID=1000
+    #     Optional, Default group id 1654
+    #     Using PUID and PGID allows to map the container's internal user to a user on the
+    #     host machine which prevents permisson issues when writing files to the mounted volume
+    #
     #   - DELETE_TRANSFER_FILES=true
     #     Optional, If set to true, transfer files get deleted right after ilivalidator
     #     has completed validation
@@ -163,7 +173,9 @@ services:
     #   - CUSTOM_VENDOR_LINK=https://www.example.com
     #     Optional link to the vendors webpage
     #     The link is only taken into account if there is a corresponding vendor.png
-
+    environment:
+      - PUID=1000
+      - PGID=1000
     # Expose ports (HOST:CONTAINER)
     #
     # ports:
