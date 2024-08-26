@@ -5,7 +5,6 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>ILICheck.Web.Test</AssemblyName>
     <RootNamespace>ILICheck.Web</RootNamespace>
-    <NoWarn>CA1861</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
