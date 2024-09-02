@@ -56,7 +56,7 @@ namespace ILICheck.Web
         /// <inheritdoc/>
         public async Task ExecuteAsync(string transferFile, CancellationToken cancellationToken)
         {
-            if (transferFile == null) throw new ArgumentNullException(nameof(transferFile));
+            ArgumentNullException.ThrowIfNull(transferFile);
             if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
             if (!fileProvider.Exists(transferFile)) throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Transfer file with the specified name <{0}> not found in <{1}>.", transferFile, fileProvider.HomeDirectory));
 
@@ -135,7 +135,7 @@ namespace ILICheck.Web
         /// <exception cref="FileNotFoundException">If <see cref="TransferFile"/> is not found.</exception>
         public async Task ValidateXmlAsync()
         {
-            if (TransferFile == null) throw new ArgumentNullException(nameof(TransferFile));
+            ArgumentNullException.ThrowIfNull(TransferFile);
             if (string.IsNullOrWhiteSpace(TransferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(TransferFile));
 
             logger.LogInformation("Validating xml structure for transfer file <{TransferFile}>", TransferFile);
@@ -170,7 +170,7 @@ namespace ILICheck.Web
         /// <exception cref="FileNotFoundException">If <see cref="TransferFile"/> is not found.</exception>
         internal async Task<string> ReadGpkgModelNamesAsync()
         {
-            if (TransferFile == null) throw new ArgumentNullException(nameof(TransferFile));
+            ArgumentNullException.ThrowIfNull(TransferFile);
             if (string.IsNullOrWhiteSpace(TransferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(TransferFile));
 
             logger.LogInformation("Reading model names from GeoPackage <{TransferFile}>", TransferFile);

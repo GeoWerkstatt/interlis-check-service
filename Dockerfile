@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 ARG VERSION
 ARG REVISION
@@ -38,7 +38,7 @@ RUN npx license-checker --json --production \
   --customPath licenseCustomFormat.json \
   --out ${PUBLISH_DIR}/ClientApp/build/license.json
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 ARG VERSION
 ARG REVISION
 ENV HOME=/app
@@ -62,13 +62,11 @@ RUN \
   DEBIAN_FRONTEND=noninteractive && \
   mkdir -p /usr/share/man/man1 /usr/share/man/man2 && \
   apt-get update && \
-  apt-get install -y curl unzip default-jre-headless sudo vim htop cron libcap2-bin && \
+  apt-get install -y curl unzip default-jre-headless sudo vim htop cron && \
   rm -rf /var/lib/apt/lists/*
 
-# Add non-root user and create our folders
+# Create our folders
 RUN \
- useradd --uid 941 --user-group --home $HOME --shell /bin/bash abc && \
- usermod --groups users abc && \
  mkdir -p \
    $ILICHECK_APP_HOME_DIR \
    $ILICHECK_APP_LOG_DIR \
@@ -80,7 +78,7 @@ RUN \
    $ILITOOLS_MODELS_DIR \
    $ILITOOLS_PLUGINS_DIR
 
-EXPOSE 80
+EXPOSE 8080
 VOLUME $ILICHECK_APP_LOG_DIR
 VOLUME $ILICHECK_UPLOADS_DIR
 VOLUME $ILITOOLS_CONFIG_DIR
@@ -92,13 +90,10 @@ VOLUME $ILITOOLS_PLUGINS_DIR
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
-# Allow dotnet to bind to well known ports
-RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/share/dotnet/dotnet
-
 COPY --from=build /app/publish $ILICHECK_APP_HOME_DIR
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY ilivalidator-wrapper.sh /usr/local/bin/ilivalidator
 
-HEALTHCHECK CMD curl --fail http://localhost/health || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]

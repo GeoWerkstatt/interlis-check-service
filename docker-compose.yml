@@ -74,12 +74,12 @@ services:
     #
     # environment:
     #   - PUID=1000
-    #     Optional, Default user id 941
+    #     Optional, Default user id 1654
     #     Using PUID and PGID allows to map the container's internal user to a user on the
     #     host machine which prevents permisson issues when writing files to the mounted volume
     #
     #   - PGID=1000
-    #     Optional, Default group id 941
+    #     Optional, Default group id 1654
     #     Using PUID and PGID allows to map the container's internal user to a user on the
     #     host machine which prevents permisson issues when writing files to the mounted volume
     #
@@ -146,8 +146,8 @@ services:
     # Expose ports (HOST:CONTAINER)
     #
     # ports:
-    #   - 3080:80
-    #     Map port 80 in the container to any desired port on the Docker host
-    #     INTERLIS Web-Check-Service web app runs on port 80 inside the container
+    #   - 3080:8080
+    #     Map port 8080 in the container to any desired port on the Docker host
+    #     INTERLIS Web-Check-Service web app runs on port 8080 inside the container
     ports:
-      - 3080:80
+      - 3080:8080

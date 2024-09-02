@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace ILICheck.Web
 {
@@ -45,25 +44,6 @@ namespace ILICheck.Web
             : base(message, innerException)
         {
             FileExtension = fileExtension;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MultipleTransferFileFoundException"/> class
-        /// with serialized data.
-        /// </summary>
-        protected MultipleTransferFileFoundException(SerializationInfo info, StreamingContext streamingContext)
-            : base(info, streamingContext)
-        {
-            FileExtension = info.GetString(nameof(FileExtension));
-        }
-
-        /// <inheritdoc />
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null) throw new ArgumentNullException(nameof(info));
-
-            info.AddValue(nameof(FileExtension), FileExtension);
-            base.GetObjectData(info, context);
         }
     }
 }

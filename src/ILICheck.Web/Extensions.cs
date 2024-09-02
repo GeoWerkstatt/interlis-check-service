@@ -30,7 +30,7 @@ namespace ILICheck.Web
         /// <exception cref="InvalidOperationException">If <paramref name="separator"/> is <c>null</c> or empty.</exception>
         public static string JoinNonEmpty(this IEnumerable<string> values, string separator)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
+            ArgumentNullException.ThrowIfNull(values);
             if (string.IsNullOrEmpty(separator)) throw new InvalidOperationException($"Null or empty {nameof(separator)} value is not allowed.");
 
             return string.Join(separator, values.Where(x => !string.IsNullOrWhiteSpace(x)));
@@ -81,7 +81,7 @@ namespace ILICheck.Web
         /// <exception cref="MultipleTransferFileFoundException">If multiple transfer files were found in <paramref name="extensions"/>.</exception>
         public static string GetTransferFileExtension(this IEnumerable<string> extensions, IConfiguration configuration)
         {
-            if (extensions == null) throw new ArgumentNullException(nameof(extensions));
+            ArgumentNullException.ThrowIfNull(extensions);
 
             // Check for unknown transfer file extensions
             foreach (var extension in extensions)
@@ -130,7 +130,7 @@ namespace ILICheck.Web
         /// <param name="transferFile">The transfer file name.</param>
         public static IEnumerable<string> GetFilesToDelete(this IEnumerable<string> fileNames, IConfiguration configuration, string transferFile)
         {
-            if (fileNames == null) throw new ArgumentNullException(nameof(fileNames));
+            ArgumentNullException.ThrowIfNull(fileNames);
 
             if (configuration.GetValue<bool>("DELETE_TRANSFER_FILES"))
             {
@@ -183,7 +183,7 @@ namespace ILICheck.Web
         /// <exception cref="FileNotFoundException">If the log file could not be found.</exception>
         public static string GetLogFile(this IFileProvider fileProvider, LogType logType)
         {
-            if (fileProvider == null) throw new ArgumentNullException(nameof(fileProvider));
+            ArgumentNullException.ThrowIfNull(fileProvider);
 
             try
             {

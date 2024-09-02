@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/ILICheck.Web/bin/Debug/net7.0/ILICheck.Web.dll",
+      "program": "${workspaceFolder}/src/ILICheck.Web/bin/Debug/net8.0/ILICheck.Web.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/ILICheck.Web",
       "stopAtEntry": false,

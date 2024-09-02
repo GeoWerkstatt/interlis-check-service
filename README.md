@@ -26,7 +26,7 @@ Mit [Docker](https://www.docker.com/) kann der *INTERLIS Web-Check-Service* in e
 Um einen ersten Augenschein der Applikation zu nehmen, kann der Container in der Kommandozeile wie folgt gestartet werden:
 
 ```bash
-docker run -it --rm -p 8080:80 ghcr.io/geowerkstatt/interlis-check-service:latest
+docker run -it --rm -p 8080:8080 ghcr.io/geowerkstatt/interlis-check-service:latest
 ```
 
 `docker-compose.yml`
@@ -107,12 +107,12 @@ services:
     #
     # environment:
     #   - PUID=1000
-    #     Optional, Default user id 941
+    #     Optional, Default user id 1654
     #     Using PUID and PGID allows to map the container's internal user to a user on the
     #     host machine which prevents permisson issues when writing files to the mounted volume
     #
     #   - PGID=1000
-    #     Optional, Default group id 941
+    #     Optional, Default group id 1654
     #     Using PUID and PGID allows to map the container's internal user to a user on the
     #     host machine which prevents permisson issues when writing files to the mounted volume
     #
@@ -179,11 +179,11 @@ services:
     # Expose ports (HOST:CONTAINER)
     #
     # ports:
-    #   - 3080:80
-    #     Map port 80 in the container to any desired port on the Docker host
-    #     INTERLIS Web-Check-Service web app runs on port 80 inside the container
+    #   - 3080:8080
+    #     Map port 8080 in the container to any desired port on the Docker host
+    #     INTERLIS Web-Check-Service web app runs on port 8080 inside the container
     ports:
-      - 3080:80
+      - 3080:8080
 ```
 
 ## Individuelle Anpassung
