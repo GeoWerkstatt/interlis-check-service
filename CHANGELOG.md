@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## v4.0.115 - 2024-09-02
+
 ### Changed
 
 - Updated to .NET 8.0.
