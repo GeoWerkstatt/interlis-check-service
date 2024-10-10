@@ -2,6 +2,7 @@
   "name": "interlis-web-check-service",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.7",
@@ -19,10 +20,10 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "preview": "vite preview",
+    "build": "vite build",
+    "test": "vitest",
     "lint": "eslint ./src/"
   },
   "eslintConfig": {
@@ -38,19 +39,8 @@
       "prettier"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-react-app": "^6.0.0",
@@ -59,7 +49,9 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
+    "jsdom": "^25.0.1",
     "license-checker": "^25.0.1",
-    "react-scripts": "^5.0.1"
+    "vite": "^5.4.8",
+    "vitest": "^2.1.2"
   }
 }
