@@ -8,6 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   create-pre-release:
