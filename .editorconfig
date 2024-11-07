@@ -2,10 +2,6 @@
 ; Use the EditorConfig VS add-in to make this work.
 ; http://editorconfig.org/
 ;
-; Here are some resources for what's supported for .NET/C#
-; https://kent-boogaart.com/blog/editorconfig-reference-for-c-developers
-; https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference?view=vs-2017
-;
 ; Be **careful** editing this because some of the rules don't support adding a severity level
 ; For instance if you change to `dotnet_sort_system_directives_first = true:warning` (adding `:warning`)
 ; then the rule will be silently ignored.
@@ -99,6 +95,7 @@ dotnet_diagnostic.CA1058.severity = warning
 dotnet_diagnostic.CA1059.severity = warning
 dotnet_diagnostic.CA1060.severity = warning
 dotnet_diagnostic.CA1061.severity = warning
+dotnet_diagnostic.CA1062.severity = warning
 dotnet_diagnostic.CA1063.severity = warning
 dotnet_diagnostic.CA1064.severity = warning
 dotnet_diagnostic.CA1065.severity = warning
@@ -127,6 +124,7 @@ dotnet_diagnostic.CA1800.severity = warning
 dotnet_diagnostic.CA1801.severity = warning
 dotnet_diagnostic.CA1802.severity = warning
 dotnet_diagnostic.CA1804.severity = warning
+dotnet_diagnostic.CA1806.severity = warning
 dotnet_diagnostic.CA1809.severity = warning
 dotnet_diagnostic.CA1811.severity = warning
 dotnet_diagnostic.CA1813.severity = warning
@@ -229,12 +227,12 @@ dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.SA0000.severity = warning
 dotnet_diagnostic.SA1101.severity = none
 dotnet_diagnostic.SA1116.severity = warning
-dotnet_diagnostic.SA1118.severity = none
+dotnet_diagnostic.SA1118.severity = warning
 dotnet_diagnostic.SA1122.severity = none
 dotnet_diagnostic.SA1200.severity = none
 dotnet_diagnostic.SA1201.severity = none
 dotnet_diagnostic.SA1202.severity = none
-dotnet_diagnostic.SA1203.severity = none
+dotnet_diagnostic.SA1203.severity = warning
 dotnet_diagnostic.SA1204.severity = none
 dotnet_diagnostic.SA1208.severity = none
 dotnet_diagnostic.SA1311.severity = none
