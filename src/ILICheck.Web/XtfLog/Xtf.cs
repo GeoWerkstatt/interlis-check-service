@@ -7,6 +7,7 @@ namespace ILICheck.Web.XtfLog
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "http://www.interlis.ch/INTERLIS2.3")]
     [XmlRoot(ElementName = "TRANSFER", Namespace = "http://www.interlis.ch/INTERLIS2.3", IsNullable = false)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:File name should match first type name", Justification = "Accepted for xtf log XML classes.")]
     public class Transfer
     {
         [XmlElement("DATASECTION")]
