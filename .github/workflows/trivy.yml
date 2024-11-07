@@ -24,7 +24,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo IMAGE_NAME=ghcr.io/$REGISTRY/$(echo ${GITHUB_REPOSITORY,,}) >> $GITHUB_ENV
+          echo IMAGE_NAME=ghcr.io$REGISTRY/$(echo ${GITHUB_REPOSITORY,,}) >> $GITHUB_ENV
 
       - name: Build image from Dockerfile
         run: |
