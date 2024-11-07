@@ -57,3 +57,5 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:${{ env.DOCKER_BETA_TAG }}
           cache-to: type=inline
+          sbom: true
+          provenance: mode=max

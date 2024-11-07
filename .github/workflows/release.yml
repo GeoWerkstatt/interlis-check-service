@@ -62,6 +62,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:edge
           cache-to: type=inline
+          sbom: true
+          provenance: mode=max
 
   patch-changelog:
     runs-on: ubuntu-latest
