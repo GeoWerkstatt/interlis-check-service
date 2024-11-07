@@ -77,23 +77,25 @@ namespace ILICheck.Web.Controllers
             }
 
             var downloadLogUrlTemplate = "/api/v{0}/download?jobId={1}&logType={2}";
-            return new Uri(string.Format(
-                CultureInfo.InvariantCulture,
-                downloadLogUrlTemplate,
-                version.MajorVersion,
-                jobId,
-                logType.ToString().ToLowerInvariant()),
+            return new Uri(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    downloadLogUrlTemplate,
+                    version.MajorVersion,
+                    jobId,
+                    logType.ToString().ToLowerInvariant()),
                 UriKind.Relative);
         }
 
         private Uri GetJsonLogUrl(ApiVersion version, Guid jobId)
         {
             var logUrlTemplate = "/api/v{0}/download/json?jobId={1}";
-            return new Uri(string.Format(
-                CultureInfo.InvariantCulture,
-                logUrlTemplate,
-                version.MajorVersion,
-                jobId),
+            return new Uri(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    logUrlTemplate,
+                    version.MajorVersion,
+                    jobId),
                 UriKind.Relative);
         }
     }
