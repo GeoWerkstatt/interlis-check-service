@@ -78,7 +78,7 @@ jobs:
           push-to-registry: true
 
       - name: Extract SBOM in SPDX format
-        run: docker sbom ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} --format spdx-json --output sbom.spdx.json
+        run: docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} --format "{{ json .SBOM }}" > sbom.spdx.json
 
       - name: Generate SBOM attestation
         uses: actions/attest-sbom@v1
