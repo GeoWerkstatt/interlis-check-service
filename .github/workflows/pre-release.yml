@@ -16,7 +16,7 @@ jobs:
     name: Build and push Docker image and create a new GitHub pre-release
     permissions:
       id-token: write
-      contents: read
+      contents: write
       attestations: write
       packages: write
 
