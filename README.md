@@ -42,12 +42,6 @@ services:
     #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3.2.1
     #     Stable tag for a specific version
     #
-    #   - image: ghcr.io/geowerkstatt/interlis-check-service:v3-beta
-    #     Reflects the last commit on branches matching 'releases/beta/**'
-    #     May be used to preview upcoming releases
-    #     Contains breaking changes and incompatibilities
-    #     NOT RECOMMENDED!
-    #
     #   - image: ghcr.io/geowerkstatt/interlis-check-service:latest
     #     Points to the latest stable tag, no matter what the current major version is
     #     May contain breaking changes and incompatibilities
