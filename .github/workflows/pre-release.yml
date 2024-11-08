@@ -77,15 +77,19 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
-      - name: Extract SBOM in SPDX format
-        run: docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} --format "{{ json .SBOM.SPDX }}" > sbom.spdx.json
+      - name: Generate SBOM file
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:edge
+          format: 'cyclonedx-json'
+          output-file: 'sbom.cyclonedx.json'
 
       - name: Generate SBOM attestation
         uses: actions/attest-sbom@v1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
-          sbom-path: 'sbom.spdx.json'
+          sbom-path: 'sbom.cyclonedx.json'
           push-to-registry: true
 
       - name: Create GitHub pre-release
