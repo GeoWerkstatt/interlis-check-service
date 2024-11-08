@@ -77,12 +77,15 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
+      - name: Extract SBOM in SPDX format
+        run: docker sbom ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} --format spdx-json --output sbom.spdx.json
+
       - name: Generate SBOM attestation
         uses: actions/attest-sbom@v1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
-          sbom-path: 'sbom.json'
+          sbom-path: 'sbom.spdx.json'
           push-to-registry: true
 
       - name: Create GitHub pre-release
