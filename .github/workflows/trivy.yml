@@ -1,12 +1,8 @@
 name: Trivy
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   schedule:
-    - cron: '44 1 * * 3'
+    - cron: '44 1 * * *'
 
 permissions:
   contents: read
