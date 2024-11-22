@@ -39,12 +39,19 @@ namespace ILICheck.Web.XtfLog
     {
         [XmlAttribute("TID")]
         public string Tid { get; set; }
+
         public string Message { get; set; }
+
         public string Type { get; set; }
+
         public string ObjTag { get; set; }
+
         public string DataSource { get; set; }
+
         public int? Line { get; set; }
+
         public Geometry Geometry { get; set; }
+
         public string TechDetails { get; set; }
     }
 
@@ -61,6 +68,7 @@ namespace ILICheck.Web.XtfLog
     public class Coord
     {
         public decimal C1 { get; set; }
+
         public decimal C2 { get; set; }
     }
 }
