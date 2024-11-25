@@ -253,4 +253,4 @@ Ein neuer GitHub *Pre-release* wird bei jeder Änderung auf [main](https://githu
 
 ## Lizenz
 
-Dieses Projekt ist unter der [GNU General Public License Version 3 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0.html) lizensiert. Eine Kopie der Lizenz ist [hier](./LICENSE) abgelegt.
+Dieses Projekt ist unter der [GNU Affero General Public License Version 3 (AGPLv3)](https://www.gnu.org/licenses/agpl-3.0.html) lizenziert. Eine Kopie der Lizenz ist [hier](./LICENSE) abgelegt.

@@ -15,8 +15,8 @@ export const About = (props) => {
       <h2>Entwicklung und Bugtracking</h2>
       <p>
         Der Code steht unter der{" "}
-        <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer">
-          GNU General Public License (GPL)
+        <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">
+          GNU Affero General Public License v3.0 (AGPL-3.0)
         </a>{" "}
         Version 3 im{" "}
         <a href="https://github.com/GeoWerkstatt/interlis-check-service" target="_blank" rel="noopener noreferrer">
