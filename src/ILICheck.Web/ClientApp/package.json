@@ -40,7 +40,7 @@
     ]
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.2",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-react-app": "^6.0.0",
@@ -51,7 +51,7 @@
     "eslint-plugin-react": "^7.32.2",
     "jsdom": "^25.0.1",
     "license-checker": "^25.0.1",
-    "vite": "^5.4.14",
-    "vitest": "^2.1.9"
+    "vite": "^6.2.1",
+    "vitest": "^3.0.8"
   }
 }
