@@ -4,6 +4,7 @@
 
 ### Changed
 - The code for this application is now available under the AGPL 3.0 licence.
+- The image now supports to use existing ilivalidator and ili2gpkg executables in `$ILITOOLS_HOME_DIR` directory.
 
 ## v4.0.115 - 2024-09-02
 

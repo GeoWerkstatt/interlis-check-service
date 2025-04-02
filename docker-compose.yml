@@ -41,6 +41,12 @@ services:
     #   - /path/to/models:/models
     #     Folder containing optional ili files
     #
+    #   - /path/to/ilitools:/ilitools
+    #     Folder containing persistent ilivalidator and ili2gpkg tools
+    #     structure like:
+    #        /ilitools/ilivalidator/1.14.5/ilivalidator.jar
+    #        /ilitools/ili2gpkg/4.7.0/ili2gpkg.jar
+    #
     #   - /path/to/plugins:/plugins
     #     Folder containing optional ilivalidator plugins (jar files)
     #
@@ -62,6 +68,7 @@ services:
       - ./src/ILICheck.Web/Config:/config
       - ./src/ILICheck.Web/Catalogues:/catalogues
       - ./src/ILICheck.Web/Models:/models
+      - ./src/ILICheck.Web/Ilitools:/ilitools
       - ./src/ILICheck.Web/Plugins:/plugins
       - ./src/ILICheck.Web/Web-Assets:/web-assets
     # Add environment variables
@@ -137,6 +144,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - ENABLE_GPKG_VALIDATION=true
     # Expose ports (HOST:CONTAINER)
     #
     # ports:
