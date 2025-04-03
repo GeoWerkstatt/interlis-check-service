@@ -7,6 +7,9 @@
 - The image now supports to use existing ilivalidator and ili2gpkg executables in `$ILITOOLS_HOME_DIR` directory.
 - The image now supports overriding the ilitools cache directory via `ILITOOLS_CACHE_DIR` env variable.
 
+### Fixed
+- Fixed release workflow to tag and publish major version tags.
+
 ## v4.0.115 - 2024-09-02
 
 ### Changed

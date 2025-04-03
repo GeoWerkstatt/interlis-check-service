@@ -22,7 +22,9 @@ jobs:
     steps:
       - name: Set environment variables
         run: |
+          version=${TAG_NAME#v} && major=${version%%.*}
           echo VERSION=${TAG_NAME#v} >> $GITHUB_ENV
+          echo MAJOR=${major} >> $GITHUB_ENV
           echo IMAGE_NAME=$REGISTRY/$(echo ${GITHUB_REPOSITORY,,}) >> $GITHUB_ENV
 
       - name: Log in to the GitHub container registry
@@ -32,10 +34,14 @@ jobs:
         run: docker pull ${{ env.IMAGE_NAME }}:v${{ env.VERSION }}
 
       - name: Tag docker image
-        run: docker tag ${{ env.IMAGE_NAME }}:v${{ env.VERSION }} ${{ env.IMAGE_NAME }}:latest
+        run: |
+          docker tag ${{ env.IMAGE_NAME }}:v${{ env.VERSION }} ${{ env.IMAGE_NAME }}:latest
+          docker tag ${{ env.IMAGE_NAME }}:v${{ env.VERSION }} ${{ env.IMAGE_NAME }}:v${{ env.MAJOR }}
 
       - name: Push docker image
-        run: docker push ${{ env.IMAGE_NAME }}:latest
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.IMAGE_NAME }}:v${{ env.MAJOR }}
 
   patch-changelog:
     runs-on: ubuntu-latest
