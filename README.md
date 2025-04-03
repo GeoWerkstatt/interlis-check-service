@@ -137,12 +137,15 @@ services:
     #   - ILIVALIDATOR_ENABLE_TRACE=true
     #     Optional, Enable validation trace messages, Default false
     #
-    #   - ILIVALIDATOR_MODEL_DIR=https://models.example.com;http://models.interlis.ch/
+    #   - ILIVALIDATOR_MODEL_DIR=https://models.example.com;https://models.interlis.ch/
     #     Optional semicolon-separated list of external repositories with ili-files
-    #     Default http://models.interlis.ch/
+    #     Default https://models.interlis.ch/
     #
     #   - ENABLE_GPKG_VALIDATION=true
     #     Optional, Default false
+    #
+    #   - ILITOOLS_CACHE_DIR=/custom-cache
+    #     Optional directory path to override where ilitools should save their cache, Default /cache
     #
     #   - ILI2GPKG_VERSION=4.7.0
     #     Optional, Default latest version available from https://interlis.ch/downloads/ili2db
