@@ -13,6 +13,9 @@ export ILIVALIDATOR_MODEL_DIR="%ITF_DIR;$ILITOOLS_MODELS_DIR;${ILIVALIDATOR_MODE
 export DELETE_TRANSFER_FILES=${DELETE_TRANSFER_FILES:-false}
 export ENABLE_GPKG_VALIDATION=${ENABLE_GPKG_VALIDATION:-false}
 
+# Override ilitools default cache directory
+export ILI_CACHE=$ILITOOLS_CACHE_DIR
+
 # Download and configure ilivalidator and optional ili2pgkg
 download_and_configure_ilitool () {
   ilitool=$1

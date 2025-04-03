@@ -92,9 +92,6 @@ VOLUME $ILITOOLS_PLUGINS_DIR
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
-# Override ilitools default cache directory
-ENV ILI_CACHE = $ILITOOLS_CACHE_DIR
-
 COPY --from=build /app/publish $ILICHECK_APP_HOME_DIR
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY ilivalidator-wrapper.sh /usr/local/bin/ilivalidator
