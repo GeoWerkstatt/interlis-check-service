@@ -144,6 +144,9 @@ services:
     #   - ENABLE_GPKG_VALIDATION=true
     #     Optional, Default false
     #
+    #   - ILITOOLS_CACHE_DIR=/custom-cache
+    #     Optional directory path to override where ilitools should save their cache, Default /cache
+    #
     #   - ILI2GPKG_VERSION=4.7.0
     #     Optional, Default latest version available from https://interlis.ch/downloads/ili2db
     #     The ili2gpkg version is only taken into account if ENABLE_GPKG_VALIDATION is set to true
