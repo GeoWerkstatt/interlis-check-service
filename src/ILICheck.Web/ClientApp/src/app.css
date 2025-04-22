@@ -49,14 +49,12 @@ header {
 }
 
 .app-title {
-  font-family: "Dosis", sans-serif;
   font-size: 40px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 30px;
 }
 
 .app-subtitle {
-  font-family: "Dosis", sans-serif;
   color: #007cc3;
   font-weight: 100;
   font-size: 1rem;
@@ -280,7 +278,6 @@ input {
 }
 
 .check-button {
-  font-family: "Dosis", sans-serif;
   border: none;
   background-color: #007cc3;
   border-color: #007cc3;
@@ -377,7 +374,6 @@ footer {
 }
 
 .footer-style {
-  font-family: "Dosis", sans-serif;
   background: #007cc3;
   padding: 12px;
   font-stretch: expanded;
@@ -456,7 +452,6 @@ footer {
 /************ Banner ************/
 
 .banner {
-  font-family: "Dosis", sans-serif;
   color: white;
   position: fixed;
   background-color: #007cc3;
