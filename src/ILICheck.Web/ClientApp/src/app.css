@@ -214,19 +214,8 @@ input {
     max-height: 200px;
   }
 
-  .footer-icons {
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
 }
 
-@media screen and (max-width: 1600px) {
-  .footer-icons {
-    display: flex;
-    justify-content: center;
-  }
-}
 @media screen and (max-width: 1200px) {
   .title-wrapper {
     margin-top: 12vh;
@@ -367,32 +356,22 @@ footer {
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   overflow: hidden;
   align-items: center;
-}
-
-.footer-style {
-  background: #007cc3;
-  padding: 12px;
-  font-stretch: expanded;
+  padding: 10px 20px;
 }
 
 .footer-button.btn-link {
-  color: white;
+  color: rgb(18, 74, 79);
+  font-size: 16px;
   border: none;
   text-decoration-line: none;
 }
 
 .footer-button:hover {
-  color: #005485;
-}
-
-.footer-icon {
-  height: 30px;
-  margin-right: 1.5rem;
-  margin-left: 1.5rem;
+  background-color: rgba(18, 74, 79, 0.04);;
 }
 
 /************ Modals ************/

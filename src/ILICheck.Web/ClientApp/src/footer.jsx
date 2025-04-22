@@ -1,9 +1,6 @@
 import "./app.css";
 import React from "react";
 import About from "./about";
-import swissMadeSwissHosted from "./img/sms-sh.png";
-import qgisLogo from "./img/qgis.png";
-import interlisLogo from "./img/interlis.svg";
 import { Button } from "react-bootstrap";
 
 export const Footer = (props) => {
@@ -20,77 +17,54 @@ export const Footer = (props) => {
 
   return (
     <footer className="footer-style">
-      <div>
-        {infoHilfeContent && (
-          <Button
-            variant="link"
-            className="footer-button no-outline-on-focus"
-            onClick={() => openModalContent(infoHilfeContent, "markdown")}
-          >
-            INFO & HILFE
-          </Button>
-        )}
-        {nutzungsbestimmungenContent && (
-          <Button
-            variant="link"
-            className="footer-button no-outline-on-focus"
-            onClick={() => openModalContent(nutzungsbestimmungenContent, "markdown")}
-          >
-            NUTZUNGSBESTIMMUNGEN
-          </Button>
-        )}
-        {datenschutzContent && (
-          <Button
-            variant="link"
-            className="footer-button no-outline-on-focus"
-            onClick={() => openModalContent(datenschutzContent, "markdown")}
-          >
-            DATENSCHUTZ
-          </Button>
-        )}
-        {impressumContent && (
-          <Button
-            variant="link"
-            className="footer-button no-outline-on-focus"
-            onClick={() => openModalContent(impressumContent, "markdown")}
-          >
-            IMPRESSUM
-          </Button>
-        )}
+      {infoHilfeContent && (
         <Button
           variant="link"
           className="footer-button no-outline-on-focus"
-          onClick={() =>
-            openModalContent(
-              <About clientSettings={clientSettings} licenseInfo={{ ...licenseInfoCustom, ...licenseInfo }} />,
-              "raw"
-            )
-          }
+          onClick={() => openModalContent(infoHilfeContent, "markdown")}
         >
-          ABOUT
+          INFO & HILFE
         </Button>
-      </div>
-      <div className="footer-icons">
-        <a href="https://interlis.ch/" title="Link zu interlis" target="_blank" rel="noreferrer">
-          <img className="footer-icon" src={interlisLogo} alt="Interlis Logo" />
-        </a>
-        <a
-          href="https://plugins.qgis.org/plugins/xtflog_checker/"
-          title="Link zum QGIS Plugin XTFLog Checker"
-          target="_blank"
-          rel="noreferrer"
+      )}
+      {nutzungsbestimmungenContent && (
+        <Button
+          variant="link"
+          className="footer-button no-outline-on-focus"
+          onClick={() => openModalContent(nutzungsbestimmungenContent, "markdown")}
         >
-          <img className="footer-icon" src={qgisLogo} alt="QGIS Logo" />
-        </a>
-        <a
-          href="https://www.swissmadesoftware.org/en/home/swiss-hosting.html"
-          title="Link zu Swiss Hosting"
-          target="_blank"
-          rel="noreferrer"
+          NUTZUNGSBESTIMMUNGEN
+        </Button>
+      )}
+      {datenschutzContent && (
+        <Button
+          variant="link"
+          className="footer-button no-outline-on-focus"
+          onClick={() => openModalContent(datenschutzContent, "markdown")}
         >
-          <img className="footer-icon" src={swissMadeSwissHosted} alt="Swiss Hosting Logo" />
-        </a>
-      </div>
+          DATENSCHUTZ
+        </Button>
+      )}
+      {impressumContent && (
+        <Button
+          variant="link"
+          className="footer-button no-outline-on-focus"
+          onClick={() => openModalContent(impressumContent, "markdown")}
+        >
+          IMPRESSUM
+        </Button>
+      )}
+      <Button
+        variant="link"
+        className="footer-button no-outline-on-focus"
+        onClick={() =>
+          openModalContent(
+            <About clientSettings={clientSettings} licenseInfo={{ ...licenseInfoCustom, ...licenseInfo }} />,
+            "raw"
+          )
+        }
+      >
+        ABOUT
+      </Button>
     </footer>
   );
 };
