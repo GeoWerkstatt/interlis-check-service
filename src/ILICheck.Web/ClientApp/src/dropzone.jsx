@@ -6,9 +6,9 @@ import styled from "styled-components";
 
 const getColor = (props) => {
   if (props.isDragActive) {
-    return "#2196f3";
+    return "#124A4F";
   } else {
-    return "#d1d6d991";
+    return "#124A4F99";
   }
 };
 
@@ -24,8 +24,7 @@ const Container = styled.div`
   border-radius: 5px;
   border-color: ${(props) => getColor(props)};
   border-style: dashed;
-  background-color: #d1d6d991;
-  color: #9f9f9f;
+  background-color: #124a4f0d;
   outline: none;
   transition: border 0.24s ease-in-out;
 `;

@@ -1,7 +1,11 @@
 /************ Base Layout ************/
 body {
+  margin: 0;
   text-align: center;
-  background: #eaeff27a;
+}
+
+a {
+  color: rgb(18, 74, 79);
 }
 
 .app {
@@ -16,12 +20,7 @@ main {
   flex: 1 0 auto;
 }
 
-main a {
-  color: #007cc3;
-}
-
 header a {
-  color: #007cc3;
   text-decoration: none;
 }
 
@@ -36,7 +35,7 @@ header a {
 }
 
 .vendor-logo:hover {
-  -webkit-transform: scale(1.05);
+  --webkit-transform: scale(1.05);
   transform: scale(1.05);
 }
 
@@ -55,9 +54,10 @@ header {
 }
 
 .app-subtitle {
-  color: #007cc3;
-  font-weight: 100;
-  font-size: 1rem;
+  color: rgb(18, 74, 79);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 16px;
   margin-bottom: 4rem;
 }
 
@@ -126,7 +126,7 @@ header {
 .carousel {
   color: rgb(111, 111, 111);
   width: 100%;
-  font-size: 20px;
+  font-size: 18px;
   margin-bottom: 1rem;
 }
 
@@ -154,16 +154,16 @@ input {
 }
 
 .dropzone-text-disabled {
-  color: #7c7c7c !important;
+  color: rgb(124, 124, 124) !important;
 }
 
 .dropzone-text-file {
-  color: #313131 !important;
+  color: rgb(49, 49, 49) !important;
 }
 
 .dropzone-text-error {
-  color: #c10026 !important;
-  border-color: #c10026 !important;
+  color: rgb(193, 0, 38) !important;
+  border-color: rgb(193, 0, 38) !important;
 }
 
 .dropzone-icon {
@@ -171,7 +171,7 @@ input {
 }
 
 .nutzungsbestimmungen-input {
-  font-size: 0.8rem;
+  font-size: 14px;
 }
 
 .drop-icon {
@@ -201,7 +201,7 @@ input {
   .dropzone {
     min-height: 12vh !important;
     margin-top: 3vh;
-    font-size: 1rem;
+    font-size: 16px;
   }
   .carousel {
     font-size: 20px;
@@ -223,7 +223,7 @@ input {
   .dropzone {
     min-height: 12vh !important;
     margin-top: 3vh;
-    font-size: 1rem;
+    font-size: 16px;
   }
   .carousel {
     font-size: 18px;
@@ -245,7 +245,7 @@ input {
   .dropzone {
     min-height: 10vh !important;
     margin-top: 1vh;
-    font-size: 0.8rem;
+    font-size: 14px;
   }
   .carousel {
     font-size: 14px;
@@ -263,25 +263,26 @@ input {
 }
 
 .btn {
-  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  font-size: 16px;
 }
 
 .check-button {
   border: none;
-  background-color: #007cc3;
-  border-color: #007cc3;
+  background-color: rgb(18, 74, 79);
+  border-color: rgb(18, 74, 79);
   vertical-align: baseline;
   margin-top: 1rem;
 }
 
 .check-button:disabled {
-  background-color: #007cc396;
-  border-color: #007cc396;
+  background-color: rgba(18, 74, 79, 0.6);
+  border-color: rgba(18, 74, 79, 0.6);
 }
 
 .check-button:hover {
-  background-color: #005485;
-  border-color: #005485;
+  background-color: rgb(63, 97, 100);
+  border-color: rgb(63, 97, 100);
 }
 
 .invisible-check-button {
@@ -304,11 +305,11 @@ input {
 /************ Check status ************/
 
 .valid {
-  color: #198754;
+  color: rgb(25, 135, 84);
 }
 
 .errors {
-  color: #c10026;
+  color: rgb(193, 0, 38);
 }
 
 /************ Tooltips ************/
@@ -322,8 +323,8 @@ input {
   font-size: 0.8rem;
   visibility: hidden;
   width: 260px;
-  background-color: #555;
-  color: #fff;
+  background-color: rgb(85, 85, 85);
+  color: rgb(255, 255, 255);
   text-align: center;
   border-radius: 6px;
   padding: 5px;
@@ -343,7 +344,7 @@ input {
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: #555 transparent transparent transparent;
+  border-color: rgb(85, 85, 85) transparent transparent transparent;
 }
 
 .icon-tooltip:hover .icon-tooltip-text {
@@ -360,6 +361,7 @@ footer {
   flex-wrap: wrap;
   overflow: hidden;
   align-items: center;
+  gap: 10px;
   padding: 10px 20px;
 }
 
@@ -371,7 +373,7 @@ footer {
 }
 
 .footer-button:hover {
-  background-color: rgba(18, 74, 79, 0.04);;
+  background-color: rgba(18, 74, 79, 0.04);
 }
 
 /************ Modals ************/
@@ -384,17 +386,25 @@ footer {
 
 .modal-content h1 {
   padding-top: 0.25em;
-  font-size: 1.75rem;
 }
 
 .modal-content h2 {
   padding-top: 0.3em;
-  font-size: 1.25rem;
 }
 
 .modal-content h3 {
   padding-top: 0.25em;
-  font-size: 1rem;
+  font-size: 16px;
+}
+
+.modal .btn {
+  border-color: rgb(18, 74, 79);
+  color: rgb(18, 74, 79);
+}
+
+.modal .btn:hover {
+  background-color: rgb(18, 74, 79);
+  color: white;
 }
 
 .terms-of-use {
@@ -403,17 +413,18 @@ footer {
 }
 
 .terms-of-use button {
-  color: #007cc3;
+  color: rgb(18, 74, 79);
   text-decoration: none;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   padding: unset;
   margin: unset;
   vertical-align: unset;
 }
 
 .terms-of-use button:hover {
-  color: #005485;
+  color: rgb(63, 97, 100);
 }
 
 .terms-of-use input {
@@ -433,39 +444,38 @@ footer {
 .banner {
   color: white;
   position: fixed;
-  background-color: #007cc3;
+  background-color: rgb(18, 74, 79);
+  border: none;
+  border-radius: 0;
   display: flex;
   padding-right: 10px;
   padding-left: 10px;
   text-align: left;
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
 }
 
 .banner a {
   color: white;
 }
 
-.banner p {
-  font-size: 1.3rem;
-}
-
 .banner h1 {
   flex-shrink: 0;
   padding-left: 15px;
   padding-right: 25px;
-  font-size: 2rem;
+}
+
+.banner p {
+  font-size: 18px;
 }
 
 .banner .close-icon {
   margin-left: 20px;
   margin-right: 15px;
-}
-
-.banner {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
+  cursor: pointer;
 }
 
 @keyframes fadeInOpacity {
@@ -477,3 +487,4 @@ footer {
     opacity: 1;
   }
 }
+
