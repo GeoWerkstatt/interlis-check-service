@@ -30,7 +30,7 @@ header a {
   max-width: 650px;
   width: 95%;
   height: auto;
-  padding: 0px;
+  padding: 0;
   margin-bottom: 5px;
   flex: 0;
 }
