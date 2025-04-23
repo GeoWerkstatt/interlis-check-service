@@ -55,7 +55,7 @@ export const Protokoll = (props) => {
               <div ref={logEndRef} />
             </div>
             {statusData && (
-              <Card.Title className={statusClass}>
+              <Card.Title className={`status ${statusClass}`}>
                 {statusText}
                 <span>
                   {statusData.logUrl && (

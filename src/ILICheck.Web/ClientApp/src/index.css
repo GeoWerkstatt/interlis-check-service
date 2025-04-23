@@ -1,3 +1,8 @@
+/*setting the font size of the root element to 62.5% when using rem units is to make it easier to calculate font sizes in rem units. 62.5% of the default font size (which is typically 16px) is 10px. This means that 1rem is equal to 10px, making it easier to calculate font sizes in rem units.*/
+:root {
+  font-size: 62.5%;
+}
+
 body {
   letter-spacing: 0.05em;
   font-family: "NeoGeo", sans-serif;
@@ -11,31 +16,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 2.8rem;
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 2.4rem;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 2rem;
 }
 
 h4 {
-  font-size: 18px;
+  font-size: 1.8rem;
 }
 
 h5 {
-  font-size: 16px;
+  font-size: 1.6rem;
 }
 
 h6 {
-  font-size: 14px;
+  font-size: 1.4rem;
 }
 
-p {
-  font-size: 16px;
+p, li, span {
+  font-size: 1.6rem;
 }
 
 b {
