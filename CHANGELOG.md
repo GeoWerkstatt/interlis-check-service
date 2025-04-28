@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## v4.1.151 - 2025-04-28
+
 ### Changed
 - Redesign of the user interface.
 
