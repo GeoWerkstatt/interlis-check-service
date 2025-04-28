@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Redesign of the user interface.
+
 ## v4.0.145 - 2025-04-03
 
 ### Changed

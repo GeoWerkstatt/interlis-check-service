@@ -1,7 +1,11 @@
 /************ Base Layout ************/
 body {
+  margin: 0;
   text-align: center;
-  background: #eaeff27a;
+}
+
+a {
+  color: rgb(18, 74, 79);
 }
 
 .app {
@@ -16,12 +20,7 @@ main {
   flex: 1 0 auto;
 }
 
-main a {
-  color: #007cc3;
-}
-
 header a {
-  color: #007cc3;
   text-decoration: none;
 }
 
@@ -30,13 +29,13 @@ header a {
   max-width: 650px;
   width: 95%;
   height: auto;
-  padding: 0px;
+  padding: 0;
   margin-bottom: 5px;
   flex: 0;
 }
 
 .vendor-logo:hover {
-  -webkit-transform: scale(1.05);
+  --webkit-transform: scale(1.05);
   transform: scale(1.05);
 }
 
@@ -49,17 +48,16 @@ header {
 }
 
 .app-title {
-  font-family: "Dosis", sans-serif;
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 4rem;
+  font-weight: 600;
   padding: 30px;
 }
 
 .app-subtitle {
-  font-family: "Dosis", sans-serif;
-  color: #007cc3;
-  font-weight: 100;
-  font-size: 1rem;
+  color: rgb(18, 74, 79);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 1.6rem;
   margin-bottom: 4rem;
 }
 
@@ -75,6 +73,11 @@ header {
   margin-top: 30px;
   max-width: 95vw;
   min-height: 150px;
+  font-size: 1.6rem;
+}
+
+.status {
+  font-size: 1.6rem;
 }
 
 .card-body {
@@ -116,6 +119,7 @@ header {
 
 .log-entry > .title {
   word-break: break-word;
+  font-size: 1.6rem;
 }
 
 .log-entry-container {
@@ -128,7 +132,7 @@ header {
 .carousel {
   color: rgb(111, 111, 111);
   width: 100%;
-  font-size: 20px;
+  font-size: 1.8rem;
   margin-bottom: 1rem;
 }
 
@@ -156,16 +160,16 @@ input {
 }
 
 .dropzone-text-disabled {
-  color: #7c7c7c !important;
+  color: rgb(124, 124, 124) !important;
 }
 
 .dropzone-text-file {
-  color: #313131 !important;
+  color: rgb(49, 49, 49) !important;
 }
 
 .dropzone-text-error {
-  color: #c10026 !important;
-  border-color: #c10026 !important;
+  color: rgb(193, 0, 38) !important;
+  border-color: rgb(193, 0, 38) !important;
 }
 
 .dropzone-icon {
@@ -173,11 +177,35 @@ input {
 }
 
 .nutzungsbestimmungen-input {
-  font-size: 0.8rem;
+  font-size: 1.45rem;
+}
+
+.terms-of-use {
+  margin: 8px;
+  margin-left: 35px;
+}
+
+.terms-of-use button {
+  color: rgb(18, 74, 79);
+  text-decoration: none;
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: unset;
+  margin: unset;
+  vertical-align: unset;
+}
+
+.terms-of-use button:hover {
+  color: rgb(63, 97, 100);
+}
+
+.terms-of-use input {
+  margin-right: 8px;
 }
 
 .drop-icon {
-  font-size: 35px;
+  font-size: 3.5rem;
 }
 
 .spinner {
@@ -203,10 +231,10 @@ input {
   .dropzone {
     min-height: 12vh !important;
     margin-top: 3vh;
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   .carousel {
-    font-size: 20px;
+    font-size: 2rem;
   }
   .vendor-logo {
     max-height: 70px;
@@ -216,19 +244,8 @@ input {
     max-height: 200px;
   }
 
-  .footer-icons {
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
 }
 
-@media screen and (max-width: 1600px) {
-  .footer-icons {
-    display: flex;
-    justify-content: center;
-  }
-}
 @media screen and (max-width: 1200px) {
   .title-wrapper {
     margin-top: 12vh;
@@ -236,10 +253,10 @@ input {
   .dropzone {
     min-height: 12vh !important;
     margin-top: 3vh;
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   .carousel {
-    font-size: 18px;
+    font-size: 1.8rem;
   }
   .vendor-logo {
     margin-left: 2rem;
@@ -258,10 +275,10 @@ input {
   .dropzone {
     min-height: 10vh !important;
     margin-top: 1vh;
-    font-size: 0.8rem;
+    font-size: 1.4rem;
   }
   .carousel {
-    font-size: 14px;
+    font-size: 1.4rem;
   }
   .app-logo {
     max-height: 100px;
@@ -276,26 +293,26 @@ input {
 }
 
 .btn {
-  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  font-size: 1.6rem;
 }
 
 .check-button {
-  font-family: "Dosis", sans-serif;
   border: none;
-  background-color: #007cc3;
-  border-color: #007cc3;
+  background-color: rgb(18, 74, 79);
+  border-color: rgb(18, 74, 79);
   vertical-align: baseline;
   margin-top: 1rem;
 }
 
 .check-button:disabled {
-  background-color: #007cc396;
-  border-color: #007cc396;
+  background-color: rgba(18, 74, 79, 0.6);
+  border-color: rgba(18, 74, 79, 0.6);
 }
 
 .check-button:hover {
-  background-color: #005485;
-  border-color: #005485;
+  background-color: rgb(63, 97, 100);
+  border-color: rgb(63, 97, 100);
 }
 
 .invisible-check-button {
@@ -307,7 +324,7 @@ input {
 }
 
 .download-icon {
-  font-size: 30px;
+  font-size: 3rem;
   margin-left: 10px;
 }
 
@@ -318,11 +335,11 @@ input {
 /************ Check status ************/
 
 .valid {
-  color: #198754;
+  color: rgb(25, 135, 84);
 }
 
 .errors {
-  color: #c10026;
+  color: rgb(193, 0, 38);
 }
 
 /************ Tooltips ************/
@@ -333,11 +350,11 @@ input {
 }
 
 .icon-tooltip .icon-tooltip-text {
-  font-size: 0.8rem;
+  font-size: 1rem;
   visibility: hidden;
   width: 260px;
-  background-color: #555;
-  color: #fff;
+  background-color: rgb(85, 85, 85);
+  color: rgb(255, 255, 255);
   text-align: center;
   border-radius: 6px;
   padding: 5px;
@@ -357,7 +374,7 @@ input {
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: #555 transparent transparent transparent;
+  border-color: rgb(85, 85, 85) transparent transparent transparent;
 }
 
 .icon-tooltip:hover .icon-tooltip-text {
@@ -370,79 +387,57 @@ footer {
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   overflow: hidden;
   align-items: center;
-}
-
-.footer-style {
-  font-family: "Dosis", sans-serif;
-  background: #007cc3;
-  padding: 12px;
-  font-stretch: expanded;
+  gap: 10px;
+  padding: 10px 20px;
 }
 
 .footer-button.btn-link {
-  color: white;
+  color: rgb(18, 74, 79);
+  font-size: 1.6rem;
   border: none;
   text-decoration-line: none;
 }
 
 .footer-button:hover {
-  color: #005485;
-}
-
-.footer-icon {
-  height: 30px;
-  margin-right: 1.5rem;
-  margin-left: 1.5rem;
+  background-color: rgba(18, 74, 79, 0.04);
 }
 
 /************ Modals ************/
 
 .modal {
   color: black;
-  font-size: 14px;
   text-align: left;
 }
 
 .modal-content h1 {
   padding-top: 0.25em;
-  font-size: 1.75rem;
 }
 
 .modal-content h2 {
   padding-top: 0.3em;
-  font-size: 1.25rem;
 }
 
 .modal-content h3 {
   padding-top: 0.25em;
-  font-size: 1rem;
+  font-size: 1.6rem;
 }
 
-.terms-of-use {
-  margin: 8px;
-  margin-left: 35px;
+.modal-content p, li, span {
+  font-size: 1.45rem;
 }
 
-.terms-of-use button {
-  color: #007cc3;
-  text-decoration: none;
-  font-size: 0.8rem;
-  font-weight: 500;
-  padding: unset;
-  margin: unset;
-  vertical-align: unset;
+.modal .btn {
+  border-color: rgb(18, 74, 79);
+  color: rgb(18, 74, 79);
 }
 
-.terms-of-use button:hover {
-  color: #005485;
-}
-
-.terms-of-use input {
-  margin-right: 8px;
+.modal .btn:hover {
+  background-color: rgb(18, 74, 79);
+  color: white;
 }
 
 .about-licenses p {
@@ -456,42 +451,43 @@ footer {
 /************ Banner ************/
 
 .banner {
-  font-family: "Dosis", sans-serif;
   color: white;
   position: fixed;
-  background-color: #007cc3;
+  background-color: rgb(18, 74, 79);
+  border: none;
+  border-radius: 0;
   display: flex;
   padding-right: 10px;
   padding-left: 10px;
   text-align: left;
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1s;
 }
 
 .banner a {
   color: white;
 }
 
-.banner p {
-  font-size: 1.3rem;
-}
-
 .banner h1 {
   flex-shrink: 0;
   padding-left: 15px;
   padding-right: 25px;
-  font-size: 2rem;
+  margin-top: 10px;
+}
+
+.banner p {
+  font-size: 1.8rem;
+  margin-top: 10px;
 }
 
 .banner .close-icon {
   margin-left: 20px;
   margin-right: 15px;
-}
-
-.banner {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
+  cursor: pointer;
+  font-size: 2.5rem;
 }
 
 @keyframes fadeInOpacity {
@@ -503,3 +499,4 @@ footer {
     opacity: 1;
   }
 }
+

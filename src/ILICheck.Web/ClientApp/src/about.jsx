@@ -4,6 +4,18 @@ export const About = (props) => {
   return (
     <div>
       <h1>About</h1>
+      <p>
+        Zur Visualisierung und weiteren Bearbeitung der Validierungslogs empfehlen wir die Verwendung des{" "}
+        <a
+          href="https://plugins.qgis.org/plugins/xtflog_checker/"
+          title="XTFLog-Checker"
+          target="_blank"
+          rel="noreferrer"
+        >
+          XTFLog-Checker
+        </a>{" "}
+        im QGIS.
+      </p>
       <h2>Versionsinformationen</h2>
       <p>
         <b>{clientSettings?.applicationName}</b>: {clientSettings?.applicationVersion}

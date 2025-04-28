@@ -8,7 +8,7 @@ export const Title = (props) => {
   return (
     <div className="title-wrapper">
       <div className="app-subtitle">Online Validierung von INTERLIS Daten</div>
-      <div>
+      <div style={{ marginBottom: "4rem" }}>
         <img
           className="app-logo"
           src="/app.png"
