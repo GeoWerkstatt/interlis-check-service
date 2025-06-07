@@ -84,7 +84,12 @@ namespace ILICheck.Web.Controllers
         public async Task<IActionResult> UploadAsync(ApiVersion version, IFormFile file)
         {
             if (file == null) return Problem($"Form data <{nameof(file)}> cannot be empty.", statusCode: StatusCodes.Status400BadRequest);
+
             var httpRequest = httpContextAccessor.HttpContext.Request;
+            var userAgentString = httpRequest.Headers["User-Agent"].ToString();
+
+            var uaParser = Parser.GetDefault();
+            var clientInfo = uaParser.Parse(userAgentString);
 
             logger.LogInformation("Start uploading <{TransferFile}> to <{HomeDirectory}>", file.FileName, fileProvider.HomeDirectory);
             logger.LogInformation("Transfer file size: {ContentLength}", HttpUtility.HtmlEncode(httpRequest.ContentLength));
