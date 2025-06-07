@@ -10,6 +10,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using static ILICheck.Web.ValidatorHelper;
+using UAParser;
 
 namespace ILICheck.Web.Controllers
 {
