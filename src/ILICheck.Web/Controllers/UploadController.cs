@@ -98,7 +98,8 @@ namespace ILICheck.Web.Controllers
             // Log raw User Agent string if library can't detect which one it is.
             if (clientInfo.UA.Family == "Other")
             {
-                logger.LogInformation("User Agent: {RawUA}", userAgentString);
+                var sanitizedUserAgentString = HttpUtility.HtmlEncode(userAgentString).Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
+                logger.LogInformation("User Agent: {RawUA}", sanitizedUserAgentString);
             }
             else
             {
