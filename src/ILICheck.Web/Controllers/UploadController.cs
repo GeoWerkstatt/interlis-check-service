@@ -95,6 +95,19 @@ namespace ILICheck.Web.Controllers
             logger.LogInformation("Transfer file size: {ContentLength}", HttpUtility.HtmlEncode(httpRequest.ContentLength));
             logger.LogInformation("Start time: {Timestamp}", DateTime.Now);
 
+            // Log raw User Agent string if library can't detect which one it is.
+            if (clientInfo.UA.Family == "Other")
+            {
+                logger.LogInformation("User Agent: {RawUA}", userAgentString);
+            }
+            else
+            {
+                logger.LogInformation("User Agent: {BrowserFamily} {BrowserMajor} on {OSFamily}",
+                    clientInfo.UA.Family,
+                    clientInfo.UA.Major,
+                    clientInfo.OS.Family);
+            }
+
             try
             {
                 // Sanitize file name and save the file to the predefined home directory.
