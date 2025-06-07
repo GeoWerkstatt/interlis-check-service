@@ -102,7 +102,7 @@ namespace ILICheck.Web.Controllers
             }
             else
             {
-                logger.LogInformation("User Agent: {BrowserFamily} {BrowserMajor} on {OSFamily}",clientInfo.UA.Family,clientInfo.UA.Major,clientInfo.OS.Family);
+                logger.LogInformation("User Agent: {BrowserFamily} {BrowserMajor} on {OSFamily}", clientInfo.UA.Family, clientInfo.UA.Major, clientInfo.OS.Family);
             }
 
             try
