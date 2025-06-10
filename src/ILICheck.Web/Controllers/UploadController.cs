@@ -91,20 +91,13 @@ namespace ILICheck.Web.Controllers
             var uaParser = Parser.GetDefault();
             var clientInfo = uaParser.Parse(userAgentString);
 
+            string formattedUserAgent = clientInfo.UA.Family == "Other"
+                ? HttpUtility.HtmlEncode(userAgentString).Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "")
+                : $"{clientInfo.UA.Family} {clientInfo.UA.Major} on {clientInfo.OS.Family}";
+
             logger.LogInformation("Start uploading <{TransferFile}> to <{HomeDirectory}>", file.FileName, fileProvider.HomeDirectory);
             logger.LogInformation("Transfer file size: {ContentLength}", HttpUtility.HtmlEncode(httpRequest.ContentLength));
             logger.LogInformation("Start time: {Timestamp}", DateTime.Now);
-
-            // Log raw User Agent string if library can't detect which one it is.
-            if (clientInfo.UA.Family == "Other")
-            {
-                var sanitizedUserAgentString = HttpUtility.HtmlEncode(userAgentString).Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
-                logger.LogInformation("User Agent: {RawUA}", sanitizedUserAgentString);
-            }
-            else
-            {
-                logger.LogInformation("User Agent: {BrowserFamily} {BrowserMajor} on {OSFamily}", clientInfo.UA.Family, clientInfo.UA.Major, clientInfo.OS.Family);
-            }
 
             try
             {
@@ -118,7 +111,11 @@ namespace ILICheck.Web.Controllers
                     await file.CopyToAsync(stream).ConfigureAwait(false);
                 }
 
-                logger.LogInformation("Successfully received file: {TransferFile}", file.FileName);
+                logger.LogInformation(
+                    "Successfully received file: {OriginalFilename}. Size: {FileSizeInBytes} Bytes. User-Agent: {UserAgent}",
+                    file.FileName,
+                    httpRequest.ContentLength,
+                    formattedUserAgent);
 
                 // Add validation job to queue.
                 await validatorService.EnqueueJobAsync(
