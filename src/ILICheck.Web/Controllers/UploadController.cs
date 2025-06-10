@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
+using UAParser;
 using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web.Controllers
@@ -83,11 +84,27 @@ namespace ILICheck.Web.Controllers
         public async Task<IActionResult> UploadAsync(ApiVersion version, IFormFile file)
         {
             if (file == null) return Problem($"Form data <{nameof(file)}> cannot be empty.", statusCode: StatusCodes.Status400BadRequest);
+
             var httpRequest = httpContextAccessor.HttpContext.Request;
+            var userAgentString = httpRequest.Headers["User-Agent"].ToString();
+
+            var uaParser = Parser.GetDefault();
+            var clientInfo = uaParser.Parse(userAgentString);
 
             logger.LogInformation("Start uploading <{TransferFile}> to <{HomeDirectory}>", file.FileName, fileProvider.HomeDirectory);
             logger.LogInformation("Transfer file size: {ContentLength}", HttpUtility.HtmlEncode(httpRequest.ContentLength));
             logger.LogInformation("Start time: {Timestamp}", DateTime.Now);
+
+            // Log raw User Agent string if library can't detect which one it is.
+            if (clientInfo.UA.Family == "Other")
+            {
+                var sanitizedUserAgentString = HttpUtility.HtmlEncode(userAgentString).Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
+                logger.LogInformation("User Agent: {RawUA}", sanitizedUserAgentString);
+            }
+            else
+            {
+                logger.LogInformation("User Agent: {BrowserFamily} {BrowserMajor} on {OSFamily}", clientInfo.UA.Family, clientInfo.UA.Major, clientInfo.OS.Family);
+            }
 
             try
             {
