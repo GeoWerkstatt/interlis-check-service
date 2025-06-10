@@ -115,8 +115,7 @@ namespace ILICheck.Web.Controllers
                     "Successfully received file: {OriginalFilename}. Size: {FileSizeInBytes} Bytes. User-Agent: {UserAgent}",
                     file.FileName,
                     httpRequest.ContentLength,
-                    formattedUserAgent
-                );
+                    formattedUserAgent);
 
                 // Add validation job to queue.
                 await validatorService.EnqueueJobAsync(
