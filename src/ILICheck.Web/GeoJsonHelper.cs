@@ -30,12 +30,12 @@ namespace ILICheck.Web
                 .Where(log => log.Geometry?.Coord != null)
                 .Select(log => new Feature(ProjectLv95ToWgs84(log.Geometry.Coord), new AttributesTable(new KeyValuePair<string, object>[]
                 {
-                    new ("type", log.Type),
-                    new ("message", log.Message),
-                    new ("objTag", log.ObjTag),
-                    new ("dataSource", log.DataSource),
-                    new ("line", log.Line),
-                    new ("techDetails", log.TechDetails),
+                    new("type", log.Type),
+                    new("message", log.Message),
+                    new("objTag", log.ObjTag),
+                    new("dataSource", log.DataSource),
+                    new("line", log.Line),
+                    new("techDetails", log.TechDetails),
                 })));
 
             var featureCollection = new FeatureCollection();

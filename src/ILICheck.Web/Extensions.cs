@@ -5,9 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using static ILICheck.Web.ValidatorHelper;
 
 namespace ILICheck.Web
@@ -17,7 +14,7 @@ namespace ILICheck.Web
     /// </summary>
     public static class Extensions
     {
-        private static readonly Regex removeReferencedModelsRegex = new ("{[^}]*}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private static readonly Regex removeReferencedModelsRegex = new("{[^}]*}", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Concatenates the members of a constructed string collection using the specified separator between each member.

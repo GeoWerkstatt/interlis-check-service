@@ -15,7 +15,7 @@ namespace ILICheck.Web
     {
         private readonly ILogger<ValidatorService> logger;
         private readonly Channel<(Guid Id, Func<CancellationToken, Task> Task)> queue;
-        private readonly ConcurrentDictionary<Guid, (Status Status, string StatusMessage)> jobs = new ();
+        private readonly ConcurrentDictionary<Guid, (Status Status, string StatusMessage)> jobs = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidatorService"/> class.
