@@ -43,38 +43,34 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Null argument should be rejected.")]
         public async Task ValidateXmlAsyncForNull()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns((string)null);
-            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Empty argument should be rejected.")]
         public async Task ValidateXmlAsyncForEmpty()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns(string.Empty);
-            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
+            await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
         }
 
         [TestMethod]
         [DeploymentItem(@"testdata/invalid.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
-        [ExpectedException(typeof(InvalidXmlException), "Corrupt or invalid transfer file should be rejected.")]
         public async Task ValidateXmlAsyncForInvalid()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.xtf");
             fileProviderMock.Setup(x => x.OpenText("invalid.xtf")).CallBase();
-            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
+            await Assert.ThrowsExactlyAsync<InvalidXmlException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(FileNotFoundException), "Not existing file path should be detected.")]
         public async Task ValidateXmlAsyncForFileNotFound()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("unavailable.xtf");
             fileProviderMock.Setup(x => x.OpenText("unavailable.xtf")).CallBase();
-            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
+            await Assert.ThrowsExactlyAsync<FileNotFoundException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
         }
 
         [TestMethod]
@@ -87,27 +83,24 @@ namespace ILICheck.Web
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Null argument should be rejected.")]
         public async Task ReadGpkgModelNamesAsyncForNull()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns((string)null);
-            await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false);
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Empty argument should be rejected.")]
         public async Task ReadGpkgModelNamesAsyncForEmpty()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns(string.Empty);
-            await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false);
+            await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(GeoPackageException), "Corrupt or invalid GeoPackage should be rejected.")]
         public async Task ReadGpkgModelNamesAsyncForInvalid()
         {
             validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.gpkg");
-            await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false);
+            await Assert.ThrowsExactlyAsync<GeoPackageException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
         }
 
         [TestMethod]

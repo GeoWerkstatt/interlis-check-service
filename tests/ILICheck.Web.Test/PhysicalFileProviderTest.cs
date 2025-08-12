@@ -13,7 +13,7 @@ namespace ILICheck.Web
 
         [TestMethod]
         public void PhysicalFileProviderForNullEnvKey() =>
-            Assert.ThrowsException<ArgumentNullException>(() => new PhysicalFileProvider(CreateConfiguration(), null));
+            Assert.ThrowsExactly<ArgumentNullException>(() => new PhysicalFileProvider(CreateConfiguration(), null));
 
         [TestMethod]
         public void Initialize()
@@ -34,7 +34,7 @@ namespace ILICheck.Web
         {
             var physicalFileProvider = new PhysicalFileProvider(CreateConfiguration(), "ILICHECK_UPLOADS_DIR");
 
-            Assert.ThrowsException<ArgumentException>(() => physicalFileProvider.Initialize(Guid.Empty));
+            Assert.ThrowsExactly<ArgumentException>(() => physicalFileProvider.Initialize(Guid.Empty));
         }
 
         private IConfiguration CreateConfiguration() =>

@@ -45,7 +45,7 @@ namespace ILICheck.Web.XtfLog
         {
             using var reader = new StreamReader(File.OpenRead(Path.Combine("xtflog", "invalid.xtf")));
 
-            Assert.ThrowsException<InvalidOperationException>(() => XtfLogParser.Parse(reader));
+            Assert.ThrowsExactly<InvalidOperationException>(() => XtfLogParser.Parse(reader));
         }
 
         [TestMethod]

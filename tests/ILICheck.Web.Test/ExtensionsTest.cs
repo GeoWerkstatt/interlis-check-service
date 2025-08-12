@@ -22,9 +22,9 @@ namespace ILICheck.Web
             Assert.AreEqual("foo bar", new[] { "foo", "bar" }.JoinNonEmpty(" "));
             Assert.AreEqual("foo,bar", new[] { "foo", (string)null, "", " ", "bar" }.JoinNonEmpty(","));
 
-            Assert.ThrowsException<ArgumentNullException>(() => ((IEnumerable<string>)null).JoinNonEmpty(","), "The string collection should not be null.");
-            Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(null), "Null seperator should be rejected.");
-            Assert.ThrowsException<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(""), "Empty seperator should be rejected.");
+            Assert.ThrowsExactly<ArgumentNullException>(() => ((IEnumerable<string>)null).JoinNonEmpty(","), "The string collection should not be null.");
+            Assert.ThrowsExactly<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(null), "Null seperator should be rejected.");
+            Assert.ThrowsExactly<InvalidOperationException>(() => new[] { "foo", "bar" }.JoinNonEmpty(""), "Empty seperator should be rejected.");
         }
 
         [TestMethod]
@@ -67,18 +67,17 @@ namespace ILICheck.Web
         {
             var configuration = CreateConfiguration(enableGpkgValidation: false);
 
-            Assert.ThrowsException<ArgumentNullException>(() => ((IEnumerable<string>)null).GetTransferFileExtension(configuration), "Null argument should be rejected.");
-            Assert.ThrowsException<TransferFileNotFoundException>(() => new[] { ".ili" }.GetTransferFileExtension(configuration), "Extensions with no transfer file should be detected.");
-            Assert.ThrowsException<TransferFileNotFoundException>(() => Enumerable.Empty<string>().GetTransferFileExtension(configuration), "Empty extensions should be detected.");
-            Assert.ThrowsException<MultipleTransferFileFoundException>(() => new[] { ".itf", ".itf" }.GetTransferFileExtension(configuration), "Multiple transfer file extensions of the same type should be detected.");
-            Assert.ThrowsException<UnknownExtensionException>(() => new[] { ".sh" }.GetTransferFileExtension(configuration), "An unknown transfer file extension should be rejected.");
-            Assert.ThrowsException<UnknownExtensionException>(() => new[] { ".gpkg" }.GetTransferFileExtension(configuration), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.");
+            Assert.ThrowsExactly<ArgumentNullException>(() => ((IEnumerable<string>)null).GetTransferFileExtension(configuration), "Null argument should be rejected.");
+            Assert.ThrowsExactly<TransferFileNotFoundException>(() => new[] { ".ili" }.GetTransferFileExtension(configuration), "Extensions with no transfer file should be detected.");
+            Assert.ThrowsExactly<TransferFileNotFoundException>(() => Enumerable.Empty<string>().GetTransferFileExtension(configuration), "Empty extensions should be detected.");
+            Assert.ThrowsExactly<MultipleTransferFileFoundException>(() => new[] { ".itf", ".itf" }.GetTransferFileExtension(configuration), "Multiple transfer file extensions of the same type should be detected.");
+            Assert.ThrowsExactly<UnknownExtensionException>(() => new[] { ".sh" }.GetTransferFileExtension(configuration), "An unknown transfer file extension should be rejected.");
+            Assert.ThrowsExactly<UnknownExtensionException>(() => new[] { ".gpkg" }.GetTransferFileExtension(configuration), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(UnknownExtensionException), "GeoPackage (.gpkg) should be rejected if gpkg support is disabled.")]
         public void GetTransferFileExtensionForGpkgWithoutGpkgEnabled() =>
-            new[] { ".gpkg" }.GetTransferFileExtension(CreateConfiguration(enableGpkgValidation: false));
+            Assert.ThrowsExactly<UnknownExtensionException>(() => new[] { ".gpkg" }.GetTransferFileExtension(CreateConfiguration(enableGpkgValidation: false)));
 
         [TestMethod]
         public void CleanupGpkgModelNames()
@@ -168,17 +167,17 @@ namespace ILICheck.Web
             Assert.AreEqual(".xtf", "TRAWLMASTER.xtf".GetSanitizedFileExtension(acceptedFileExtensions));
             Assert.AreEqual(".xml", "TRAWLMASTER.FARMARTIST.XML".GetSanitizedFileExtension(acceptedFileExtensions));
             Assert.AreEqual(".zip", "GOPHERFELONY SCANWAFFLE .zIP".GetSanitizedFileExtension(acceptedFileExtensions));
-            Assert.ThrowsException<UnknownExtensionException>(() => "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsExactly<UnknownExtensionException>(() => "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(acceptedFileExtensions));
 
             acceptedFileExtensions = ValidatorHelper.GetAcceptedFileExtensionsForUserUploads(CreateConfiguration(enableGpkgValidation: true));
 
             Assert.AreEqual(".gpkg", "SLICKERTRAWL.gpkg".GetSanitizedFileExtension(acceptedFileExtensions));
 
             // Not supported/invalid file extensions
-            Assert.ThrowsException<UnknownExtensionException>(() => "TRAWLBOUNCE.ini".GetSanitizedFileExtension(acceptedFileExtensions));
-            Assert.ThrowsException<UnknownExtensionException>(() => "BIZARREPENGUIN.sh".GetSanitizedFileExtension(acceptedFileExtensions));
-            Assert.ThrowsException<UnknownExtensionException>(() => "LATENTNET-HX.exe".GetSanitizedFileExtension(acceptedFileExtensions));
-            Assert.ThrowsException<UnknownExtensionException>(() => "IRATEMONKEY.cmd".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsExactly<UnknownExtensionException>(() => "TRAWLBOUNCE.ini".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsExactly<UnknownExtensionException>(() => "BIZARREPENGUIN.sh".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsExactly<UnknownExtensionException>(() => "LATENTNET-HX.exe".GetSanitizedFileExtension(acceptedFileExtensions));
+            Assert.ThrowsExactly<UnknownExtensionException>(() => "IRATEMONKEY.cmd".GetSanitizedFileExtension(acceptedFileExtensions));
         }
 
         [TestMethod]
