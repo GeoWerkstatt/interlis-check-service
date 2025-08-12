@@ -1,7 +1,7 @@
 # INTERLIS Web-Check-Service (ILICHECK) <!-- omit in toc -->
 
-[![CI](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/ci.yml)
-[![Release](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-check-service/actions/workflows/release.yml)
+[![CI](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/ci.yml/badge.svg)](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/ci.yml)
+[![Release](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/release.yml)
 
 Webbasierter Checkservice für INTERLIS Datenabgaben
 
@@ -244,7 +244,7 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 
 1. Git Repository klonen:  
    Öffne Git Shell und navigiere in den lokalen Projekt Root  
-   `git clone https://github.com/GeoWerkstatt/interlis-check-service.git`
+   `git clone https://github.com/geowerkstatt/interlis-check-service.git`
 
 1. Web-App (React Client und .NET Core Backend) starten:  
    `IIS Express` Launch-Profil im Visual Studio resp. Visual Studio Code mit F5 starten  
@@ -252,7 +252,7 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 
 ## Neue Version erstellen
 
-Ein neuer GitHub *Pre-release* wird bei jeder Änderung auf [main](https://github.com/GeoWerkstatt/interlis-check-service) [automatisch](./.github/workflows/pre-release.yml) erstellt. In diesem Kontext wird auch ein neues Docker Image mit dem Tag *:edge* erstellt und in die [GitHub Container Registry (ghcr.io)](https://github.com/geowerkstatt/interlis-check-service/pkgs/container/interlis-check-service) gepusht. Der definitve Release erfolgt, indem die Checkbox *This is a pre-release* eines beliebigen Pre-releases entfernt wird. In der Folge wird das entsprechende Docker Image in der ghcr.io Registry mit den Tags (bspw.: *:v1*, *:v1.2.3* und *:latest*) [ergänzt](./.github/workflows/release.yml).
+Ein neuer GitHub *Pre-release* wird bei jeder Änderung auf [main](https://github.com/geowerkstatt/interlis-check-service) [automatisch](./.github/workflows/pre-release.yml) erstellt. In diesem Kontext wird auch ein neues Docker Image mit dem Tag *:edge* erstellt und in die [GitHub Container Registry (ghcr.io)](https://github.com/geowerkstatt/interlis-check-service/pkgs/container/interlis-check-service) gepusht. Der definitve Release erfolgt, indem die Checkbox *This is a pre-release* eines beliebigen Pre-releases entfernt wird. In der Folge wird das entsprechende Docker Image in der ghcr.io Registry mit den Tags (bspw.: *:v1*, *:v1.2.3* und *:latest*) [ergänzt](./.github/workflows/release.yml).
 
 ## Lizenz
 

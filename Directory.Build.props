@@ -4,11 +4,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>CS1591</NoWarn>
     <Product>INTERLIS Web-Check-Service</Product>
-    <Authors>GeoWerkstatt GmbH</Authors>
-    <Company>GeoWerkstatt GmbH</Company>
-    <Copyright>© GeoWerkstatt GmbH</Copyright>
-    <PackageProjectUrl>https://github.com/GeoWerkstatt/interlis-check-service</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/GeoWerkstatt/interlis-check-service.git</RepositoryUrl>
+    <Authors>geowerkstatt GmbH</Authors>
+    <Company>geowerkstatt GmbH</Company>
+    <Copyright>© geowerkstatt GmbH</Copyright>
+    <PackageProjectUrl>https://github.com/geowerkstatt/interlis-check-service</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/geowerkstatt/interlis-check-service.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <AnalysisLevel>8.0-recommended</AnalysisLevel>
   </PropertyGroup>
