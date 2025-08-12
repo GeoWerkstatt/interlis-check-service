@@ -4,21 +4,26 @@
 
 ## v4.1.156 - 2025-06-10
 
-## v4.1.154 - 2025-06-10
+### Changed
+
+- Updated various 3rd party libraries.
 
 ## v4.1.151 - 2025-04-28
 
 ### Changed
+
 - Redesign of the user interface.
 
 ## v4.0.145 - 2025-04-03
 
 ### Changed
+
 - The code for this application is now available under the AGPL 3.0 licence.
 - The image now supports to use existing ilivalidator and ili2gpkg executables in `$ILITOOLS_HOME_DIR` directory.
 - The image now supports overriding the ilitools cache directory via `ILITOOLS_CACHE_DIR` env variable.
 
 ### Fixed
+
 - Fixed release workflow to tag and publish major version tags.
 
 ## v4.0.115 - 2024-09-02
