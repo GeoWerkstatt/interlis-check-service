@@ -77,8 +77,8 @@ fi
   echo "done!"
 
 # Use default user:group if no $PUID and/or $PGID is provided.
-groupmod -o -g ${PUID:-1654} app && \
-  usermod -o -u ${PGID:-1654} app &> /dev/null
+groupmod -o -g ${PGID:-1654} app && \
+  usermod -o -u ${PUID:-1654} app &> /dev/null
 
 # Change owner for our folders
 echo -n "Fix permissions for mounted volumes ..." && \
