@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -15,15 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ilicop.Web\Ilicop.Web.csproj">
-      <CopyLocal></CopyLocal>
-    </ProjectReference>
+    <ProjectReference Include="..\..\src\Ilicop.Web\Ilicop.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="testdata\example - Copy.xtf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="testdata\example.gpkg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
