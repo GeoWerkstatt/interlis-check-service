@@ -35,9 +35,6 @@ services:
     #   - /path/to/uploads:/uploads
     #     Transfer files, ilivalidator and session logs
     #
-    #   - /path/to/models:/models
-    #     Folder containing optional ili files
-    #
     #   - /path/to/ilitools:/ilitools
     #     Folder containing persistent ilivalidator and ili2gpkg tools
     #     structure like:
@@ -62,7 +59,6 @@ services:
     volumes:
       - ./src/Ilicop.Web/Logs:/logs
       - ./src/Ilicop.Web/Uploads:/uploads
-      - ./src/Ilicop.Web/Models:/models
       - ./src/Ilicop.Web/Ilitools:/ilitools
       - ./src/Ilicop.Web/Plugins:/plugins
       - ./src/Ilicop.Web/Web-Assets:/web-assets
@@ -102,10 +98,6 @@ services:
     #
     #   - ILIVALIDATOR_ENABLE_TRACE=true
     #     Optional, Enable validation trace messages, Default false
-    #
-    #   - ILIVALIDATOR_MODEL_DIR=https://models.example.com;https://models.interlis.ch/
-    #     Optional semicolon-separated list of external repositories with ili-files
-    #     Default https://models.interlis.ch/
     #
     #   - ENABLE_GPKG_VALIDATION=true
     #     Optional, Default false

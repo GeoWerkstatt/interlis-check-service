@@ -63,9 +63,6 @@ services:
     #   - /path/to/uploads:/uploads
     #     Transfer files, ilivalidator and session logs
     #
-    #   - /path/to/models:/models
-    #     Folder containing optional ili files
-    #
     #   - /path/to/plugins:/plugins
     #     Folder containing optional ilivalidator plugins (jar files)
     #
@@ -84,7 +81,6 @@ services:
     volumes:
       - ./logs:/logs
       - ./uploads:/uploads
-      - ./models:/models
       - ./plugins:/plugins
       - ./web-assets:/web-assets
     # Add environment variables
@@ -123,10 +119,6 @@ services:
     #
     #   - ILIVALIDATOR_ENABLE_TRACE=true
     #     Optional, Enable validation trace messages, Default false
-    #
-    #   - ILIVALIDATOR_MODEL_DIR=https://models.example.com;https://models.interlis.ch/
-    #     Optional semicolon-separated list of external repositories with ili-files
-    #     Default https://models.interlis.ch/
     #
     #   - ENABLE_GPKG_VALIDATION=true
     #     Optional, Default false
