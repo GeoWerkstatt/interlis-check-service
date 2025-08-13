@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- File RoadsExgm2ien_Symbols.xtf 2014-08-05 (http://www.interlis.ch/models/refhb24) -->
+
+<ili:transfer xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS"
+  xmlns:geom="http://www.interlis.ch/geometry/1.0"
+  xmlns="http://www.interlis.ch/xtf/2.4/StandardSymbology"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ili:headersection>
+    <ili:models>
+      <ili:model>StandardSymbology</ili:model>
+    </ili:models>
+    <ili:sender>KOGIS</ili:sender>
+
+    <ili:comment>example symbology dataset ili2 refmanual appendix E</ili:comment>
+  </ili:headersection>
+
+  <ili:datasection>
+    <StandardSigns ili:bid="REFHANDB00000002">
+
+      <!-- Color Library -->
+      <Color ili:tid="1">
+        <Name>red</Name>
+        <L>40.0</L>
+        <C>70.0</C>
+        <H>0.0</H>
+        <T>1.0</T>
+      </Color>
+
+      <Color ili:tid="2">
+        <Name>green</Name>
+        <L>49.4</L>
+        <C>48.5</C>
+        <H>153.36</H>
+        <T>1.0</T>
+      </Color>
+
+      <Color ili:tid="3">
+        <Name>light_gray</Name>
+        <L>75.0</L>
+        <C>0.0</C>
+        <H>0.0</H>
+        <T>1.0</T>
+      </Color>
+
+      <Color ili:tid="4">
+        <Name>dark_grey</Name>
+        <L>25.0</L>
+        <C>0.0</C>
+        <H>0.0</H>
+        <T>1.0</T>
+      </Color>
+
+      <Color ili:tid="5">
+        <Name>dark_blue</Name>
+        <L>50.3</L>
+        <C>43.5</C>
+        <H>261.1</H>
+        <T>1.0</T>
+      </Color>
+
+      <Color ili:tid="6">
+        <Name>black</Name>
+        <L>0.0</L>
+        <C>0.0</C>
+        <H>0.0</H>
+        <T>1.0</T>
+      </Color>
+
+      <Color ili:tid="7">
+        <Name>white</Name>
+        <L>100.0</L>
+        <C>0.0</C>
+        <H>0.0</H>
+        <T>1.0</T>
+      </Color>
+
+      <PolylineAttrs ili:tid="4001">
+        <Width>0.01</Width>
+        <Join>round</Join>
+        <Caps>butt</Caps>
+      </PolylineAttrs>
+
+      <PolylineAttrs ili:tid="4002">
+        <Width>0.01</Width>
+        <Join>miter</Join>
+        <MiterLimit>2.0</MiterLimit>
+        <Caps>butt</Caps>
+      </PolylineAttrs>
+
+      <!-- Font/Symbol Library -->
+      <FontSymbol ili:tid="101">
+        <Name>Triangle</Name>
+        <Geometry>
+          <FontSymbol_Surface>
+            <Geometry>
+              <geom:surface>
+                <geom:exterior>
+                  <geom:polyline>
+                    <geom:coord>
+                      <geom:c1>-0.5</geom:c1><geom:c2>-0.5</geom:c2>
+                    </geom:coord>
+                    <geom:coord>
+                      <geom:c1>0.0</geom:c1><geom:c2>0.5</geom:c2>
+                    </geom:coord>
+                    <geom:coord>
+                      <geom:c1>0.5</geom:c1><geom:c2>-0.5</geom:c2>
+                    </geom:coord>
+                    <geom:coord>
+                      <geom:c1>-0.5</geom:c1><geom:c2>-0.5</geom:c2>
+                    </geom:coord>
+                  </geom:polyline>
+                </geom:exterior>
+              </geom:surface>
+            </Geometry>
+          </FontSymbol_Surface>
+        </Geometry>
+        <Geometry>
+          <FontSymbol_Polyline>
+            <Color ili:ref="6"></Color>
+            <Geometry>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>-0.5</geom:c1><geom:c2>0.0</geom:c2>
+                </geom:coord>
+                <geom:arc>
+                  <geom:c1>0.5</geom:c1><geom:c2>0.0</geom:c2>
+                  <geom:a1>0.0</geom:a1><geom:a2>0.5</geom:a2><geom:r>0.5</geom:r>
+                </geom:arc>
+                <geom:arc>
+                  <geom:c1>-0.5</geom:c1><geom:c2>0.0</geom:c2>
+                  <geom:a1>0.0</geom:a1><geom:a2>-0.5</geom:a2><geom:r>0.5</geom:r>
+                </geom:arc>
+              </geom:polyline>
+            </Geometry>
+          </FontSymbol_Polyline>
+        </Geometry>
+        <Font ili:ref="10"></Font>
+      </FontSymbol>
+
+      <FontSymbol ili:tid="102">
+        <Name>NoParking</Name>
+        <Geometry>
+          <FontSymbol_Polyline>
+            <Color ili:ref="6"></Color>
+            <Geometry>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>-0.5</geom:c1><geom:c2>0.0</geom:c2>
+                </geom:coord>
+                <geom:arc>
+                  <geom:c1>0.5</geom:c1><geom:c2>0.0</geom:c2>
+                  <geom:a1>0.0</geom:a1><geom:a2>0.5</geom:a2><geom:r>0.5</geom:r>
+                </geom:arc>
+                <geom:arc>
+                  <geom:c1>-0.5</geom:c1><geom:c2>0.0</geom:c2>
+                  <geom:a1>0.0</geom:a1><geom:a2>-0.5</geom:a2><geom:r>0.5</geom:r>
+                </geom:arc>
+              </geom:polyline>
+            </Geometry>
+          </FontSymbol_Polyline>
+        </Geometry>
+        <Geometry>
+          <FontSymbol_Surface>
+            <FillColor ili:ref="1"></FillColor>
+            <Geometry>
+              <geom:surface>
+                <geom:exterior>
+                  <geom:polyline>
+                    <geom:coord>
+                      <geom:c1>-0.233</geom:c1><geom:c2>0.325</geom:c2>
+                    </geom:coord>
+                    <geom:arc>
+                      <geom:c1>0.325</geom:c1><geom:c2>-0.233</geom:c2>
+                      <geom:a1>0.283</geom:a1>
+                      <geom:a2>0.283</geom:a2><geom:r>0.4</geom:r>
+                    </geom:arc>
+                    <geom:coord>
+                      <geom:c1>-0.233</geom:c1><geom:c2>0.325</geom:c2>
+                    </geom:coord>
+                  </geom:polyline>
+                </geom:exterior>
+              </geom:surface>
+            </Geometry>
+          </FontSymbol_Surface>
+        </Geometry>
+        <Geometry>
+          <FontSymbol_Surface>
+            <FillColor ili:ref="1"></FillColor>
+            <Geometry>
+              <geom:surface>
+                <geom:exterior>
+                  <geom:polyline>
+                    <geom:coord>
+                      <geom:c1>0.228</geom:c1><geom:c2>-0.324</geom:c2>
+                    </geom:coord>
+                    <geom:arc>
+                      <geom:c1>-0.327</geom:c1><geom:c2>0.238</geom:c2>
+                      <geom:a1>-0.283</geom:a1>
+                      <geom:a2>-0.283</geom:a2><geom:r>0.4</geom:r>
+                    </geom:arc>
+                    <geom:coord>
+                      <geom:c1>0.228</geom:c1><geom:c2>-0.324</geom:c2>
+                    </geom:coord>
+                  </geom:polyline>
+                </geom:exterior>
+              </geom:surface>
+            </Geometry>
+          </FontSymbol_Surface>
+        </Geometry>
+        <Geometry>
+          <FontSymbol_Surface>
+            <FillColor ili:ref="5"></FillColor>
+            <Geometry>
+              <geom:surface>
+                <geom:exterior>
+                  <geom:polyline>
+                    <geom:coord>
+                      <geom:c1>-0.5</geom:c1><geom:c2>0.0</geom:c2>
+                    </geom:coord>
+                    <geom:arc>
+                      <geom:c1>0.5</geom:c1><geom:c2>0.0</geom:c2>
+                      <geom:a1>0.0</geom:a1>
+                      <geom:a2>0.5</geom:a2><geom:r>0.5</geom:r>
+                    </geom:arc>
+                    <geom:arc>
+                      <geom:c1>-0.5</geom:c1><geom:c2>0.0</geom:c2>
+                      <geom:a1>0.0</geom:a1>
+                      <geom:a2>-0.5</geom:a2><geom:r>0.5</geom:r>
+                    </geom:arc>
+                  </geom:polyline>
+                </geom:exterior>
+                <geom:interior>
+                  <geom:polyline>
+                    <geom:coord>
+                      <geom:c1>-0.233</geom:c1><geom:c2>0.325</geom:c2>
+                    </geom:coord>
+                    <geom:arc>
+                      <geom:c1>0.325</geom:c1><geom:c2>-0.233</geom:c2>
+                      <geom:a1>0.283</geom:a1>
+                      <geom:a2>0.283</geom:a2><geom:r>0.4</geom:r>
+                    </geom:arc>
+                    <geom:coord>
+                      <geom:c1>-0.233</geom:c1><geom:c2>0.325</geom:c2>
+                    </geom:coord>
+                  </geom:polyline>
+                </geom:interior>
+                <geom:interior>
+                  <geom:polyline>
+                    <geom:coord>
+                      <geom:c1>0.228</geom:c1><geom:c2>-0.324</geom:c2>
+                    </geom:coord>
+                    <geom:arc>
+                      <geom:c1>-0.327</geom:c1><geom:c2>0.238</geom:c2>
+                      <geom:a1>-0.283</geom:a1>
+                      <geom:a2>-0.283</geom:a2><geom:r>0.4</geom:r>
+                    </geom:arc>
+                    <geom:coord>
+                      <geom:c1>0.228</geom:c1><geom:c2>-0.324</geom:c2>
+                    </geom:coord>
+                  </geom:polyline>
+                </geom:interior>
+              </geom:surface>
+            </Geometry>
+          </FontSymbol_Surface>
+        </Geometry>
+        <Geometry>
+          <FontSymbol_Polyline>
+            <Color ili:ref="7"></Color>
+            <Geometry>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>-0.233</geom:c1><geom:c2>0.325</geom:c2>
+                </geom:coord>
+                <geom:arc>
+                  <geom:c1>0.325</geom:c1><geom:c2>-0.233</geom:c2>
+                  <geom:a1>0.283</geom:a1>
+                  <geom:a2>0.283</geom:a2><geom:r>0.4</geom:r>
+                </geom:arc>
+                <geom:coord>
+                  <geom:c1>-0.233</geom:c1><geom:c2>0.325</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </Geometry>
+          </FontSymbol_Polyline>
+        </Geometry>
+        <Geometry>
+          <FontSymbol_Polyline>
+            <Color ili:ref="7"></Color>
+            <Geometry>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>0.228</geom:c1><geom:c2>-0.324</geom:c2>
+                </geom:coord>
+                <geom:arc>
+                  <geom:c1>-0.327</geom:c1><geom:c2>0.238</geom:c2>
+                  <geom:a1>-0.283</geom:a1>
+                  <geom:a2>-0.283</geom:a2><geom:r>0.4</geom:r>
+                </geom:arc>
+                <geom:coord>
+                  <geom:c1>0.228</geom:c1><geom:c2>-0.324</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </Geometry>
+          </FontSymbol_Polyline>
+        </Geometry>
+        <Font ili:ref="10"></Font>
+      </FontSymbol>
+
+      <!-- Internal Symbol Font "Symbols" -->
+      <Font ili:tid="10">
+        <Name>Symbols</Name>
+        <Internal>true</Internal>
+        <Type>symbol</Type>
+      </Font>
+
+      <!-- External Text Font "Leroy" -->
+      <Font ili:tid="11">
+        <Name>Leroy</Name>
+        <Internal>false</Internal>
+        <Type>text</Type>
+        <BottomBase>0.3</BottomBase>
+      </Font>
+
+      <!-- Line Styles -->
+      <LineStyle_Solid ili:tid="21">
+        <Name>LineSolid_01</Name>
+        <Color ili:ref="6"></Color>
+      </LineStyle_Solid>
+
+      <LineStyle_Dashed ili:tid="22">
+        <Name>LineDashed_01</Name>
+        <Dashes>
+          <DashRec>
+            <DLength>0.1</DLength>
+          </DashRec>
+        </Dashes>
+        <Dashes>
+          <DashRec>
+            <DLength>0.1</DLength>
+          </DashRec>
+        </Dashes>
+        <Color ili:ref="6"></Color>
+      </LineStyle_Dashed>
+
+      <!-- Text Signs -->
+      <TextSign ili:tid="1001">
+        <ili:Name>Linefont_18</ili:Name>
+        <Height>1.8</Height>
+        <Font ili:ref="11"></Font>
+      </TextSign>
+
+      <!-- Symbol Signs -->
+      <SymbolSign ili:tid="2001">
+        <ili:Name>GP</ili:Name>
+        <Scale>1.0</Scale>
+        <Color ili:ref="2"></Color>
+        <Symbol ili:ref="101"></Symbol>
+      </SymbolSign>
+
+      <SymbolSign ili:tid="2002">
+        <ili:Name>NoParking</ili:Name>
+        <Scale>1.0</Scale>
+        <Symbol ili:ref="102"></Symbol>
+      </SymbolSign>
+
+      <!-- Polyline Signs -->
+      <PolylineSign ili:tid="3001">
+        <ili:Name>continuous</ili:Name>
+        <Style ili:ref="21">
+          <PolylineSignLineStyleAssoc>
+            <Offset>0.0</Offset>
+          </PolylineSignLineStyleAssoc>
+        </Style>
+      </PolylineSign>
+
+      <PolylineSign ili:tid="3002">
+        <ili:Name>dotted</ili:Name>
+        <Style ili:ref="22">
+          <PolylineSignLineStyleAssoc>
+            <Offset>0.0</Offset>
+          </PolylineSignLineStyleAssoc>
+        </Style>
+      </PolylineSign>
+
+      <!-- Surface Signs -->
+      <SurfaceSign ili:tid="5001">
+        <ili:Name>Building</ili:Name>
+        <FillColor ili:ref="4"></FillColor>
+      </SurfaceSign>
+
+      <SurfaceSign ili:tid="5002">
+        <ili:Name>Street</ili:Name>
+        <FillColor ili:ref="3"></FillColor>
+      </SurfaceSign>
+
+      <SurfaceSign ili:tid="5003">
+        <ili:Name>Water</ili:Name>
+        <FillColor ili:ref="5"></FillColor>
+      </SurfaceSign>
+
+      <SurfaceSign ili:tid="5005">
+        <ili:Name>Other</ili:Name>
+        <FillColor ili:ref="2"></FillColor>
+      </SurfaceSign>
+    </StandardSigns>
+    <!-- end of basket REFHANDB00000002 -->
+  </ili:datasection>
+</ili:transfer>
