@@ -124,7 +124,7 @@ namespace Geowerkstatt.Ilicop.Web
         }
 
         /// <summary>
-        /// Asynchronously validates the xml structure of <see cref="fileProvider"/>.
+        /// Asynchronously validates the xml structure of the given <paramref name="transferFile"/>.
         /// </summary>
         /// <param name="transferFile">The transfer file to validate.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="transferFile"/> is <c>null</c>.</exception>
