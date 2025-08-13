@@ -15,24 +15,13 @@ namespace Geowerkstatt.Ilicop.Web
         Guid Id { get; }
 
         /// <summary>
-        /// Gets the home directory for all the files releated to this instance.
-        /// </summary>
-        string HomeDirectory { get; }
-
-        /// <summary>
         /// Gets the transfer file name.
         /// </summary>
         string TransferFile { get; }
 
         /// <summary>
-        /// Gets the extracted model names.
-        /// </summary>
-        /// <remarks>Only applicable if <see cref="TransferFile"/> is a GeoPackage.</remarks>
-        string GpkgModelNames { get; }
-
-        /// <summary>
         /// Asynchronously validates the <paramref name="transferFile"/> specified.
-        /// The transfer file must already be located in the <see cref="HomeDirectory"/>
+        /// The transfer file must already be located in the <see cref="IFileProvider.HomeDirectory"/>
         /// when executing this function.
         /// </summary>
         /// <param name="transferFile">The name of the transfer file to validate.</param>

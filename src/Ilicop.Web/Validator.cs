@@ -19,7 +19,7 @@ using static Geowerkstatt.Ilicop.Web.ValidatorHelper;
 namespace Geowerkstatt.Ilicop.Web
 {
     /// <summary>
-    /// Validates an INTERLIS <see cref="TransferFile"/> at the given <see cref="HomeDirectory"/>.
+    /// Validates an INTERLIS <see cref="TransferFile"/> at the given <see cref="IFileProvider.HomeDirectory"/>.
     /// </summary>
     public class Validator : IValidator
     {
@@ -32,13 +32,13 @@ namespace Geowerkstatt.Ilicop.Web
         public virtual Guid Id { get; } = Guid.NewGuid();
 
         /// <inheritdoc/>
-        public virtual string HomeDirectory => fileProvider.HomeDirectory.FullName;
-
-        /// <inheritdoc/>
         public virtual string TransferFile { get; private set; }
 
-        /// <inheritdoc/>
-        public virtual string GpkgModelNames { get; private set; }
+        /// <summary>
+        /// Gets the extracted model names.
+        /// </summary>
+        /// <remarks>Only applicable if <see cref="TransferFile"/> is a GeoPackage.</remarks>
+        private string GpkgModelNames { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Validator"/> class.
