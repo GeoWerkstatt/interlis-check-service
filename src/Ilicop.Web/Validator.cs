@@ -53,8 +53,7 @@ namespace Geowerkstatt.Ilicop.Web
         /// <inheritdoc/>
         public async Task ExecuteAsync(string transferFile, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(transferFile);
-            if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(transferFile);
             if (!fileProvider.Exists(transferFile)) throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Transfer file with the specified name <{0}> not found in <{1}>.", transferFile, fileProvider.HomeDirectory));
 
             // Unzip compressed file
@@ -132,8 +131,7 @@ namespace Geowerkstatt.Ilicop.Web
         /// <exception cref="FileNotFoundException">If <paramref name="transferFile"/> is not found.</exception>
         internal async Task ValidateXmlAsync(string transferFile)
         {
-            ArgumentNullException.ThrowIfNull(transferFile);
-            if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(transferFile);
 
             logger.LogInformation("Validating xml structure for transfer file <{TransferFile}>", transferFile);
 
@@ -168,8 +166,7 @@ namespace Geowerkstatt.Ilicop.Web
         /// <exception cref="FileNotFoundException">If <paramref name="transferFile"/> is not found.</exception>
         internal async Task<string> ReadGpkgModelNamesAsync(string transferFile)
         {
-            ArgumentNullException.ThrowIfNull(transferFile);
-            if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(transferFile);
 
             logger.LogInformation("Reading model names from GeoPackage <{TransferFile}>", transferFile);
 
