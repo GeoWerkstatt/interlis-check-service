@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/ILICheck.Web/bin/Debug/net8.0/ILICheck.Web.dll",
+      "program": "${workspaceFolder}/src/Ilicop.Web/bin/Debug/net8.0/Ilicop.Web.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/src/ILICheck.Web",
+      "cwd": "${workspaceFolder}/src/Ilicop.Web",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",
