@@ -62,7 +62,6 @@ services:
     volumes:
       - ./src/Ilicop.Web/Logs:/logs
       - ./src/Ilicop.Web/Uploads:/uploads
-      - ./src/Ilicop.Web/Catalogues:/catalogues
       - ./src/Ilicop.Web/Models:/models
       - ./src/Ilicop.Web/Ilitools:/ilitools
       - ./src/Ilicop.Web/Plugins:/plugins

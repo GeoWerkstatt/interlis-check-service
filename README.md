@@ -63,11 +63,6 @@ services:
     #   - /path/to/uploads:/uploads
     #     Transfer files, ilivalidator and session logs
     #
-    #   - /path/to/catalogues:/catalogues
-    #     Folder containing additional catalogue files
-    #     The backend will automatically apply these catalogue files (.xml) for every validation if the user
-    #     does not provide them in a ZIP file.
-    #
     #   - /path/to/models:/models
     #     Folder containing optional ili files
     #
@@ -89,7 +84,6 @@ services:
     volumes:
       - ./logs:/logs
       - ./uploads:/uploads
-      - ./catalogues:/catalogues
       - ./models:/models
       - ./plugins:/plugins
       - ./web-assets:/web-assets

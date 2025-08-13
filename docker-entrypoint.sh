@@ -87,7 +87,6 @@ echo -n "Fix permissions for mounted volumes ..." && \
   chown -R app:app $ILICOP_UPLOADS_DIR && \
   chown -R app:app $ILICOP_WEB_ASSETS_DIR && \
   chown -R app:app $ILITOOLS_HOME_DIR && \
-  chown -R app:app $ILITOOLS_CATALOGUES_DIR && \
   chown -R app:app $ILITOOLS_MODELS_DIR && \
   chown -R app:app $ILITOOLS_PLUGINS_DIR && \
   chown -R app:app $ILITOOLS_CACHE_DIR && \
