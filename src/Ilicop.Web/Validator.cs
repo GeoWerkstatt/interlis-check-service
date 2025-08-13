@@ -243,7 +243,7 @@ namespace Geowerkstatt.Ilicop.Web
 
             using var command = new SqliteCommand("SELECT * FROM T_ILI2DB_MODEL", connection);
 
-            var reader = command.ExecuteReader();
+            using var reader = command.ExecuteReader();
             while (reader.Read()) yield return reader["modelName"].ToString();
         }
 
