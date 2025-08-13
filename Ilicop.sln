@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36401.2 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BD1DBF64-A517-45F8-9CAC-304B05B606B7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ILICheck.Web", "src\ILICheck.Web\ILICheck.Web.csproj", "{017A4614-1FDE-4781-80CB-47C14EAEB63E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ilicop.Web", "src\Ilicop.Web\Ilicop.Web.csproj", "{017A4614-1FDE-4781-80CB-47C14EAEB63E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{43E574FF-2ABB-4354-AE9A-6412A373EE2A}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{52DFCE0E-17C2-4DBC-B77A-9FE5574D1DB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ILICheck.Web.Test", "tests\ILICheck.Web.Test\ILICheck.Web.Test.csproj", "{5AF1D3BE-E2C3-4259-B00C-A3C2456DC959}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ilicop.Web.Test", "tests\Ilicop.Web.Test\Ilicop.Web.Test.csproj", "{5AF1D3BE-E2C3-4259-B00C-A3C2456DC959}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,11 +1,11 @@
-# INTERLIS Web-Check-Service (ILICHECK) <!-- omit in toc -->
+# INTERLIS Web-Check-Service (ILICOP) <!-- omit in toc -->
 
 [![CI](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/ci.yml/badge.svg)](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/ci.yml)
 [![Release](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/release.yml/badge.svg)](https://github.com/geowerkstatt/interlis-check-service/actions/workflows/release.yml)
 
 Webbasierter Checkservice für INTERLIS Datenabgaben
 
-![INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot.png)
+![INTERLIS Web-Check-Service](./assets/ILICOP_app_screenshot.png)
 
 ## Inhaltsverzeichnis <!-- omit in toc -->
 
@@ -211,13 +211,13 @@ Der INTERLIS Web-Check-Service kann in folgenden Bereichen individuell an eigene
 - Einbinden eines Benutzerhandbuchs
 - Einbinden eines Quick-Start-Guides
 
-![Beispiel eines individuell angepassten INTERLIS Web-Check-Service](./assets/ilicheck_app_screenshot_customized.png)
+![Beispiel eines individuell angepassten INTERLIS Web-Check-Service](./assets/ILICOP_app_screenshot_customized.png)
 
 ## REST API
 
 Der INTERLIS Web-Check-Service ist seit Version 3 vollständig über eine REST API steuerbar. Damit lassen sich Validierungen von INTERLIS Transferdateien in beliebige bestehende Datenfreigabe-Prozesse integrieren. Eine komplette Schnittstellenbeschreibung inkl. Code-Beispielen für verschiedene Client-Technolgien, sowie der Möglichkeit die REST Schnittstelle direkt im Browser zu testen steht unter `https://<host>:<port>/api` oder unter  [ilicop.ch/api](https://ilicop.ch/api) zur Verfügung.
 
-![REST API Schnittstellenbeschreibung](./assets/ilicheck_rest_api.png)
+![REST API Schnittstellenbeschreibung](./assets/ILICOP_rest_api.png)
 
 ## Health Check API
 
