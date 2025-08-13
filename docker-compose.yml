@@ -35,9 +35,6 @@ services:
     #   - /path/to/uploads:/uploads
     #     Transfer files, ilivalidator and session logs
     #
-    #   - /path/to/config:/config
-    #     Config folder with TOML files to control validation
-    #
     #   - /path/to/models:/models
     #     Folder containing optional ili files
     #
@@ -65,7 +62,6 @@ services:
     volumes:
       - ./src/Ilicop.Web/Logs:/logs
       - ./src/Ilicop.Web/Uploads:/uploads
-      - ./src/Ilicop.Web/Config:/config
       - ./src/Ilicop.Web/Catalogues:/catalogues
       - ./src/Ilicop.Web/Models:/models
       - ./src/Ilicop.Web/Ilitools:/ilitools
@@ -104,9 +100,6 @@ services:
     #
     #   - ILIVALIDATOR_VERSION=1.11.10
     #     Optional, Default latest version available from https://interlis.ch/downloads/ilivalidator
-    #
-    #   - ILIVALIDATOR_CONFIG_NAME=Beispiel1.TOML
-    #     Optional TOML config file name in mounted /config volume
     #
     #   - ILIVALIDATOR_ENABLE_TRACE=true
     #     Optional, Enable validation trace messages, Default false

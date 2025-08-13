@@ -15,7 +15,6 @@ proxy_port=$(echo $PROXY | grep -Eo '[0-9]+' | tail -1)
 proxy_host=${PROXY%":$(echo ${PROXY##*:})"} # remove port
 proxy_host=${proxy_host#*://} # remove protocol
 
-[[ -n $ILIVALIDATOR_CONFIG_NAME ]] && [[ $is_gpkg = false ]] && options+=" --config $ILITOOLS_CONFIG_DIR/$ILIVALIDATOR_CONFIG_NAME"
 [[ -n $ILIVALIDATOR_MODEL_DIR ]] && options+=" --modeldir $ILIVALIDATOR_MODEL_DIR"
 [[ -n $proxy_host ]] && options+=" --proxy $proxy_host"
 [[ -n $proxy_port ]] && options+=" --proxyPort $proxy_port"
