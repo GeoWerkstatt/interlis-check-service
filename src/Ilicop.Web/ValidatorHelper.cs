@@ -38,7 +38,7 @@ namespace Geowerkstatt.Ilicop.Web
         /// <summary>
         /// Gets the transfer file extensions which are supported for validation with ilivalidator.
         /// The ordered list of transfer file extensions is prioritized according to known rules
-        /// when validate with additional files (eg. catalogues).
+        /// when validating with additional files (eg. catalogues).
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         public static IEnumerable<string> GetOrderedTransferFileExtensions(IConfiguration configuration)

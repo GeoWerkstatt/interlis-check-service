@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Removed configuration support for catalogues, configs and custom model directories.
 - Updated various 3rd party libraries.
 
 ### Fixed

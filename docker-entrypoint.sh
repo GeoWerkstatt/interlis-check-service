@@ -9,7 +9,6 @@ set -e
   HTTPS_PROXY=$PROXY
 
 # Set default values (if not specified in docker-compose)
-export ILIVALIDATOR_MODEL_DIR="%ITF_DIR;$ILITOOLS_MODELS_DIR;${ILIVALIDATOR_MODEL_DIR:-https://models.interlis.ch/}"
 export DELETE_TRANSFER_FILES=${DELETE_TRANSFER_FILES:-false}
 export ENABLE_GPKG_VALIDATION=${ENABLE_GPKG_VALIDATION:-false}
 
@@ -87,9 +86,6 @@ echo -n "Fix permissions for mounted volumes ..." && \
   chown -R app:app $ILICOP_UPLOADS_DIR && \
   chown -R app:app $ILICOP_WEB_ASSETS_DIR && \
   chown -R app:app $ILITOOLS_HOME_DIR && \
-  chown -R app:app $ILITOOLS_CONFIG_DIR && \
-  chown -R app:app $ILITOOLS_CATALOGUES_DIR && \
-  chown -R app:app $ILITOOLS_MODELS_DIR && \
   chown -R app:app $ILITOOLS_PLUGINS_DIR && \
   chown -R app:app $ILITOOLS_CACHE_DIR && \
   echo "done!"
@@ -112,8 +108,6 @@ delete transfer files:            $([[ $DELETE_TRANSFER_FILES = true ]] && echo 
 transfer and log data retention:  $([[ -n $TRANSFER_AND_LOG_DATA_RETENTION ]] && echo $TRANSFER_AND_LOG_DATA_RETENTION || echo unset)
 ilivalidator version:             $ILIVALIDATOR_VERSION `[[ $ILIVALIDATOR_VERSION != $ILIVALIDATOR_LATEST_VERSION ]] && echo "(new version $ILIVALIDATOR_LATEST_VERSION available!)"`
 ili2gpkg version:                 $([[ $ENABLE_GPKG_VALIDATION = false ]] && echo "not configured" || echo $ILI2GPKG_VERSION `[[ $ILI2GPKG_VERSION != $ILI2GPKG_LATEST_VERSION ]] && echo "(new version $ILI2GPKG_LATEST_VERSION available!)"`)
-ilivalidator config file name:    $([[ -n $ILIVALIDATOR_CONFIG_NAME ]] && echo $ILIVALIDATOR_CONFIG_NAME || echo disabled)
-ilivalidator model repositories:  $ILIVALIDATOR_MODEL_DIR
 ilivalidator trace messages:      $([[ $ILIVALIDATOR_ENABLE_TRACE = true ]] && echo enabled || echo disabled)
 http proxy:                       ${PROXY:-no proxy set}
 http proxy exceptions:            $([[ -n $NO_PROXY ]] && echo $NO_PROXY || echo undefined)
