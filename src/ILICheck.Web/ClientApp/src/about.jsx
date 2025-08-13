@@ -31,12 +31,12 @@ export const About = (props) => {
           GNU Affero General Public License v3.0 (AGPL-3.0)
         </a>{" "}
         Version 3 im{" "}
-        <a href="https://github.com/GeoWerkstatt/interlis-check-service" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/geowerkstatt/interlis-check-service" target="_blank" rel="noopener noreferrer">
           GitHub Repository
         </a>{" "}
         zur Verfügung. Falls Ihnen Bugs begegnen, können Sie dort ein{" "}
         <a
-          href="https://github.com/GeoWerkstatt/interlis-check-service/issues"
+          href="https://github.com/geowerkstatt/interlis-check-service/issues"
           target="_blank"
           rel="noopener noreferrer"
         >

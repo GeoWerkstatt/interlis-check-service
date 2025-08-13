@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Updated various 3rd party libraries.
+
+### Fixed
+
+- Fixed interchanged UID and GID in docker entrypoint script.
+
 ## v4.1.156 - 2025-06-10
 
 ### Changed
