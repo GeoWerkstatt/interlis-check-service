@@ -15,11 +15,6 @@ namespace Geowerkstatt.Ilicop.Web
         Guid Id { get; }
 
         /// <summary>
-        /// Gets the transfer file name.
-        /// </summary>
-        string TransferFile { get; }
-
-        /// <summary>
         /// Asynchronously validates the <paramref name="transferFile"/> specified.
         /// The transfer file must already be located in the <see cref="IFileProvider.HomeDirectory"/>
         /// when executing this function.

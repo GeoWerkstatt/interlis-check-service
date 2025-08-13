@@ -19,7 +19,7 @@ using static Geowerkstatt.Ilicop.Web.ValidatorHelper;
 namespace Geowerkstatt.Ilicop.Web
 {
     /// <summary>
-    /// Validates an INTERLIS <see cref="TransferFile"/> at the given <see cref="IFileProvider.HomeDirectory"/>.
+    /// Validates an INTERLIS transfer file at the given <see cref="IFileProvider.HomeDirectory"/>.
     /// </summary>
     public class Validator : IValidator
     {
@@ -31,13 +31,10 @@ namespace Geowerkstatt.Ilicop.Web
         /// <inheritdoc/>
         public virtual Guid Id { get; } = Guid.NewGuid();
 
-        /// <inheritdoc/>
-        public virtual string TransferFile { get; private set; }
-
         /// <summary>
         /// Gets the extracted model names.
         /// </summary>
-        /// <remarks>Only applicable if <see cref="TransferFile"/> is a GeoPackage.</remarks>
+        /// <remarks>Only applicable if provided transfer file is a GeoPackage.</remarks>
         private string GpkgModelNames { get; set; }
 
         /// <summary>
@@ -60,54 +57,53 @@ namespace Geowerkstatt.Ilicop.Web
             if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
             if (!fileProvider.Exists(transferFile)) throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Transfer file with the specified name <{0}> not found in <{1}>.", transferFile, fileProvider.HomeDirectory));
 
-            // Set the fully qualified path to the transfer file.
-            TransferFile = transferFile;
-
             // Unzip compressed file
-            if (Path.GetExtension(TransferFile) == ".zip")
+            if (Path.GetExtension(transferFile) == ".zip")
             {
-                await UnzipCompressedFileAsync().ConfigureAwait(false);
+                await UnzipCompressedFileAsync(transferFile).ConfigureAwait(false);
             }
 
             // Read model names from GeoPackage
-            if (Path.GetExtension(TransferFile) == ".gpkg")
+            if (Path.GetExtension(transferFile) == ".gpkg")
             {
-                GpkgModelNames = await ReadGpkgModelNamesAsync().ConfigureAwait(false);
+                GpkgModelNames = await ReadGpkgModelNamesAsync(transferFile).ConfigureAwait(false);
             }
 
             // Additional xml validation for supported files
             var supportedExtensions = new[] { ".xml", ".xtf" };
-            if (supportedExtensions.Contains(Path.GetExtension(TransferFile), StringComparer.OrdinalIgnoreCase))
+            if (supportedExtensions.Contains(Path.GetExtension(transferFile), StringComparer.OrdinalIgnoreCase))
             {
-                await ValidateXmlAsync().ConfigureAwait(false);
+                await ValidateXmlAsync(transferFile).ConfigureAwait(false);
             }
 
             try
             {
                 // Execute validation with ilivalidator
-                await ValidateAsync(cancellationToken).ConfigureAwait(false);
+                await ValidateAsync(transferFile, cancellationToken).ConfigureAwait(false);
             }
             finally
             {
                 // Clean up user uploaded/uncompressed files
-                await CleanUploadDirectoryAsync().ConfigureAwait(false);
+                await CleanUploadDirectoryAsync(transferFile).ConfigureAwait(false);
             }
         }
 
         /// <summary>
-        /// Asynchronously unzips the content of the compressed <see cref="TransferFile"/> into the same directory.
-        /// If succeeded, the original compressed transfer file gets deleted and <see cref="TransferFile"/> path is set to the new file.
+        /// Asynchronously unzips the content of the compressed <paramref name="transferFile"/> into the same directory.
+        /// If succeeded, the original compressed transfer file gets deleted and <paramref name="transferFile"/> path is set to the new file.
         /// </summary>
-        /// <exception cref="NotSupportedException">If <see cref="TransferFile"/> file extension is not supported.</exception>
-        internal async Task UnzipCompressedFileAsync()
+        /// <param name="transferFile">The transfer file to unzip.</param>
+        /// <returns>The path to the unzipped transfer file.</returns>
+        /// <exception cref="NotSupportedException">If <paramref name="transferFile"/> file extension is not supported.</exception>
+        private async Task<string> UnzipCompressedFileAsync(string transferFile)
         {
-            if (!string.Equals(Path.GetExtension(TransferFile), ".zip", StringComparison.OrdinalIgnoreCase)) throw new NotSupportedException("Only .zip files are supported.");
+            if (!string.Equals(Path.GetExtension(transferFile), ".zip", StringComparison.OrdinalIgnoreCase)) throw new NotSupportedException("Only .zip files are supported.");
 
-            logger.LogInformation("Unzipping compressed file <{TransferFile}>", TransferFile);
+            logger.LogInformation("Unzipping compressed file <{TransferFile}>", transferFile);
 
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                using var archive = ZipFile.OpenRead(Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile));
+                using var archive = ZipFile.OpenRead(Path.Combine(fileProvider.HomeDirectory.FullName, transferFile));
 
                 var transferFileExtension = archive.Entries
                     .Select(entry => Path.GetExtension(entry.FullName))
@@ -122,23 +118,24 @@ namespace Geowerkstatt.Ilicop.Web
                     entry.ExtractToFile(Path.Combine(fileProvider.HomeDirectory.FullName, sanitizedFileName));
                 }
 
-                // Set new transfer file
-                TransferFile = fileProvider.GetFiles().Single(file => Path.GetExtension(file).Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase));
+                // Return transfer file from archive
+                return fileProvider.GetFiles().Single(file => Path.GetExtension(file).Equals(transferFileExtension, StringComparison.OrdinalIgnoreCase));
             }).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Asynchronously validates the xml structure of <see cref="fileProvider"/>.
         /// </summary>
-        /// <exception cref="ArgumentNullException">If <see cref="TransferFile"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">If <see cref="TransferFile"/> is <c>string.Empty</c>.</exception>
-        /// <exception cref="FileNotFoundException">If <see cref="TransferFile"/> is not found.</exception>
-        public async Task ValidateXmlAsync()
+        /// <param name="transferFile">The transfer file to validate.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="transferFile"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="transferFile"/> is <c>string.Empty</c>.</exception>
+        /// <exception cref="FileNotFoundException">If <paramref name="transferFile"/> is not found.</exception>
+        internal async Task ValidateXmlAsync(string transferFile)
         {
-            ArgumentNullException.ThrowIfNull(TransferFile);
-            if (string.IsNullOrWhiteSpace(TransferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(TransferFile));
+            ArgumentNullException.ThrowIfNull(transferFile);
+            if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
 
-            logger.LogInformation("Validating xml structure for transfer file <{TransferFile}>", TransferFile);
+            logger.LogInformation("Validating xml structure for transfer file <{TransferFile}>", transferFile);
 
             var settings = new XmlReaderSettings
             {
@@ -146,7 +143,7 @@ namespace Geowerkstatt.Ilicop.Web
                 Async = true,
             };
 
-            using var fileStream = fileProvider.OpenText(TransferFile);
+            using var fileStream = fileProvider.OpenText(transferFile);
             using var reader = XmlReader.Create(fileStream, settings);
 
             try
@@ -157,7 +154,7 @@ namespace Geowerkstatt.Ilicop.Web
             catch (XmlException ex)
             {
                 throw new InvalidXmlException(
-                    string.Format(CultureInfo.InvariantCulture, "Cannot parse transfer file <{0}>: {1}", TransferFile, ex.Message),
+                    string.Format(CultureInfo.InvariantCulture, "Cannot parse transfer file <{0}>: {1}", transferFile, ex.Message),
                     ex);
             }
         }
@@ -165,19 +162,20 @@ namespace Geowerkstatt.Ilicop.Web
         /// <summary>
         /// Asynchronously gets the model names from a GeoPackage SQLite database.
         /// </summary>
-        /// <exception cref="ArgumentNullException">If <see cref="TransferFile"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">If <see cref="TransferFile"/> is <c>string.Empty</c>.</exception>
-        /// <exception cref="FileNotFoundException">If <see cref="TransferFile"/> is not found.</exception>
-        internal async Task<string> ReadGpkgModelNamesAsync()
+        /// <param name="transferFile">The transfer file to read the model names from.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="transferFile"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="transferFile"/> is <c>string.Empty</c>.</exception>
+        /// <exception cref="FileNotFoundException">If <paramref name="transferFile"/> is not found.</exception>
+        internal async Task<string> ReadGpkgModelNamesAsync(string transferFile)
         {
-            ArgumentNullException.ThrowIfNull(TransferFile);
-            if (string.IsNullOrWhiteSpace(TransferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(TransferFile));
+            ArgumentNullException.ThrowIfNull(transferFile);
+            if (string.IsNullOrWhiteSpace(transferFile)) throw new ArgumentException("Transfer file name cannot be empty.", nameof(transferFile));
 
-            logger.LogInformation("Reading model names from GeoPackage <{TransferFile}>", TransferFile);
+            logger.LogInformation("Reading model names from GeoPackage <{TransferFile}>", transferFile);
 
             try
             {
-                var connectionString = $"Data Source={Path.Combine(fileProvider.HomeDirectory.FullName, TransferFile)}";
+                var connectionString = $"Data Source={Path.Combine(fileProvider.HomeDirectory.FullName, transferFile)}";
                 return await Task.Run(() =>
                     ReadGpkgModelNameEntries(connectionString)
                     .CleanupGpkgModelNames(configuration)
@@ -192,16 +190,16 @@ namespace Geowerkstatt.Ilicop.Web
         }
 
         /// <summary>
-        /// Asynchronously validates the <see cref="TransferFile"/> with ilivalidator/ili2gpkg.
+        /// Asynchronously validates the<paramref name="transferFile"/>> with ilivalidator/ili2gpkg.
         /// </summary>
-        internal async Task ValidateAsync(CancellationToken cancellationToken)
+        private async Task ValidateAsync(string transferFile, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Validating transfer file <{TransferFile}> with ilivalidator/ili2gpkg", TransferFile);
+            logger.LogInformation("Validating transfer file <{TransferFile}> with ilivalidator/ili2gpkg", transferFile);
 
             var command = GetIlivalidatorCommand(
                 configuration,
                 fileProvider.HomeDirectoryPathFormat,
-                TransferFile,
+                transferFile,
                 GpkgModelNames);
 
             var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
@@ -220,10 +218,10 @@ namespace Geowerkstatt.Ilicop.Web
         /// Asynchronously cleans up any user uploaded files depending on the setting whether transfer
         /// files should be deleted.
         /// </summary>
-        internal async Task CleanUploadDirectoryAsync()
+        internal async Task CleanUploadDirectoryAsync(string transferFile)
         {
             var tasks = fileProvider.GetFiles()
-                .GetFilesToDelete(configuration, TransferFile)
+                .GetFilesToDelete(configuration, transferFile)
                 .Select(async file =>
                 {
                     logger.LogInformation("Deleting file <{File}>", file);

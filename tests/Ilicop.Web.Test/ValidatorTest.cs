@@ -45,83 +45,75 @@ namespace Geowerkstatt.Ilicop.Web
         [TestMethod]
         public async Task ValidateXmlAsyncForNull()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns((string)null);
-            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await validatorMock.Object.ValidateXmlAsync(null).ConfigureAwait(false));
         }
 
         [TestMethod]
         public async Task ValidateXmlAsyncForEmpty()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns(string.Empty);
-            await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
+            await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await validatorMock.Object.ValidateXmlAsync(string.Empty).ConfigureAwait(false));
         }
 
         [TestMethod]
         [DeploymentItem(@"testdata/invalid.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         public async Task ValidateXmlAsyncForInvalid()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.xtf");
             fileProviderMock.Setup(x => x.OpenText("invalid.xtf")).CallBase();
-            await Assert.ThrowsExactlyAsync<InvalidXmlException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
+            await Assert.ThrowsExactlyAsync<InvalidXmlException>(async () => await validatorMock.Object.ValidateXmlAsync("invalid.xtf").ConfigureAwait(false));
         }
 
         [TestMethod]
         public async Task ValidateXmlAsyncForFileNotFound()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns("unavailable.xtf");
             fileProviderMock.Setup(x => x.OpenText("unavailable.xtf")).CallBase();
-            await Assert.ThrowsExactlyAsync<FileNotFoundException>(async () => await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false));
+            await Assert.ThrowsExactlyAsync<FileNotFoundException>(async () => await validatorMock.Object.ValidateXmlAsync("unavailable.xtf").ConfigureAwait(false));
         }
 
         [TestMethod]
         [DeploymentItem("testdata/example.xtf", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         public async Task ValidateXmlAsync()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns("example.xtf");
-            fileProviderMock.Setup(x => x.OpenText("example.xtf")).CallBase();
-            await validatorMock.Object.ValidateXmlAsync().ConfigureAwait(false);
+            var transferFile = "example.xtf";
+            fileProviderMock.Setup(x => x.OpenText(transferFile)).CallBase();
+            await validatorMock.Object.ValidateXmlAsync(transferFile).ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task ReadGpkgModelNamesAsyncForNull()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns((string)null);
-            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync(null).ConfigureAwait(false));
         }
 
         [TestMethod]
         public async Task ReadGpkgModelNamesAsyncForEmpty()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns(string.Empty);
-            await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
+            await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync(string.Empty).ConfigureAwait(false));
         }
 
         [TestMethod]
         public async Task ReadGpkgModelNamesAsyncForInvalid()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns("invalid.gpkg");
-            await Assert.ThrowsExactlyAsync<GeoPackageException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
+            await Assert.ThrowsExactlyAsync<GeoPackageException>(async () => await validatorMock.Object.ReadGpkgModelNamesAsync("invalid.gpkg").ConfigureAwait(false));
         }
 
         [TestMethod]
         [DeploymentItem(@"testdata/example.gpkg", "2b005f1a-4eac-4d05-8ac6-c9221250f5a0")]
         public async Task ReadGpkgModelNamesAsync()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns("example.gpkg");
             var expected = "Wildruhezonen_Codelisten_V2_1;Wildruhezonen_LV03_V2_1;Wildruhezonen_LV95_V2_1;LOUDTRINITY";
 
-            Assert.AreEqual(expected, await validatorMock.Object.ReadGpkgModelNamesAsync().ConfigureAwait(false));
+            Assert.AreEqual(expected, await validatorMock.Object.ReadGpkgModelNamesAsync("example.gpkg").ConfigureAwait(false));
         }
 
         [TestMethod]
         public async Task CleanUploadDirectoryAsync()
         {
-            validatorMock.SetupGet(x => x.TransferFile).Returns("example.xtf");
-            fileProviderMock.Setup(x => x.GetFiles()).Returns(new[] { "example.ili", "example.xtf", "example_log.xtf" });
-            fileProviderMock.Setup(x => x.DeleteFileAsync(It.Is<string>(x => x == "example.xtf"))).Returns(Task.FromResult(0));
+            var transferFile = "example.xtf";
+            fileProviderMock.Setup(x => x.GetFiles()).Returns(new[] { "example.ili", transferFile, "example_log.xtf" });
+            fileProviderMock.Setup(x => x.DeleteFileAsync(It.Is<string>(x => x == transferFile))).Returns(Task.FromResult(0));
             fileProviderMock.Setup(x => x.DeleteFileAsync(It.Is<string>(x => x == "example.ili"))).Returns(Task.FromResult(0));
 
-            await validatorMock.Object.CleanUploadDirectoryAsync().ConfigureAwait(false);
+            await validatorMock.Object.CleanUploadDirectoryAsync(transferFile).ConfigureAwait(false);
         }
 
         private IConfiguration CreateConfiguration() =>
