@@ -71,9 +71,9 @@ if [[ $ENABLE_GPKG_VALIDATION = true ]]; then
 fi
 
 # Copy custom web assets to the web app public folder
-[[ "$(ls -A $ILICHECK_WEB_ASSETS_DIR)" ]] && \
+[[ "$(ls -A $ILICOP_WEB_ASSETS_DIR)" ]] && \
   echo -n "Copy custom web assets ..." && \
-  cp -f $ILICHECK_WEB_ASSETS_DIR/* $ILICHECK_APP_HOME_DIR/ClientApp/build/ && \
+  cp -f $ILICOP_WEB_ASSETS_DIR/* $ILICOP_APP_HOME_DIR/ClientApp/build/ && \
   echo "done!"
 
 # Use default user:group if no $PUID and/or $PGID is provided.
@@ -82,10 +82,10 @@ groupmod -o -g ${PGID:-1654} app && \
 
 # Change owner for our folders
 echo -n "Fix permissions for mounted volumes ..." && \
-  chown -R app:app $ILICHECK_APP_HOME_DIR && \
-  chown -R app:app $ILICHECK_APP_LOG_DIR && \
-  chown -R app:app $ILICHECK_UPLOADS_DIR && \
-  chown -R app:app $ILICHECK_WEB_ASSETS_DIR && \
+  chown -R app:app $ILICOP_APP_HOME_DIR && \
+  chown -R app:app $ILICOP_APP_LOG_DIR && \
+  chown -R app:app $ILICOP_UPLOADS_DIR && \
+  chown -R app:app $ILICOP_WEB_ASSETS_DIR && \
   chown -R app:app $ILITOOLS_HOME_DIR && \
   chown -R app:app $ILITOOLS_CONFIG_DIR && \
   chown -R app:app $ILITOOLS_CATALOGUES_DIR && \
@@ -102,12 +102,12 @@ echo -n "Configure environment ..." && \
 # Setup and run cron jobs
 [[ -n $TRANSFER_AND_LOG_DATA_RETENTION ]] && \
   echo -n "Setup cron jobs ..." && \
-  echo '* * * * * /usr/bin/find $ILICHECK_UPLOADS_DIR -mindepth 1 -maxdepth 1 -type d -not -newermt "$TRANSFER_AND_LOG_DATA_RETENTION ago" -exec rm -r "{}" \; > /proc/1/fd/1 2>/proc/1/fd/2' | crontab - && \
+  echo '* * * * * /usr/bin/find $ILICOP_UPLOADS_DIR -mindepth 1 -maxdepth 1 -type d -not -newermt "$TRANSFER_AND_LOG_DATA_RETENTION ago" -exec rm -r "{}" \; > /proc/1/fd/1 2>/proc/1/fd/2' | crontab - && \
   cron && echo "done!"
 
 echo "
 --------------------------------------------------------------------------
-ilicheck version:                 $ILICHECK_APP_VERSION
+ilicop version:                   $ILICOP_APP_VERSION
 delete transfer files:            $([[ $DELETE_TRANSFER_FILES = true ]] && echo enabled || echo disabled)
 transfer and log data retention:  $([[ -n $TRANSFER_AND_LOG_DATA_RETENTION ]] && echo $TRANSFER_AND_LOG_DATA_RETENTION || echo unset)
 ilivalidator version:             $ILIVALIDATOR_VERSION `[[ $ILIVALIDATOR_VERSION != $ILIVALIDATOR_LATEST_VERSION ]] && echo "(new version $ILIVALIDATOR_LATEST_VERSION available!)"`
@@ -124,4 +124,4 @@ timezone:                         $TZ
 "
 
 echo -e "INTERLIS web check service app is up and running!\n" && \
-  sudo -H --preserve-env --user app dotnet ILICheck.Web.dll
+  sudo -H --preserve-env --user app dotnet Ilicop.Web.dll

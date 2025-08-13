@@ -18,22 +18,22 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Restore dependencies and tools
-COPY ["src/ILICheck.Web/ILICheck.Web.csproj", "ILICheck.Web/"]
-RUN dotnet restore "ILICheck.Web/ILICheck.Web.csproj"
+COPY ["src/Ilicop.Web/Ilicop.Web.csproj", "Ilicop.Web/"]
+RUN dotnet restore "Ilicop.Web/Ilicop.Web.csproj"
 
 # Create optimized production build
-COPY ["src/ILICheck.Web/", "ILICheck.Web/"]
+COPY ["src/Ilicop.Web/", "Ilicop.Web/"]
 ENV GENERATE_SOURCEMAP=false
 ENV PUBLISH_DIR=/app/publish
-RUN dotnet publish "ILICheck.Web/ILICheck.Web.csproj" \
+RUN dotnet publish "Ilicop.Web/Ilicop.Web.csproj" \
   -c Release \
   -p:VersionPrefix=${VERSION} \
   -p:SourceRevisionId=${REVISION} \
   -o ${PUBLISH_DIR}
 
 # Generate license and copyright notice for Node.js packages
-WORKDIR /src/ILICheck.Web/ClientApp
-COPY ["licenseCustomFormat.json", "/src/ILICheck.Web/ClientApp/"]
+WORKDIR /src/Ilicop.Web/ClientApp
+COPY ["licenseCustomFormat.json", "/src/Ilicop.Web/ClientApp/"]
 RUN npx license-checker --json --production \
   --customPath licenseCustomFormat.json \
   --out ${PUBLISH_DIR}/ClientApp/build/license.json
@@ -44,19 +44,19 @@ ARG REVISION
 ENV HOME=/app
 ENV TZ=Europe/Zurich
 ENV ASPNETCORE_ENVIRONMENT=Production
-ENV ILICHECK_APP_VERSION=${VERSION}
-ENV ILICHECK_APP_REVISION=${REVISION}
-ENV ILICHECK_APP_HOME_DIR=/app
-ENV ILICHECK_APP_LOG_DIR=/logs
-ENV ILICHECK_UPLOADS_DIR=/uploads
-ENV ILICHECK_WEB_ASSETS_DIR=/web-assets
+ENV ILICOP_APP_VERSION=${VERSION}
+ENV ILICOP_APP_REVISION=${REVISION}
+ENV ILICOP_APP_HOME_DIR=/app
+ENV ILICOP_APP_LOG_DIR=/logs
+ENV ILICOP_UPLOADS_DIR=/uploads
+ENV ILICOP_WEB_ASSETS_DIR=/web-assets
 ENV ILITOOLS_HOME_DIR=/ilitools
 ENV ILITOOLS_CONFIG_DIR=/config
 ENV ILITOOLS_CATALOGUES_DIR=/catalogues
 ENV ILITOOLS_MODELS_DIR=/models
 ENV ILITOOLS_PLUGINS_DIR=/plugins
 ENV ILITOOLS_CACHE_DIR=/cache
-WORKDIR ${ILICHECK_APP_HOME_DIR}
+WORKDIR ${ILICOP_APP_HOME_DIR}
 
 # Install missing packages
 RUN \
@@ -69,10 +69,10 @@ RUN \
 # Create our folders
 RUN \
  mkdir -p \
-   $ILICHECK_APP_HOME_DIR \
-   $ILICHECK_APP_LOG_DIR \
-   $ILICHECK_UPLOADS_DIR \
-   $ILICHECK_WEB_ASSETS_DIR \
+   $ILICOP_APP_HOME_DIR \
+   $ILICOP_APP_LOG_DIR \
+   $ILICOP_UPLOADS_DIR \
+   $ILICOP_WEB_ASSETS_DIR \
    $ILITOOLS_HOME_DIR \
    $ILITOOLS_CONFIG_DIR \
    $ILITOOLS_CATALOGUES_DIR \
@@ -81,8 +81,8 @@ RUN \
    $ILITOOLS_CACHE_DIR
 
 EXPOSE 8080
-VOLUME $ILICHECK_APP_LOG_DIR
-VOLUME $ILICHECK_UPLOADS_DIR
+VOLUME $ILICOP_APP_LOG_DIR
+VOLUME $ILICOP_UPLOADS_DIR
 VOLUME $ILITOOLS_CONFIG_DIR
 VOLUME $ILITOOLS_CATALOGUES_DIR
 VOLUME $ILITOOLS_MODELS_DIR
@@ -92,7 +92,7 @@ VOLUME $ILITOOLS_PLUGINS_DIR
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
-COPY --from=build /app/publish $ILICHECK_APP_HOME_DIR
+COPY --from=build /app/publish $ILICOP_APP_HOME_DIR
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY ilivalidator-wrapper.sh /usr/local/bin/ilivalidator
 
