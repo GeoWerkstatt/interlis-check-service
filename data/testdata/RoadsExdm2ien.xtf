@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- File RoadsExdm2ien.xtf 2014-08-05 (http://www.interlis.ch/models/refhb24) -->
+
+<ili:transfer xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS"
+  xmlns:geom="http://www.interlis.ch/geometry/1.0"
+  xmlns:roads="http://www.interlis.ch/xtf/2.4/RoadsExdm2ben"
+  xmlns="http://www.interlis.ch/xtf/2.4/RoadsExdm2ien"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ili:headersection>
+    <ili:models>
+      <ili:model>RoadsExdm2ien</ili:model>
+    </ili:models>
+    <ili:sender>KOGIS</ili:sender>
+    <ili:comment>example dataset ili2 refmanual appendix E</ili:comment>
+  </ili:headersection>
+
+  <ili:datasection>
+    <RoadsExtended ili:bid="REFHANDB00000001">
+
+      <!-- === LandCover === -->
+      <roads:LandCover ili:tid="16">
+        <roads:Type>water</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>39.038</geom:c1><geom:c2>60.315</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>41.200</geom:c1><geom:c2>59.302</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>43.362</geom:c1><geom:c2>60.315</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>44.713</geom:c1><geom:c2>66.268</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>45.794</geom:c1><geom:c2>67.662</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>48.766</geom:c1><geom:c2>67.408</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>53.360</geom:c1><geom:c2>64.115</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>56.197</geom:c1><geom:c2>62.595</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>57.818</geom:c1><geom:c2>63.862</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>58.899</geom:c1><geom:c2>68.928</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>55.927</geom:c1><geom:c2>72.348</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>47.955</geom:c1><geom:c2>75.515</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>42.281</geom:c1><geom:c2>75.388</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>39.308</geom:c1><geom:c2>73.235</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>36.741</geom:c1><geom:c2>69.688</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>35.525</geom:c1><geom:c2>66.268</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>35.661</geom:c1><geom:c2>63.735</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>37.957</geom:c1><geom:c2>61.455</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>39.038</geom:c1><geom:c2>60.315</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="18">
+        <roads:Type>building</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>101.459</geom:c1><geom:c2>65.485</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>108.186</geom:c1><geom:c2>69.369</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>102.086</geom:c1><geom:c2>79.936</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>95.359</geom:c1><geom:c2>76.053</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>101.459</geom:c1><geom:c2>65.485</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+           </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="20">
+        <roads:Type>building</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>60.489</geom:c1><geom:c2>49.608</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>79.900</geom:c1><geom:c2>55.839</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>75.351</geom:c1><geom:c2>70.932</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>67.678</geom:c1><geom:c2>68.781</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>69.938</geom:c1><geom:c2>61.721</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>57.582</geom:c1><geom:c2>58.029</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>60.489</geom:c1><geom:c2>49.608</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+           </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="22">
+        <roads:Type>street</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>45.067</geom:c1><geom:c2>58.655</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>50.669</geom:c1><geom:c2>42.579</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>57.060</geom:c1><geom:c2>44.638</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>51.432</geom:c1><geom:c2>60.469</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>45.067</geom:c1><geom:c2>58.655</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="24">
+        <roads:Type>other</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>114.027</geom:c1><geom:c2>99.314</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>31.351</geom:c1><geom:c2>99.314</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>31.140</geom:c1><geom:c2>92.530</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>70.419</geom:c1><geom:c2>86.177</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>86.481</geom:c1><geom:c2>79.710</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>114.027</geom:c1><geom:c2>99.314</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="26">
+        <roads:Type>other</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>113.559</geom:c1><geom:c2>62.880</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>114.027</geom:c1><geom:c2>99.314</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>86.481</geom:c1><geom:c2>79.710</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>94.381</geom:c1><geom:c2>66.289</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>96.779</geom:c1><geom:c2>57.177</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>113.559</geom:c1><geom:c2>62.880</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+            <geom:interior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>108.186</geom:c1><geom:c2>69.369</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>101.459</geom:c1><geom:c2>65.485</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>95.359</geom:c1><geom:c2>76.053</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>102.086</geom:c1><geom:c2>79.936</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>108.186</geom:c1><geom:c2>69.369</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:interior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="29">
+        <roads:Type>street</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>100.621</geom:c1><geom:c2>24.239</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>109.729</geom:c1><geom:c2>24.239</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>105.640</geom:c1><geom:c2>48.068</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>96.779</geom:c1><geom:c2>45.088</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>100.621</geom:c1><geom:c2>24.239</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="31">
+        <roads:Type>other</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>30.900</geom:c1><geom:c2>24.478</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>100.621</geom:c1><geom:c2>24.239</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>96.779</geom:c1><geom:c2>45.088</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>30.900</geom:c1><geom:c2>24.478</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="33">
+        <roads:Type>other</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>31.110</geom:c1><geom:c2>83.750</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>31.140</geom:c1><geom:c2>36.458</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>50.669</geom:c1><geom:c2>42.579</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>45.067</geom:c1><geom:c2>58.655</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>51.432</geom:c1><geom:c2>60.469</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>57.060</geom:c1><geom:c2>44.638</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>87.839</geom:c1><geom:c2>54.138</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>85.282</geom:c1><geom:c2>63.410</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>78.847</geom:c1><geom:c2>73.433</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>67.549</geom:c1><geom:c2>77.788</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>31.110</geom:c1><geom:c2>83.750</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+            <geom:interior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>41.200</geom:c1><geom:c2>59.302</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>39.038</geom:c1><geom:c2>60.315</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>37.957</geom:c1><geom:c2>61.455</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>35.661</geom:c1><geom:c2>63.735</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>35.525</geom:c1><geom:c2>66.268</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>36.741</geom:c1><geom:c2>69.688</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>39.308</geom:c1><geom:c2>73.235</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>42.281</geom:c1><geom:c2>75.388</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>47.955</geom:c1><geom:c2>75.515</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>55.927</geom:c1><geom:c2>72.348</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>58.899</geom:c1><geom:c2>68.928</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>57.818</geom:c1><geom:c2>63.862</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>56.197</geom:c1><geom:c2>62.595</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>53.360</geom:c1><geom:c2>64.115</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>48.766</geom:c1><geom:c2>67.408</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>45.794</geom:c1><geom:c2>67.662</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>44.713</geom:c1><geom:c2>66.268</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>43.362</geom:c1><geom:c2>60.315</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>41.200</geom:c1><geom:c2>59.302</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:interior>
+            <geom:interior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>79.900</geom:c1><geom:c2>55.839</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>60.489</geom:c1><geom:c2>49.608</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>57.582</geom:c1><geom:c2>58.029</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>69.938</geom:c1><geom:c2>61.721</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>67.678</geom:c1><geom:c2>68.781</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>75.351</geom:c1><geom:c2>70.932</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>79.900</geom:c1><geom:c2>55.839</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:interior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="37">
+        <roads:Type>street</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>31.140</geom:c1><geom:c2>92.530</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>31.110</geom:c1><geom:c2>83.750</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>67.549</geom:c1><geom:c2>77.788</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>78.847</geom:c1><geom:c2>73.433</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>85.282</geom:c1><geom:c2>63.410</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>87.839</geom:c1><geom:c2>54.138</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>96.779</geom:c1><geom:c2>57.177</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>94.381</geom:c1><geom:c2>66.289</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>86.481</geom:c1><geom:c2>79.710</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>70.419</geom:c1><geom:c2>86.177</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>31.140</geom:c1><geom:c2>92.530</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="39">
+        <roads:Type>other</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>113.811</geom:c1><geom:c2>51.168</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>105.640</geom:c1><geom:c2>48.068</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>109.729</geom:c1><geom:c2>24.239</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>114.269</geom:c1><geom:c2>24.017</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>113.811</geom:c1><geom:c2>51.168</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <roads:LandCover ili:tid="41">
+        <roads:Type>street</roads:Type>
+        <roads:Geometry>
+          <geom:surface>
+            <geom:exterior>
+              <geom:polyline>
+                <geom:coord>
+                  <geom:c1>105.640</geom:c1><geom:c2>48.068</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>113.811</geom:c1><geom:c2>51.168</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>113.559</geom:c1><geom:c2>62.880</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>96.779</geom:c1><geom:c2>57.177</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>87.839</geom:c1><geom:c2>54.138</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>57.060</geom:c1><geom:c2>44.638</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>50.669</geom:c1><geom:c2>42.579</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>31.140</geom:c1><geom:c2>36.458</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>30.900</geom:c1><geom:c2>24.478</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>96.779</geom:c1><geom:c2>45.088</geom:c2>
+                </geom:coord>
+                <geom:coord>
+                  <geom:c1>105.640</geom:c1><geom:c2>48.068</geom:c2>
+                </geom:coord>
+              </geom:polyline>
+            </geom:exterior>
+          </geom:surface>
+        </roads:Geometry>
+      </roads:LandCover>
+
+      <!-- === Street === -->
+      <roads:Street ili:tid="1">
+        <roads:Name>Austrasse</roads:Name>
+      </roads:Street>
+
+      <roads:Street ili:tid="2">
+        <roads:Name>Eymattstrasse</roads:Name>
+      </roads:Street>
+
+      <roads:Street ili:tid="3">
+        <roads:Name>Feldweg</roads:Name>
+      </roads:Street>
+
+      <roads:Street ili:tid="4">
+        <roads:Name>Seeweg</roads:Name>
+      </roads:Street>
+
+      <!-- === StreetAxis / StreetAxisAssoc === -->
+      <StreetAxis ili:tid="8">
+        <roads:Geometry>
+          <geom:polyline>
+            <geom:coord>
+              <geom:c1>55.600</geom:c1><geom:c2>37.649</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>15.573</geom:c1><geom:c2>25.785</geom:c2>
+            </geom:coord>
+          </geom:polyline>
+        </roads:Geometry>
+        <roads:Street ili:ref="1"></roads:Street>
+        <Precision>precise</Precision>
+      </StreetAxis>
+
+      <StreetAxis ili:tid="9">
+        <roads:Geometry>
+          <geom:polyline>
+            <geom:coord>
+              <geom:c1>55.600</geom:c1><geom:c2>37.649</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>94.990</geom:c1><geom:c2>50.109</geom:c2>
+            </geom:coord>
+          </geom:polyline>
+        </roads:Geometry>
+        <roads:Street ili:ref="1"></roads:Street>
+        <Precision>precise</Precision>
+      </StreetAxis>
+
+      <StreetAxis ili:tid="10">
+        <roads:Geometry>
+          <geom:polyline>
+            <geom:coord>
+              <geom:c1>94.990</geom:c1><geom:c2>50.109</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>101.099</geom:c1><geom:c2>52.279</geom:c2>
+            </geom:coord>
+          </geom:polyline>
+        </roads:Geometry>
+        <roads:Street ili:ref="1"></roads:Street>
+        <Precision>precise</Precision>
+      </StreetAxis>
+
+      <StreetAxis ili:tid="11">
+        <roads:Geometry>
+          <geom:polyline>
+            <geom:coord>
+              <geom:c1>101.099</geom:c1><geom:c2>52.279</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>126.100</geom:c1><geom:c2>62.279</geom:c2>
+            </geom:coord>
+          </geom:polyline>
+        </roads:Geometry>
+        <roads:Street ili:ref="1"></roads:Street>
+        <Precision>precise</Precision>
+      </StreetAxis>
+
+      <StreetAxis ili:tid="12">
+        <roads:Geometry>
+          <geom:polyline>
+            <geom:coord>
+              <geom:c1>94.990</geom:c1><geom:c2>50.109</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>89.504</geom:c1><geom:c2>65.795</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>83.594</geom:c1><geom:c2>75.598</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>71.774</geom:c1><geom:c2>80.712</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>11.423</geom:c1><geom:c2>91.154</geom:c2>
+            </geom:coord>
+          </geom:polyline>
+        </roads:Geometry>
+        <roads:Street ili:ref="2"></roads:Street>
+        <Precision>precise</Precision>
+      </StreetAxis>
+
+      <StreetAxis ili:tid="13">
+        <roads:Geometry>
+          <geom:polyline>
+            <geom:coord>
+              <geom:c1>101.099</geom:c1><geom:c2>52.279</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>107.400</geom:c1><geom:c2>14.603</geom:c2>
+            </geom:coord>
+          </geom:polyline>
+        </roads:Geometry>
+        <roads:Street ili:ref="3"></roads:Street>
+        <Precision>unprecise</Precision>
+      </StreetAxis>
+
+      <StreetAxis ili:tid="15">
+        <roads:Geometry>
+          <geom:polyline>
+            <geom:coord>
+              <geom:c1>55.600</geom:c1><geom:c2>37.649</geom:c2>
+            </geom:coord>
+            <geom:coord>
+              <geom:c1>49.359</geom:c1><geom:c2>56.752</geom:c2>
+            </geom:coord>
+          </geom:polyline>
+        </roads:Geometry>
+        <roads:Street ili:ref="4"></roads:Street>
+        <Precision>unprecise</Precision>
+      </StreetAxis>
+
+      <!-- === StreetNamePosition / StreetNamePositionAssoc === -->
+      <roads:StreetNamePosition ili:tid="5">
+        <roads:NamPos>
+          <geom:coord>
+            <geom:c1>71.660</geom:c1><geom:c2>45.231</geom:c2>
+          </geom:coord>
+        </roads:NamPos>
+        <roads:NamOri>15.0</roads:NamOri>
+        <roads:Street ili:ref="1"></roads:Street>
+      </roads:StreetNamePosition>
+
+      <roads:StreetNamePosition ili:tid="6">
+        <roads:NamPos>
+          <geom:coord>
+            <geom:c1>58.249</geom:c1><geom:c2>85.081</geom:c2>
+          </geom:coord>
+        </roads:NamPos>
+        <roads:NamOri>351.0</roads:NamOri>
+        <roads:Street ili:ref="2"></roads:Street>
+      </roads:StreetNamePosition>
+
+      <roads:StreetNamePosition ili:tid="7">
+        <roads:NamPos>
+          <geom:coord>
+            <geom:c1>106.095</geom:c1><geom:c2>33.554</geom:c2>
+          </geom:coord>
+        </roads:NamPos>
+        <roads:NamOri>280.0</roads:NamOri>
+        <roads:Street ili:ref="3"></roads:Street>
+      </roads:StreetNamePosition>
+
+      <roads:StreetNamePosition ili:tid="14">
+        <roads:NamPos>
+          <geom:coord>
+            <geom:c1>53.031</geom:c1><geom:c2>51.367</geom:c2>
+          </geom:coord>
+        </roads:NamPos>
+        <roads:NamOri>291.3</roads:NamOri>
+        <roads:Street ili:ref="4"></roads:Street>
+      </roads:StreetNamePosition>
+
+      <!-- === RoadSign === -->
+      <RoadSign ili:tid="501">
+        <roads:Type>prohibition.noparking</roads:Type>
+        <roads:Position>
+          <geom:coord>
+            <geom:c1>69.389</geom:c1><geom:c2>92.056</geom:c2>
+          </geom:coord>
+        </roads:Position>
+      </RoadSign>
+
+      <RoadSign ili:tid="502">
+        <roads:Type>prohibition.noparking</roads:Type>
+        <roads:Position>
+          <geom:coord>
+            <geom:c1>80.608</geom:c1><geom:c2>88.623</geom:c2>
+          </geom:coord>
+        </roads:Position>
+      </RoadSign>
+
+      <RoadSign ili:tid="503">
+        <roads:Type>prohibition.noparking</roads:Type>
+        <roads:Position>
+          <geom:coord>
+            <geom:c1>58.059</geom:c1><geom:c2>93.667</geom:c2>
+          </geom:coord>
+        </roads:Position>
+      </RoadSign>
+
+      <RoadSign ili:tid="504">
+        <roads:Type>danger</roads:Type>
+        <roads:Position>
+          <geom:coord>
+            <geom:c1>92.741</geom:c1><geom:c2>38.295</geom:c2>
+          </geom:coord>
+        </roads:Position>
+      </RoadSign>
+    </RoadsExtended>
+    <!-- end of basket REFHANDB00000001 -->
+  </ili:datasection>
+</ili:transfer>

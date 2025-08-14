@@ -1,0 +1,3 @@
+[CONFIGURATION]
+baseConfig="ilidata:DEFAULT"
+ch.interlis.referenceData="ilidata:RoadsExgm2ien_Symbols"

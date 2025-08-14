@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+  <HEADERSECTION SENDER="interlis-check-service" VERSION="2.3">
+    <MODELS>
+      <MODEL NAME="DatasetIdx16" VERSION="2018-11-21" URI="mailto:ce@eisenhutinformatik.ch"></MODEL>
+    </MODELS>
+  </HEADERSECTION>
+  <DATASECTION>
+    <DatasetIdx16.DataIndex BID="b0">
+      <DatasetIdx16.DataIndex.DatasetMetadata TID="1">
+        <id>DEFAULT</id>
+        <version>1.0.0</version>
+        <publishingDate>2021-03-08</publishingDate>
+        <owner>mailto:models@geo.admin.ch</owner>
+        <title>
+          <DatasetIdx16.MultilingualText>
+            <LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Text></Text><!--Do not give default Profile a display name-->
+              </DatasetIdx16.LocalisedText>
+            </LocalisedText>
+          </DatasetIdx16.MultilingualText>
+        </title>
+        <categories>
+          <DatasetIdx16.Code_>
+            <value>http://codes.interlis.ch/type/metaconfig</value>
+          </DatasetIdx16.Code_>
+        </categories>
+        <files>
+          <DatasetIdx16.DataFile>
+            <fileFormat>application/toml</fileFormat>
+            <file>
+              <DatasetIdx16.File>
+                <path>default.toml</path>
+              </DatasetIdx16.File>
+            </file>
+          </DatasetIdx16.DataFile>
+        </files>
+      </DatasetIdx16.DataIndex.DatasetMetadata>
+    <DatasetIdx16.DataIndex.DatasetMetadata TID="2">
+        <id>Profiled</id>
+        <version>1.0.0</version>
+        <publishingDate>2021-03-08</publishingDate>
+        <owner>mailto:models@geo.admin.ch</owner>
+        <title>
+          <DatasetIdx16.MultilingualText>
+            <LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>en</Language>
+                <Text>With Profile</Text>
+              </DatasetIdx16.LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>de</Language>
+                <Text>Mit Profil</Text>
+              </DatasetIdx16.LocalisedText>
+            </LocalisedText>
+          </DatasetIdx16.MultilingualText>
+        </title>
+        <categories>
+          <DatasetIdx16.Code_>
+            <value>http://codes.interlis.ch/type/metaconfig</value>
+          </DatasetIdx16.Code_>
+        </categories>
+        <files>
+          <DatasetIdx16.DataFile>
+            <fileFormat>application/toml</fileFormat>
+            <file>
+              <DatasetIdx16.File>
+                <path>test_config/profiled.toml</path>
+              </DatasetIdx16.File>
+            </file>
+          </DatasetIdx16.DataFile>
+        </files>
+      </DatasetIdx16.DataIndex.DatasetMetadata>
+      <DatasetIdx16.DataIndex.DatasetMetadata TID="3">
+        <id>RoadsExdm2ben</id>
+        <version>2014-07-09</version>
+        <publishingDate>2020-02-20</publishingDate>
+        <owner>http://www.interlis.ch/models/refhb24</owner>
+        <title>
+          <DatasetIdx16.MultilingualText>
+            <LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>en</Language>
+                <Text>RoadsExdm2ben - Roads Extended Data Model 2 Basic Elements</Text>
+              </DatasetIdx16.LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>de</Language>
+                <Text>RoadsExdm2ben - Strassendatenmodell 2 Grundelemente</Text>
+              </DatasetIdx16.LocalisedText>
+            </LocalisedText>
+          </DatasetIdx16.MultilingualText>
+        </title>
+        <categories>
+          <DatasetIdx16.Code_>
+            <value>http://codes.interlis.ch/type/model</value>
+          </DatasetIdx16.Code_>
+        </categories>
+        <files>
+          <DatasetIdx16.DataFile>
+            <fileFormat>application/interlis+ili;version=2.4</fileFormat>
+            <file>
+              <DatasetIdx16.File>
+                <path>refhb24/RoadsExdm2ben.ili</path>
+              </DatasetIdx16.File>
+            </file>
+          </DatasetIdx16.DataFile>
+        </files>
+      </DatasetIdx16.DataIndex.DatasetMetadata>
+      <DatasetIdx16.DataIndex.DatasetMetadata TID="4">
+        <id>RoadsExdm2ien</id>
+        <version>2014-07-09</version>
+        <publishingDate>2020-02-20</publishingDate>
+        <owner>http://www.interlis.ch/models/refhb24</owner>
+        <title>
+          <DatasetIdx16.MultilingualText>
+            <LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>en</Language>
+                <Text>RoadsExdm2ien - Roads Extended Data Model 2 Infrastructure Elements</Text>
+              </DatasetIdx16.LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>de</Language>
+                <Text>RoadsExdm2ien - Strassendatenmodell 2 Infrastrukturelemente</Text>
+              </DatasetIdx16.LocalisedText>
+            </LocalisedText>
+          </DatasetIdx16.MultilingualText>
+        </title>
+        <categories>
+          <DatasetIdx16.Code_>
+            <value>http://codes.interlis.ch/type/model</value>
+          </DatasetIdx16.Code_>
+        </categories>
+        <files>
+          <DatasetIdx16.DataFile>
+            <fileFormat>application/interlis+ili;version=2.4</fileFormat>
+            <file>
+              <DatasetIdx16.File>
+                <path>refhb24/RoadsExdm2ien.ili</path>
+              </DatasetIdx16.File>
+            </file>
+          </DatasetIdx16.DataFile>
+        </files>
+      </DatasetIdx16.DataIndex.DatasetMetadata>
+      <DatasetIdx16.DataIndex.DatasetMetadata TID="5">
+        <id>RoadsExgm2ien</id>
+        <version>2014-07-09</version>
+        <publishingDate>2020-02-20</publishingDate>
+        <owner>http://www.interlis.ch/models/refhb24</owner>
+        <title>
+          <DatasetIdx16.MultilingualText>
+            <LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>en</Language>
+                <Text>RoadsExgm2ien - Roads Extended Graphics Model 2 Infrastructure Elements</Text>
+              </DatasetIdx16.LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>de</Language>
+                <Text>RoadsExgm2ien - Strassengrafik-Modell 2 Infrastrukturelemente</Text>
+              </DatasetIdx16.LocalisedText>
+            </LocalisedText>
+          </DatasetIdx16.MultilingualText>
+        </title>
+        <categories>
+          <DatasetIdx16.Code_>
+            <value>http://codes.interlis.ch/type/model</value>
+          </DatasetIdx16.Code_>
+        </categories>
+        <files>
+          <DatasetIdx16.DataFile>
+            <fileFormat>application/interlis+ili;version=2.4</fileFormat>
+            <file>
+              <DatasetIdx16.File>
+                <path>refhb24/RoadsExgm2ien.ili</path>
+              </DatasetIdx16.File>
+            </file>
+          </DatasetIdx16.DataFile>
+        </files>
+      </DatasetIdx16.DataIndex.DatasetMetadata>
+      <DatasetIdx16.DataIndex.DatasetMetadata TID="6">
+        <id>RoadsExgm2ien_Symbols</id>
+        <version>2014-07-09</version>
+        <publishingDate>2020-02-20</publishingDate>
+        <owner>http://www.interlis.ch/models/refhb24</owner>
+        <title>
+          <DatasetIdx16.MultilingualText>
+            <LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>en</Language>
+                <Text>RoadsExgm2ien Symbols Data</Text>
+              </DatasetIdx16.LocalisedText>
+              <DatasetIdx16.LocalisedText>
+                <Language>de</Language>
+                <Text>RoadsExgm2ien Symboldaten</Text>
+              </DatasetIdx16.LocalisedText>
+            </LocalisedText>
+          </DatasetIdx16.MultilingualText>
+        </title>
+        <categories>
+          <DatasetIdx16.Code_>
+            <value>http://codes.interlis.ch/type/referenceData</value>
+          </DatasetIdx16.Code_>
+        </categories>
+        <files>
+          <DatasetIdx16.DataFile>
+            <fileFormat>application/interlis+xtf;version=2.4</fileFormat>
+            <file>
+              <DatasetIdx16.File>
+                <path>refhb24/RoadsExgm2ien_Symbols.xtf</path>
+              </DatasetIdx16.File>
+            </file>
+          </DatasetIdx16.DataFile>
+        </files>
+      </DatasetIdx16.DataIndex.DatasetMetadata>
+    </DatasetIdx16.DataIndex>
+  </DATASECTION>
+</TRANSFER>
