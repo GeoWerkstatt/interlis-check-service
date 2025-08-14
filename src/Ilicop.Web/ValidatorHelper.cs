@@ -63,6 +63,9 @@ namespace Geowerkstatt.Ilicop.Web
         /// <returns>The ilivalidator command.</returns>
         public static string GetIlivalidatorCommand(IConfiguration configuration, string homeDirectory, string transferFile, string gpkgModelNames = null)
         {
+            // Ensure ilitools are initialized and environment variables are set.
+            EnsureIlitoolsInitialized(configuration);
+
             homeDirectory = Path.TrimEndingDirectorySeparator(homeDirectory);
             var transferFileNameWithoutExtension = Path.GetFileNameWithoutExtension(transferFile);
 
@@ -77,6 +80,30 @@ namespace Geowerkstatt.Ilicop.Web
                 CultureInfo.InvariantCulture,
                 commandFormat,
                 $"ilivalidator {options} \"{transferFilePath}\"");
+        }
+
+        /// <summary>
+        /// Ensures that ilitools have been bootstrapped successfully.
+        /// </summary>
+        /// <param name="configuration">The current configuration.</param>
+        /// <exception cref="InvalidOperationException">If ilitools are not properly bootstrapped.</exception>
+        private static void EnsureIlitoolsInitialized(IConfiguration configuration)
+        {
+            var ilivalidatorVersion = Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION");
+            if (string.IsNullOrEmpty(ilivalidatorVersion))
+            {
+                throw new InvalidOperationException("Ilivalidator is not properly bootstrapped. Ensure IlitoolsBootstrapService has completed successfully.");
+            }
+
+            var enableGpkgValidation = configuration.GetValue<bool>("ENABLE_GPKG_VALIDATION");
+            if (enableGpkgValidation)
+            {
+                var ili2gpkgVersion = Environment.GetEnvironmentVariable("ILI2GPKG_VERSION");
+                if (string.IsNullOrEmpty(ili2gpkgVersion))
+                {
+                    throw new InvalidOperationException("ili2gpkg is not properly bootstrapped but GPKG validation is enabled. Ensure IlitoolsBootstrapService has completed successfully.");
+                }
+            }
         }
 
         /// <summary>

@@ -43,8 +43,19 @@ namespace Geowerkstatt.Ilicop.Web
         }
 
         [TestMethod]
+        public void GetIlivalidatorCommandWithoutBootstrap()
+        {
+            // Clear environment variable to simulate bootstrap not having run
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", null);
+            Assert.ThrowsExactly<InvalidOperationException>(() => ValidatorHelper.GetIlivalidatorCommand(CreateConfiguration(), "/test", "test.xtf"));
+        }
+
+        [TestMethod]
         public void GetIlivalidatorCommand()
         {
+            // Set up environment variables that the bootstrap service would set
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", "1.13.2");
+
             AssertGetIlivalidatorCommand(
                 "dada hopp monkey:latest sh ilivalidator --log \"/PEEVEDBAGEL/ANT_log.log\" --xtflog \"/PEEVEDBAGEL/ANT_log.xtf\" --verbose \"/PEEVEDBAGEL/ANT.XTF\"",
                 "dada hopp monkey:latest sh {0}",
@@ -65,6 +76,9 @@ namespace Geowerkstatt.Ilicop.Web
                 "$SEA/RED/",
                 "WATCH.GPKG",
                 string.Empty);
+
+            // Clean up
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", null);
         }
 
         private static void AssertGetIlivalidatorCommand(string expected, string commandFormat, string homeDirectory, string transferFile, string models) =>
