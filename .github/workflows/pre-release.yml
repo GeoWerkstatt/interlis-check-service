@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN: ${{ secrets.GEOW_BOT_TOKEN }}
 
 jobs:
   create-pre-release:
