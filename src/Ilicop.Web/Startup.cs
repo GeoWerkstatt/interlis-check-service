@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Geowerkstatt.Ilicop.Web.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -63,6 +64,10 @@ namespace Geowerkstatt.Ilicop.Web
                         .WithOrigins("https://localhost:44302");
                 });
             });
+
+            services.AddHttpClient();
+            services.AddHostedService<IlitoolsBootstrapService>();
+
             services.AddSingleton<IValidatorService, ValidatorService>();
             services.AddHostedService(services => (ValidatorService)services.GetService<IValidatorService>());
             services.AddTransient<IValidator, Validator>();

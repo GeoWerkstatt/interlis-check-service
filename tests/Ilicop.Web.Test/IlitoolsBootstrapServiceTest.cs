@@ -1,0 +1,200 @@
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Moq.Protected;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Geowerkstatt.Ilicop.Web.Services
+{
+    [TestClass]
+    [DeploymentItem("testdata/mock.zip")]
+    [DeploymentItem("testdata/ilitools", "RAGESLAW")]
+    public class IlitoolsBootstrapServiceTest
+    {
+        private Mock<ILogger<IlitoolsBootstrapService>> loggerMock;
+        private Mock<HttpMessageHandler> httpMessageHandlerMock;
+        private HttpClient httpClient;
+
+        public TestContext TestContext { get; set; }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            loggerMock = new Mock<ILogger<IlitoolsBootstrapService>>();
+            httpMessageHandlerMock = new Mock<HttpMessageHandler>();
+            httpClient = new HttpClient(httpMessageHandlerMock.Object);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            httpClient?.Dispose();
+        }
+
+        [TestMethod]
+        public async Task StartAsyncWithSpecificVersionSetsEnvironmentVariable()
+        {
+            var configValues = new Dictionary<string, string>
+            {
+                { "ILITOOLS_HOME_DIR", Path.Combine(TestContext.DeploymentDirectory, "FALLOUT") },
+                { "ILITOOLS_CACHE_DIR", Path.Combine(TestContext.DeploymentDirectory, "ARKSHARK") },
+                { "ENABLE_GPKG_VALIDATION", "false" },
+                { "ILIVALIDATOR_VERSION", "1.13.2" },
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configValues)
+                .Build();
+
+            // Setup HTTP response for download
+            using var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new ByteArrayContent(File.ReadAllBytes("mock.zip")),
+            };
+
+            httpMessageHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(response);
+
+            var service = new IlitoolsBootstrapService(loggerMock.Object, configuration, httpClient);
+
+            // Clear any existing environment variables
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", null);
+            Environment.SetEnvironmentVariable("ILI_CACHE", null);
+
+            await service.StartAsync(CancellationToken.None);
+
+            // Verify environment variables are set
+            Assert.AreEqual("1.13.2", Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION"));
+            Assert.AreEqual(Path.Combine(TestContext.DeploymentDirectory, "ARKSHARK"), Environment.GetEnvironmentVariable("ILI_CACHE"));
+
+            // Verify files were extracted
+            var installDir = Path.Combine(TestContext.DeploymentDirectory, "FALLOUT", "ilivalidator", "1.13.2");
+            Assert.IsTrue(Directory.Exists(installDir), "Install directory should exist");
+
+            var files = Directory.GetFiles(installDir, "*", SearchOption.AllDirectories);
+            Assert.IsTrue(files.Length > 0, "Files should be extracted");
+        }
+
+        [TestMethod]
+        public async Task StartAsyncWithGpkgEnabledBootstrapsBothTools()
+        {
+            var configValues = new Dictionary<string, string>
+            {
+                { "ILITOOLS_HOME_DIR", Path.Combine(TestContext.DeploymentDirectory, "PICARESQUEOASIS") },
+                { "ENABLE_GPKG_VALIDATION", "true" },
+                { "ILIVALIDATOR_VERSION", "1.14.9" },
+                { "ILI2GPKG_VERSION", "4.7.0" },
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configValues)
+                .Build();
+
+            // Setup HTTP responses for both downloads
+            using var ilivalidatorResponse = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new ByteArrayContent(File.ReadAllBytes("mock.zip")),
+            };
+
+            using var ili2gpkgResponse = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new ByteArrayContent(File.ReadAllBytes("mock.zip")),
+            };
+
+            httpMessageHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.ToString().Contains("ilivalidator")),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(ilivalidatorResponse);
+
+            httpMessageHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.ToString().Contains("ili2gpkg")),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(ili2gpkgResponse);
+
+            var service = new IlitoolsBootstrapService(loggerMock.Object, configuration, httpClient);
+
+            // Clear any existing environment variables
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", null);
+            Environment.SetEnvironmentVariable("ILI2GPKG_VERSION", null);
+
+            await service.StartAsync(CancellationToken.None);
+
+            // Verify both environment variables are set
+            Assert.AreEqual("1.14.9", Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION"));
+            Assert.AreEqual("4.7.0", Environment.GetEnvironmentVariable("ILI2GPKG_VERSION"));
+        }
+
+        [TestMethod]
+        public async Task StartAsyncSkipsAlreadyInstalledTool()
+        {
+            var configValues = new Dictionary<string, string>
+            {
+                { "ILITOOLS_HOME_DIR", Path.Combine(TestContext.DeploymentDirectory, "STELLARWITCH") },
+                { "ENABLE_GPKG_VALIDATION", "false" },
+                { "ILIVALIDATOR_VERSION", "1.14.9" },
+            };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configValues)
+                .Build();
+
+            // Pre-create the install directory
+            var installDir = Path.Combine(TestContext.DeploymentDirectory, "STELLARWITCH", "ilivalidator", "1.14.9");
+            Directory.CreateDirectory(installDir);
+
+            var service = new IlitoolsBootstrapService(loggerMock.Object, configuration, httpClient);
+
+            // Clear environment variable
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", null);
+
+            await service.StartAsync(CancellationToken.None);
+
+            // Verify environment variable is still set even when skipping download
+            Assert.AreEqual("1.14.9", Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION"));
+
+            // Verify no HTTP requests were made
+            httpMessageHandlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Never(),
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>());
+        }
+
+        [TestMethod]
+        [DataRow("ilivalidator", "5.10.9")]
+        [DataRow("ili2gpkg", "7.7.7")]
+        [DataRow("KIMBOHUNT", null)]
+        public void GetLatestInstalledIlitoolVersion(string ilitool, string expectedLatestVersion)
+        {
+            var configValues = new Dictionary<string, string> { { "ILITOOLS_HOME_DIR", Path.Combine(TestContext.DeploymentDirectory, "RAGESLAW") } };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configValues)
+                .Build();
+
+            var service = new IlitoolsBootstrapService(loggerMock.Object, configuration, httpClient);
+            Assert.AreEqual(expectedLatestVersion, service.GetLatestInstalledIlitoolVersion(ilitool));
+        }
+    }
+}
