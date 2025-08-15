@@ -1,3 +1,6 @@
+# syntax=docker.io/docker/dockerfile:1
+# check=error=true
+
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 ARG VERSION

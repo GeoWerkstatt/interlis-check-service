@@ -1,0 +1,21 @@
+name: Docker Build Checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate Docker build configuration
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          call: check
