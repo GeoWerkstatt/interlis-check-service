@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Geowerkstatt.Ilicop.Web.Ilitools;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -13,11 +14,13 @@ namespace Geowerkstatt.Ilicop.Web.Controllers
     {
         private readonly ILogger<SettingsController> logger;
         private readonly IConfiguration configuration;
+        private readonly IlitoolsEnvironment ilitoolsEnvironment;
 
-        public SettingsController(ILogger<SettingsController> logger, IConfiguration configuration)
+        public SettingsController(ILogger<SettingsController> logger, IConfiguration configuration, IlitoolsEnvironment ilitoolsEnvironment)
         {
             this.logger = logger;
             this.configuration = configuration;
+            this.ilitoolsEnvironment = ilitoolsEnvironment;
         }
 
         /// <summary>
@@ -35,8 +38,10 @@ namespace Geowerkstatt.Ilicop.Web.Controllers
                 ApplicationName = configuration.GetValue<string>("CUSTOM_APP_NAME") ?? "INTERLIS Web-Check-Service",
                 ApplicationVersion = configuration.GetValue<string>("ILICOP_APP_VERSION") ?? "undefined",
                 VendorLink = configuration.GetValue<string>("CUSTOM_VENDOR_LINK"),
-                IlivalidatorVersion = configuration.GetValue<string>("ILIVALIDATOR_VERSION") ?? "undefined",
-                Ili2gpkgVersion = configuration.GetValue<string>("ILI2GPKG_VERSION") ?? "undefined/not configured",
+                IlivalidatorVersion = ilitoolsEnvironment.IlivalidatorVersion ?? "undefined",
+                Ili2gpkgVersion = ilitoolsEnvironment.EnableGpkgValidation
+                    ? (ilitoolsEnvironment.Ili2GpkgVersion ?? "undefined/not configured")
+                    : "disabled",
                 AcceptedFileTypes = GetAcceptedFileExtensionsForUserUploads(configuration).JoinNonEmpty(", "),
             });
         }

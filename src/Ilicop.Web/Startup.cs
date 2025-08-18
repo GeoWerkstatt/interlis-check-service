@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Web.Services;
+﻿using Geowerkstatt.Ilicop.Web.Ilitools;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -63,6 +63,17 @@ namespace Geowerkstatt.Ilicop.Web
                         .AllowCredentials()
                         .WithOrigins("https://localhost:44302");
                 });
+            });
+
+            services.AddSingleton(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+                return new IlitoolsEnvironment
+                {
+                    HomeDir = cfg.GetValue<string>("ILITOOLS_HOME_DIR") ?? "/ilitools",
+                    CacheDir = cfg.GetValue<string>("ILITOOLS_CACHE_DIR") ?? "/cache",
+                    EnableGpkgValidation = cfg.GetValue<bool>("ENABLE_GPKG_VALIDATION"),
+                };
             });
 
             services.AddHttpClient();

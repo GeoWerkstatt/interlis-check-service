@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Geowerkstatt.Ilicop.Web.Ilitools;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using static Geowerkstatt.Ilicop.Web.ValidatorHelper;
 
 namespace Geowerkstatt.Ilicop.Web
 {
@@ -16,14 +15,16 @@ namespace Geowerkstatt.Ilicop.Web
     {
         private readonly IConfiguration configuration;
         private readonly ILogger logger;
+        private readonly IlitoolsEnvironment ilitoolsEnvironment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IlivalidatorHealthCheck"/> class.
         /// </summary>
-        public IlivalidatorHealthCheck(IConfiguration configuration, ILogger<IlivalidatorHealthCheck> logger)
+        public IlivalidatorHealthCheck(IConfiguration configuration, ILogger<IlivalidatorHealthCheck> logger, IlitoolsEnvironment ilitoolsEnvironment)
         {
             this.configuration = configuration;
             this.logger = logger;
+            this.ilitoolsEnvironment = ilitoolsEnvironment;
         }
 
         /// <inheritdoc/>
@@ -31,24 +32,19 @@ namespace Geowerkstatt.Ilicop.Web
         {
             try
             {
-                var ilivalidatorVersion = Environment.GetEnvironmentVariable("ILIVALIDATOR_VERSION");
-                if (string.IsNullOrEmpty(ilivalidatorVersion))
+                if (!ilitoolsEnvironment.IsIlivalidatorInitialized)
                 {
                     logger.LogError("Ilivalidator is not properly initialized.");
                     return await Task.FromResult(HealthCheckResult.Unhealthy());
                 }
 
-                // Smoke test ilivalidator by checking its version; the output is discarded and not printed to the console.
-                var commandFormat = configuration.GetSection("Validation")["CommandFormat"];
-                var command = string.Format(CultureInfo.InvariantCulture, commandFormat, "ilivalidator --version > NUL 2>&1");
-
-                var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
-                if (exitCode == 0)
+                if (ilitoolsEnvironment.EnableGpkgValidation && !ilitoolsEnvironment.IsIli2GpkgInitialized)
                 {
-                    return await Task.FromResult(HealthCheckResult.Healthy());
+                    logger.LogError("ili2gpkg expected but not initialized.");
+                    return await Task.FromResult(HealthCheckResult.Degraded());
                 }
 
-                return await Task.FromResult(new HealthCheckResult(context.Registration.FailureStatus));
+                return await Task.FromResult(HealthCheckResult.Healthy());
             }
             catch (Exception ex)
             {
