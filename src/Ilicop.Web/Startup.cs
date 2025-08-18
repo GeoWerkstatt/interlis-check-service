@@ -1,4 +1,5 @@
 ﻿using Geowerkstatt.Ilicop.Web.Ilitools;
+using Geowerkstatt.Ilicop.Web.Ilitools;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -45,7 +46,7 @@ namespace Geowerkstatt.Ilicop.Web
         {
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
-            services.AddHealthChecks().AddCheck<IlivalidatorHealthCheck>("Ilivalidator");
+            services.AddHealthChecks().AddCheck<IlitoolsHealthCheck>("Ilivalidator");
             services.AddApiVersioning(config =>
             {
                 config.AssumeDefaultVersionWhenUnspecified = true;

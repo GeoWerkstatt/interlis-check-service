@@ -1,26 +1,25 @@
-﻿using Geowerkstatt.Ilicop.Web.Ilitools;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Geowerkstatt.Ilicop.Web
+namespace Geowerkstatt.Ilicop.Web.Ilitools
 {
     /// <summary>
-    /// Represents a health check, which is used to check the status of the ilivalidator backend service.
+    /// Represents a health check, which is used to check the status of the ilitools.
     /// </summary>
-    public class IlivalidatorHealthCheck : IHealthCheck
+    public class IlitoolsHealthCheck : IHealthCheck
     {
         private readonly IConfiguration configuration;
         private readonly ILogger logger;
         private readonly IlitoolsEnvironment ilitoolsEnvironment;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IlivalidatorHealthCheck"/> class.
+        /// Initializes a new instance of the <see cref="IlitoolsHealthCheck"/> class.
         /// </summary>
-        public IlivalidatorHealthCheck(IConfiguration configuration, ILogger<IlivalidatorHealthCheck> logger, IlitoolsEnvironment ilitoolsEnvironment)
+        public IlitoolsHealthCheck(IConfiguration configuration, ILogger<IlitoolsHealthCheck> logger, IlitoolsEnvironment ilitoolsEnvironment)
         {
             this.configuration = configuration;
             this.logger = logger;
