@@ -19,7 +19,7 @@ const Container = styled.div`
   align-items: center;
   min-height: 15vh;
   max-width: 95vw;
-  font-size: 2rem;
+  font-size: 0.78125rem;
   border-width: 2px;
   border-radius: 5px;
   border-color: ${(props) => getColor(props)};
