@@ -54,7 +54,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-
+        with:
+          token: ${{ secrets.GEOW_BOT_TOKEN }}
+          persist-credentials: true
+      
       - name: Set environment variables
         run: |
           echo GIT_BRANCH_NAME=mark-version-${TAG_NAME#v}-as-released >> $GITHUB_ENV
