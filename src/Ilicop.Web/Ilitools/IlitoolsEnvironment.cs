@@ -9,12 +9,12 @@
         /// <summary>
         /// Gets the home directory.
         /// </summary>
-        public string HomeDir { get; init; } = "/ilitools";
+        public string HomeDir { get; init; }
 
         /// <summary>
         /// Gets the cache directory.
         /// </summary>
-        public string CacheDir { get; init; } = "/cache";
+        public string CacheDir { get; init; }
 
         /// <summary>
         /// Indicates whether the GPKG validation should be enabled.
