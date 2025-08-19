@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Web;
+﻿using Geowerkstatt.Ilicop.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 
