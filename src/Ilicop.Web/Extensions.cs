@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Models;
+﻿using Geowerkstatt.Ilicop.Web.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

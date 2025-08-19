@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Models;
+﻿using Geowerkstatt.Ilicop.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

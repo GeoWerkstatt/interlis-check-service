@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Models;
+﻿using Geowerkstatt.Ilicop.Web.Models;
 using Geowerkstatt.Ilicop.Web.XtfLog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
