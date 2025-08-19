@@ -124,7 +124,7 @@ export const Home = (props) => {
           customAppLogoPresent={customAppLogoPresent}
           setCustomAppLogoPresent={setCustomAppLogoPresent}
           quickStartContent={quickStartContent}
-        ></Title>
+        />
         <FileDropzone
           setUploadLogsEnabled={setUploadLogsEnabled}
           setFileToCheck={setFileToCheck}

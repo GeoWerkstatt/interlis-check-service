@@ -67,10 +67,13 @@ header {
   text-align: left;
 }
 
+.row > .col > .card {
+  color: black;
+  margin-top: 1em;
+}
+
 .protokoll-card {
   color: black;
-  margin-top: 30px;
-  max-width: 95vw;
   min-height: 150px;
 }
 
@@ -80,13 +83,6 @@ header {
 }
 
 /************ Log ************/
-
-.log-card {
-  max-width: 95vw;
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
 .log-entry {
   margin: 0;
   padding: 0.3rem;
