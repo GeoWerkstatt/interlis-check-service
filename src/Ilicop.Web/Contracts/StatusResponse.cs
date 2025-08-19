@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Geowerkstatt.Ilicop.Web;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Geowerkstatt.Ilicop.Web
+namespace Geowerkstatt.Ilicop.Contracts
 {
     /// <summary>
     /// The status response schema.

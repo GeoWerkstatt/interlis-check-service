@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Geowerkstatt.Ilicop.Web
+namespace Geowerkstatt.Ilicop.Contracts
 {
     /// <summary>
     /// The settings response schema.
