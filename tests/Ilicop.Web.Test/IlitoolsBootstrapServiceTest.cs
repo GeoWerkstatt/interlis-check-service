@@ -1,5 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Web.Ilitools;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

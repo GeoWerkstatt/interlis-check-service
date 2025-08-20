@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Removed configuration support for catalogues, configs and custom model directories.
+- Added local INTERLIS model repository for configuration purposes. Removed legacy configuration support for catalogues, configs and custom model directories.
 - Updated various 3rd party libraries.
 
 ### Fixed

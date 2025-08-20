@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Geowerkstatt.Ilicop.Web.Ilitools
+namespace Geowerkstatt.Ilicop.Web
 {
     /// <summary>
     /// Service responsible for bootstrapping and managing ilitools.
@@ -57,6 +57,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
                 }
 
                 logger.LogInformation("Ilitools successfully initialized!");
+                logger.LogInformation(ilitoolsEnvironment.ToString());
             }
             catch (Exception ex)
             {

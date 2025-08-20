@@ -83,6 +83,7 @@ services:
       - ./uploads:/uploads
       - ./plugins:/plugins
       - ./web-assets:/web-assets
+      - ./model-repository:/model-repository
     # Add environment variables
     #
     # environment:
@@ -125,6 +126,9 @@ services:
     #
     #   - ILITOOLS_CACHE_DIR=/custom-cache
     #     Optional directory path to override where ilitools should save their cache, Default /cache
+    #
+    #   - /path/to/local/model-repository:/model-repository
+    #     Folder containing the local model repository
     #
     #   - ILI2GPKG_VERSION=4.7.0
     #     Optional, Default latest version available from https://interlis.ch/downloads/ili2db

@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Geowerkstatt.Ilicop.Web.Ilitools
+namespace Geowerkstatt.Ilicop.Web
 {
     /// <summary>
     /// Represents a health check, which is used to check the status of the ilitools.

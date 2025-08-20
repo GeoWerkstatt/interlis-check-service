@@ -56,12 +56,16 @@ services:
     #               - nutzungsbestimmungen.md (terms of use as Markdown-formatted document)
     #                 Adding this document means the user must agree to the terms prior validation
     #               - quickstart.txt (line-separated brief instructions as plain text document)
+    #
+    #   - /path/to/local/model/repository:/repository
+    #     Folder containing the local model repository
     volumes:
       - ./src/Ilicop.Web/Logs:/logs
       - ./src/Ilicop.Web/Uploads:/uploads
       - ./src/Ilicop.Web/Ilitools:/ilitools
       - ./src/Ilicop.Web/Plugins:/plugins
       - ./src/Ilicop.Web/Web-Assets:/web-assets
+      - ./data/repositories/multi_profile:/model-repository
     # Add environment variables
     #
     # environment:

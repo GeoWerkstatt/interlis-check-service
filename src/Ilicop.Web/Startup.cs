@@ -1,5 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Web.Ilitools;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -72,6 +71,7 @@ namespace Geowerkstatt.Ilicop.Web
                 {
                     HomeDir = cfg.GetValue<string>("ILITOOLS_HOME_DIR") ?? "/ilitools",
                     CacheDir = cfg.GetValue<string>("ILITOOLS_CACHE_DIR") ?? "/cache",
+                    ModelRepositoryDir = cfg.GetValue<string>("ILITOOLS_MODEL_REPOSITORY_DIR") ?? "/model-repository",
                     EnableGpkgValidation = cfg.GetValue<bool>("ENABLE_GPKG_VALIDATION"),
                 };
             });

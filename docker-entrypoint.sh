@@ -58,5 +58,4 @@ timezone:                         $TZ
 --------------------------------------------------------------------------
 "
 
-echo -e "INTERLIS web check service app is up and running!\n" && \
-  sudo -H --preserve-env --user app dotnet Ilicop.Web.dll
+sudo -H --preserve-env --user app dotnet Ilicop.Web.dll
