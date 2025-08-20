@@ -170,30 +170,6 @@ input {
   font-size: 0.90625rem;
 }
 
-.terms-of-use {
-  margin: 8px;
-  margin-left: 35px;
-}
-
-.terms-of-use button {
-  color: rgb(18, 74, 79);
-  text-decoration: none;
-  font-size: 0.90625rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  padding: unset;
-  margin: unset;
-  vertical-align: unset;
-}
-
-.terms-of-use button:hover {
-  color: rgb(63, 97, 100);
-}
-
-.terms-of-use input {
-  margin-right: 8px;
-}
-
 .drop-icon {
   font-size: 2.1875rem;
 }
@@ -218,9 +194,10 @@ input {
   .title-wrapper {
     margin-top: 12vh;
   }
-  .dropzone {
+  .dropzone-wrapper {
     min-height: 12vh !important;
-    margin-top: 3vh;
+  }
+  .dropzone{
     font-size: 1rem;
   }
   .carousel {
@@ -240,9 +217,10 @@ input {
   .title-wrapper {
     margin-top: 12vh;
   }
-  .dropzone {
+  .dropzone-wrapper {
     min-height: 12vh !important;
-    margin-top: 3vh;
+  }
+  .dropzone {
     font-size: 1rem;
   }
   .carousel {
@@ -262,9 +240,10 @@ input {
   .title-wrapper {
     margin-top: 5vh;
   }
-  .dropzone {
+  .dropzone-wrapper {
     min-height: 10vh !important;
-    margin-top: 1vh;
+  }
+  .dropzone {
     font-size: 0.875rem;
   }
   .carousel {
@@ -288,11 +267,8 @@ input {
 }
 
 .check-button {
-  border: none;
   background-color: rgb(18, 74, 79);
   border-color: rgb(18, 74, 79);
-  vertical-align: baseline;
-  margin-top: 1rem;
 }
 
 .check-button:disabled {
@@ -305,14 +281,6 @@ input {
   border-color: rgb(63, 97, 100);
 }
 
-.invisible-check-button {
-  display: none;
-}
-
-.added-margin {
-  margin-top: 1.25rem;
-}
-
 .download-icon {
   font-size: 1.9rem;
   margin-left: 10px;
@@ -320,6 +288,12 @@ input {
 
 .download-icon :hover {
   color: #555;
+}
+
+/************ Form elements ***********/
+.form-check-input:checked {
+  background-color: rgb(18, 74, 79);
+  border-color: rgb(18, 74, 79);
 }
 
 /************ Check status ************/

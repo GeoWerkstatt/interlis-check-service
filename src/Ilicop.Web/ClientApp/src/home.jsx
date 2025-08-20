@@ -1,9 +1,10 @@
 import "./app.css";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { FileDropzone } from "./dropzone";
 import { Title } from "./title";
 import Protokoll from "./protokoll";
+import { UploadForm } from "./uploadForm";
 
 export const Home = (props) => {
   const {
@@ -116,6 +117,14 @@ export const Home = (props) => {
     }
   };
 
+  const resetForm = useCallback(() => {
+    setFileToCheck(null);
+    setValidationRunning(false);
+    setCheckedNutzungsbestimmungen(false);
+    setUploadLogsEnabled(false);
+    if (uploadLogsInterval) clearInterval(uploadLogsInterval);
+  }, [setFileToCheck, setValidationRunning, setUploadLogsEnabled, uploadLogsInterval]);
+
   return (
     <main>
       <Container className="main-container">
@@ -125,19 +134,28 @@ export const Home = (props) => {
           setCustomAppLogoPresent={setCustomAppLogoPresent}
           quickStartContent={quickStartContent}
         />
+      </Container>
+      <Container>
         <FileDropzone
-          setUploadLogsEnabled={setUploadLogsEnabled}
-          setFileToCheck={setFileToCheck}
-          fileToCheck={fileToCheck}
-          nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
-          checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
-          checkFile={checkFile}
-          validationRunning={validationRunning}
-          setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
-          showNutzungsbestimmungen={showNutzungsbestimmungen}
           acceptedFileTypes={clientSettings?.acceptedFileTypes}
+          fileToCheck={fileToCheck}
           fileToCheckRef={fileToCheckRef}
+          setFileToCheck={setFileToCheck}
+          validationRunning={validationRunning}
+          resetForm={resetForm}
         />
+        {fileToCheck && (
+          <UploadForm
+            nutzungsbestimmungenAvailable={nutzungsbestimmungenAvailable}
+            checkedNutzungsbestimmungen={checkedNutzungsbestimmungen}
+            showNutzungsbestimmungen={showNutzungsbestimmungen}
+            setCheckedNutzungsbestimmungen={setCheckedNutzungsbestimmungen}
+            validationRunning={validationRunning}
+            setValidationRunning={setValidationRunning}
+            startValidation={checkFile}
+            resetForm={resetForm}
+          />
+        )}
       </Container>
       <Protokoll
         log={log}
