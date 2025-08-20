@@ -1,4 +1,4 @@
-﻿namespace Geowerkstatt.Ilicop.Web
+﻿namespace Geowerkstatt.Ilicop.Web.Ilitools
 {
     /// <summary>
     /// Runtime-populated metadata about installed ilitools.
