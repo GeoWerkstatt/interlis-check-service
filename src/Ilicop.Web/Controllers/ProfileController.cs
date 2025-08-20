@@ -27,11 +27,11 @@ namespace Geowerkstatt.Ilicop.Web.Controllers
         /// <returns>List of profiles.</returns>
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK, "All existing profiles.", typeof(IEnumerable<Profile>), "application/json")]
-        public IActionResult GetAll()
+        public List<Profile> GetAll()
         {
             logger.LogTrace("Getting all profiles.");
 
-            return Ok(profileService.GetProfiles());
+            return profileService.GetProfiles();
         }
     }
 }

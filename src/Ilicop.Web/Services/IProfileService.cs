@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Geowerkstatt.Ilicop.Services
 {
+    /// <summary>
+    /// Service for getting INTERLIS validation profiles.
+    /// </summary>
     public interface IProfileService
     {
         /// <summary>

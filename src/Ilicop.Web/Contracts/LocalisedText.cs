@@ -3,7 +3,7 @@
     public record LocalisedText
     {
         /// <summary>
-        /// The language code as INTERLIS LanguageCode_ISO639_1 for the language the text is in (e.g., "en", "de").
+        /// Language the text is in as ISO639-1 language code (e.g., "en", "de").
         /// </summary>
         public string Language { get; init; } = string.Empty;
 
