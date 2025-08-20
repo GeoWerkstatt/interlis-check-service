@@ -1,7 +1,7 @@
 ﻿using Geowerkstatt.Ilicop.Web.Contracts;
 using System.Collections.Generic;
 
-namespace Geowerkstatt.Ilicop.Services
+namespace Geowerkstatt.Ilicop.Web.Services
 {
     /// <summary>
     /// Service for getting INTERLIS validation profiles.

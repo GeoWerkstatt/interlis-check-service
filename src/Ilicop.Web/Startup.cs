@@ -1,5 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Services;
-using Geowerkstatt.Ilicop.Web.Services;
+﻿using Geowerkstatt.Ilicop.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
