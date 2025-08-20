@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace Geowerkstatt.Ilicop.Models
+namespace Geowerkstatt.Ilicop.Web.Contracts
 {
     /// <summary>
     /// A validation profile that is used for validating INTERLIS data.
@@ -10,11 +11,12 @@ namespace Geowerkstatt.Ilicop.Models
         /// <summary>
         /// Id of the profile.
         /// </summary>
+        [Required]
         public string Id { get; init; } = string.Empty;
 
         /// <summary>
         /// List of the profile's title in different languages.
         /// </summary>
-        public List<LocalisedText> LocalisedTitles { get; init; } = new();
+        public List<LocalisedText> Titles { get; init; } = new();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Geowerkstatt.Ilicop.Web.Models
+﻿namespace Geowerkstatt.Ilicop.Web.Contracts
 {
     /// <summary>
     /// The validator job statuses.

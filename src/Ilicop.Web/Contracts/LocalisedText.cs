@@ -1,9 +1,9 @@
-﻿namespace Geowerkstatt.Ilicop.Models
+﻿namespace Geowerkstatt.Ilicop.Web.Contracts
 {
     public record LocalisedText
     {
         /// <summary>
-        /// The language code (e.g., "en", "de") for the language the text is in.
+        /// The language code as INTERLIS LanguageCode_ISO639_1 for the language the text is in (e.g., "en", "de").
         /// </summary>
         public string Language { get; init; } = string.Empty;
 

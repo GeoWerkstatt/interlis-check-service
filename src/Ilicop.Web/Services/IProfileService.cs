@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Models;
+﻿using Geowerkstatt.Ilicop.Web.Contracts;
 using System.Collections.Generic;
 
 namespace Geowerkstatt.Ilicop.Services
@@ -8,6 +8,6 @@ namespace Geowerkstatt.Ilicop.Services
         /// <summary>
         /// Returns all available profiles.
         /// </summary>
-        IEnumerable<Profile> GetProfiles();
+        List<Profile> GetProfiles();
     }
 }

@@ -1,5 +1,5 @@
-﻿using Geowerkstatt.Ilicop.Models;
-using Geowerkstatt.Ilicop.Services;
+﻿using Geowerkstatt.Ilicop.Services;
+using Geowerkstatt.Ilicop.Web.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

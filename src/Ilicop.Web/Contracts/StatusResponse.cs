@@ -1,5 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Web.Models;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Geowerkstatt.Ilicop.Web.Contracts
