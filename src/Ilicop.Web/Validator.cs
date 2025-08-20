@@ -1,4 +1,5 @@
-﻿using Geowerkstatt.Ilicop.Web.XtfLog;
+﻿using Geowerkstatt.Ilicop.Web.Models;
+using Geowerkstatt.Ilicop.Web.XtfLog;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;

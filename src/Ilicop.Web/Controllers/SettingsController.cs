@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Web.Ilitools;
+﻿using Geowerkstatt.Ilicop.Web.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
