@@ -219,7 +219,7 @@ Folgenden Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 - Git
 - Docker
 - Visual Studio 2022 oder Visual Studio Code
-- Node.js 18 LTS
+- Node.js 20 LTS
 
 1. Git Repository klonen:  
    Öffne Git Shell und navigiere in den lokalen Projekt Root  

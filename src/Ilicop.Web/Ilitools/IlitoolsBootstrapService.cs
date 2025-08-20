@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Geowerkstatt.Ilicop.Web.Services
+namespace Geowerkstatt.Ilicop.Web.Ilitools
 {
     /// <summary>
     /// Service responsible for bootstrapping and managing ilitools.
@@ -20,18 +20,14 @@ namespace Geowerkstatt.Ilicop.Web.Services
         private readonly ILogger<IlitoolsBootstrapService> logger;
         private readonly IConfiguration configuration;
         private readonly HttpClient httpClient;
+        private readonly IlitoolsEnvironment ilitoolsEnvironment;
 
-        private readonly string ilitoolsHomeDir;
-        private readonly string ilitoolsCacheDir;
-
-        public IlitoolsBootstrapService(ILogger<IlitoolsBootstrapService> logger, IConfiguration configuration, HttpClient httpClient)
+        public IlitoolsBootstrapService(ILogger<IlitoolsBootstrapService> logger, IConfiguration configuration, HttpClient httpClient, IlitoolsEnvironment ilitoolsEnvironment)
         {
             this.logger = logger;
             this.configuration = configuration;
             this.httpClient = httpClient;
-
-            ilitoolsHomeDir = configuration.GetValue<string>("ILITOOLS_HOME_DIR") ?? "/ilitools";
-            ilitoolsCacheDir = configuration.GetValue<string>("ILITOOLS_CACHE_DIR") ?? "/cache";
+            this.ilitoolsEnvironment = ilitoolsEnvironment;
         }
 
         /// <summary>
@@ -44,17 +40,16 @@ namespace Geowerkstatt.Ilicop.Web.Services
             try
             {
                 // Set cache environment variable for ilitools
-                Environment.SetEnvironmentVariable("ILI_CACHE", ilitoolsCacheDir);
-                logger.LogDebug("Set ILI_CACHE environment variable to: {IlitoolsCacheDir}", ilitoolsCacheDir);
+                Environment.SetEnvironmentVariable("ILI_CACHE", ilitoolsEnvironment.CacheDir);
+                logger.LogDebug("Set ILI_CACHE environment variable to: {IlitoolsCacheDir}", ilitoolsEnvironment.CacheDir);
 
                 // Bootstrap ilivalidator
-                await InitializeIlitoolAsync("ilivalidator", "ILIVALIDATOR_VERSION", GetLatestIlivalidatorVersionAsync, cancellationToken);
+                await InitializeIlivalidatorAsync(cancellationToken);
 
-                // Bootstrap ili2gpkg if GPKG validation is enabled
-                var enableGpkgValidation = configuration.GetValue<bool>("ENABLE_GPKG_VALIDATION");
-                if (enableGpkgValidation)
+                // Bootstrap ili2gpkg if needed
+                if (ilitoolsEnvironment.EnableGpkgValidation)
                 {
-                    await InitializeIlitoolAsync("ili2gpkg", "ILI2GPKG_VERSION", GetLatestIli2gpkgVersionAsync, cancellationToken);
+                    await InitializeIli2GpkgAsync(cancellationToken);
                 }
                 else
                 {
@@ -75,47 +70,80 @@ namespace Geowerkstatt.Ilicop.Web.Services
         /// </summary>
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-        /// <summary>
-        /// Initializes the given ilitool.
-        /// </summary>
-        private async Task InitializeIlitoolAsync(string ilitoolName, string ilitoolVersionConfigKey, Func<CancellationToken, Task<string>> getLatestToolVersionAsync, CancellationToken cancellationToken)
+        private async Task InitializeIlivalidatorAsync(CancellationToken cancellationToken)
         {
-            var version = configuration.GetValue<string>(ilitoolVersionConfigKey);
+            var version = configuration.GetValue<string>("ILIVALIDATOR_VERSION");
             if (string.IsNullOrEmpty(version))
             {
-                logger.LogInformation("{VersionKey} not specified, fetching latest version.", ilitoolVersionConfigKey);
+                logger.LogInformation("ILIVALIDATOR_VERSION not specified, fetching latest version.");
 
-                version = await getLatestToolVersionAsync(cancellationToken);
+                version = await GetLatestIlivalidatorVersionAsync(cancellationToken);
                 if (string.IsNullOrEmpty(version))
                 {
-                    logger.LogWarning("Failed to fetch the latest {Ilitool} version. Falling back to the latest installed version.", ilitoolName);
-                    version = GetLatestInstalledIlitoolVersion(ilitoolName);
+                    logger.LogWarning("Failed to fetch the latest ilivalidator version. Falling back to the latest installed version.");
+                    version = GetLatestInstalledIlitoolVersion("ilivalidator");
                 }
             }
 
             if (string.IsNullOrEmpty(version))
             {
-                throw new InvalidOperationException($"Unable to determine {ilitoolName} version.");
+                throw new InvalidOperationException($"Unable to determine ilivalidator version.");
             }
 
-            await DownloadAndConfigureIlitoolAsync(ilitoolName, version, cancellationToken);
+            var installPath = await DownloadAndConfigureIlitoolAsync("ilivalidator", version, cancellationToken);
 
-            // Export version for other parts of the application
-            Environment.SetEnvironmentVariable(ilitoolVersionConfigKey, version);
-            logger.LogInformation("{Ilitool} version {Version} initialized successfully.", ilitoolName, version);
+            ilitoolsEnvironment.IlivalidatorVersion = version;
+            ilitoolsEnvironment.IlivalidatorPath = installPath;
+
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", version);
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_PATH", installPath);
+
+            logger.LogInformation("ilivalidator version {Version} initialized successfully.", version);
+        }
+
+        private async Task InitializeIli2GpkgAsync(CancellationToken cancellationToken)
+        {
+            var version = configuration.GetValue<string>("ILI2GPKG_VERSION");
+            if (string.IsNullOrEmpty(version))
+            {
+                logger.LogInformation("ILI2GPKG_VERSION not specified, fetching latest version.");
+
+                version = await GetLatestIli2GpkgVersionAsync(cancellationToken);
+                if (string.IsNullOrEmpty(version))
+                {
+                    logger.LogWarning("Failed to fetch the latest ili2gpkg version. Falling back to the latest installed version.");
+                    version = GetLatestInstalledIlitoolVersion("ili2gpkg");
+                }
+            }
+
+            if (string.IsNullOrEmpty(version))
+            {
+                throw new InvalidOperationException($"Unable to determine ili2gpkg version.");
+            }
+
+            var installPath = await DownloadAndConfigureIlitoolAsync("ili2gpkg", version, cancellationToken);
+
+            ilitoolsEnvironment.Ili2GpkgVersion = version;
+            ilitoolsEnvironment.Ili2GpkgPath = installPath;
+
+            Environment.SetEnvironmentVariable("ILI2GPKG_VERSION", version);
+            Environment.SetEnvironmentVariable("ILI2GPKG_PATH", installPath);
+
+            logger.LogInformation("ili2gpkg version {Version} initialized successfully.", version);
         }
 
         /// <summary>
         /// Downloads and configures the specified ilitool.
         /// </summary>
-        private async Task DownloadAndConfigureIlitoolAsync(string ilitool, string version, CancellationToken cancellationToken)
+        /// <returns>The path to the isntallation directory of the the given ilitool (e.g. /ilitools/ilivalidator/1.14.9).</returns>
+        private async Task<string> DownloadAndConfigureIlitoolAsync(string ilitool, string version, CancellationToken cancellationToken)
         {
             // Exit if the tool is already installed and valid
-            var installDir = Path.Combine(ilitoolsHomeDir, ilitool, version);
+            var installDir = Path.Combine(ilitoolsEnvironment.HomeDir, ilitool, version);
             if (Directory.Exists(installDir))
             {
                 logger.LogInformation("{Ilitool}-{Version} is already installed. Skipping download and configuration.", ilitool, version);
-                return;
+                return installDir;
             }
 
             logger.LogInformation("Download and configure {Ilitool}-{Version}...", ilitool, version);
@@ -123,10 +151,10 @@ namespace Geowerkstatt.Ilicop.Web.Services
             try
             {
                 // Ensure the ilitools home directory exists
-                if (!Directory.Exists(ilitoolsHomeDir))
+                if (!Directory.Exists(ilitoolsEnvironment.HomeDir))
                 {
-                    Directory.CreateDirectory(ilitoolsHomeDir);
-                    logger.LogDebug("Created ilitools home directory: {IlitoolsHomeDir}", ilitoolsHomeDir);
+                    Directory.CreateDirectory(ilitoolsEnvironment.HomeDir);
+                    logger.LogDebug("Created ilitools home directory: {IlitoolsHomeDir}", ilitoolsEnvironment.HomeDir);
                 }
 
                 var downloadUrl = new UriBuilder($"https://downloads.interlis.ch/{ilitool}/{ilitool}-{version}.zip");
@@ -149,18 +177,14 @@ namespace Geowerkstatt.Ilicop.Web.Services
                     new FileInfo(tempFilePath).Length);
 
                 // Create install directory
-                if (Directory.Exists(installDir))
-                {
-                    Directory.Delete(installDir, recursive: true);
-                    logger.LogDebug("Cleaned existing install directory: {InstallDir}", installDir);
-                }
-
                 Directory.CreateDirectory(installDir);
                 logger.LogDebug("Created install directory: {InstallDir}", installDir);
 
                 // Extract the zip file
                 ZipFile.ExtractToDirectory(tempFilePath, installDir, overwriteFiles: true);
                 logger.LogDebug("Extracted {Ilitool} to {InstallDir}", ilitool, installDir);
+
+                return installDir;
             }
             catch (Exception ex)
             {
@@ -169,38 +193,23 @@ namespace Geowerkstatt.Ilicop.Web.Services
             }
         }
 
-        /// <summary>
-        /// Gets the latest ilivalidator version from the web.
-        /// </summary>
-        private async Task<string> GetLatestIlivalidatorVersionAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                var response = await httpClient.GetStringAsync("https://www.interlis.ch/downloads/ilivalidator", cancellationToken);
-                var match = Regex.Match(response, @"(?<=ilivalidator-)\d+\.\d+\.\d+");
-                return match.Success ? match.Value : null;
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Failed to fetch latest ilivalidator version from web.");
-                return null;
-            }
-        }
+        private async Task<string> GetLatestIlivalidatorVersionAsync(CancellationToken ct)
+            => await GetLatestToolVersionAsync("https://www.interlis.ch/downloads/ilivalidator", @"(?<=ilivalidator-)\d+\.\d+\.\d+", "ilivalidator", ct);
 
-        /// <summary>
-        /// Gets the latest ili2gpkg version from the web.
-        /// </summary>
-        private async Task<string> GetLatestIli2gpkgVersionAsync(CancellationToken cancellationToken)
+        private async Task<string> GetLatestIli2GpkgVersionAsync(CancellationToken ct)
+            => await GetLatestToolVersionAsync("https://www.interlis.ch/downloads/ili2db", @"(?<=ili2gpkg-)\d+\.\d+\.\d+", "ili2gpkg", ct);
+
+        private async Task<string> GetLatestToolVersionAsync(string url, string pattern, string tool, CancellationToken ct)
         {
             try
             {
-                var response = await httpClient.GetStringAsync("https://www.interlis.ch/downloads/ili2db", cancellationToken);
-                var match = Regex.Match(response, @"(?<=ili2gpkg-)\d+\.\d+\.\d+");
+                var html = await httpClient.GetStringAsync(url, ct);
+                var match = Regex.Match(html, pattern);
                 return match.Success ? match.Value : null;
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Failed to fetch latest ili2gpkg version from web");
+                logger.LogWarning(ex, "Failed to fetch latest {Tool} version.", tool);
                 return null;
             }
         }
@@ -212,7 +221,7 @@ namespace Geowerkstatt.Ilicop.Web.Services
         {
             try
             {
-                var toolDir = Path.Combine(ilitoolsHomeDir, ilitool);
+                var toolDir = Path.Combine(ilitoolsEnvironment.HomeDir, ilitool);
                 if (!Directory.Exists(toolDir))
                 {
                     logger.LogDebug("Tool directory does not exist: {ToolDir}", toolDir);
