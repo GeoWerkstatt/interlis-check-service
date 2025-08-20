@@ -135,6 +135,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
         /// <summary>
         /// Downloads and configures the specified ilitool.
         /// </summary>
+        /// <returns>The path to the isntallation directory of the the given ilitool (e.g. /ilitools/ilivalidator/1.14.9).</returns>
         private async Task<string> DownloadAndConfigureIlitoolAsync(string ilitool, string version, CancellationToken cancellationToken)
         {
             // Exit if the tool is already installed and valid
