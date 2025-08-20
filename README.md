@@ -83,7 +83,7 @@ services:
       - ./uploads:/uploads
       - ./plugins:/plugins
       - ./web-assets:/web-assets
-      - ./model-repository:/model-repository
+      - ./repository:/repository
     # Add environment variables
     #
     # environment:

@@ -65,7 +65,7 @@ services:
       - ./src/Ilicop.Web/Ilitools:/ilitools
       - ./src/Ilicop.Web/Plugins:/plugins
       - ./src/Ilicop.Web/Web-Assets:/web-assets
-      - ./data/repositories/multi_profile:/model-repository
+      - ./data/repositories/multi_profile:/repository
     # Add environment variables
     #
     # environment:
