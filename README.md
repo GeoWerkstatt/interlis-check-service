@@ -127,7 +127,7 @@ services:
     #   - ILITOOLS_CACHE_DIR=/custom-cache
     #     Optional directory path to override where ilitools should save their cache, Default /cache
     #
-    #   - /path/to/local/model-repository:/model-repository
+    #   - /path/to/local/model/repository:/repository
     #     Folder containing the local model repository
     #
     #   - ILI2GPKG_VERSION=4.7.0
