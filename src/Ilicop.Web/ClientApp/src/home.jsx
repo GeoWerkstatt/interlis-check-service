@@ -25,6 +25,7 @@ export const Home = (props) => {
   const [log, setLog] = useState([]);
   const [uploadLogsInterval, setUploadLogsInterval] = useState(0);
   const [uploadLogsEnabled, setUploadLogsEnabled] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
 
   // Enable Upload logging
   useEffect(() => uploadLogsInterval && setUploadLogsEnabled(true), [uploadLogsInterval]);
@@ -79,6 +80,9 @@ export const Home = (props) => {
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file, file.name);
+    if (selectedProfile) {
+      formData.append("profile", selectedProfile);
+    }
     const response = await fetch(`api/v1/upload`, {
       method: "POST",
       body: formData,
@@ -121,6 +125,7 @@ export const Home = (props) => {
     setFileToCheck(null);
     setValidationRunning(false);
     setCheckedNutzungsbestimmungen(false);
+    setSelectedProfile(null);
     setUploadLogsEnabled(false);
     if (uploadLogsInterval) clearInterval(uploadLogsInterval);
   }, [setFileToCheck, setValidationRunning, setUploadLogsEnabled, uploadLogsInterval]);
@@ -154,6 +159,8 @@ export const Home = (props) => {
             setValidationRunning={setValidationRunning}
             startValidation={checkFile}
             resetForm={resetForm}
+            selectedProfile={selectedProfile}
+            setSelectedProfile={setSelectedProfile}
           />
         )}
       </Container>

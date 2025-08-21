@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { ProfileDropdown } from "./profileDropdown";
 
 export const UploadForm = ({
   nutzungsbestimmungenAvailable,
@@ -9,8 +10,10 @@ export const UploadForm = ({
   validationRunning,
   startValidation,
   resetForm,
+  selectedProfile,
+  setSelectedProfile,
 }) => {
-  var onChangeNutzungsbestimmungen = useCallback(
+  const onChangeNutzungsbestimmungen = useCallback(
     (e) => {
       setCheckedNutzungsbestimmungen(e.target.checked);
     },
@@ -40,6 +43,12 @@ export const UploadForm = ({
                   </Form.Check>
                 </Form.Group>
               )}
+
+              <ProfileDropdown
+                selectedProfile={selectedProfile}
+                onProfileChange={setSelectedProfile}
+                disabled={validationRunning}
+              />
 
               <Row>
                 <Col className="d-grid">
