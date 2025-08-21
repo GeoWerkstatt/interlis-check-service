@@ -17,6 +17,11 @@
         public string CacheDir { get; init; }
 
         /// <summary>
+        /// Gets the local model repository directory.
+        /// </summary>
+        public string ModelRepositoryDir { get; init; }
+
+        /// <summary>
         /// Indicates whether the GPKG validation should be enabled.
         /// </summary>
         public bool EnableGpkgValidation { get; init; }
@@ -50,5 +55,25 @@
         /// Indicates whether the ili2gpkg tool is properly setup and initialized.
         /// </summary>
         public bool IsIli2GpkgInitialized => EnableGpkgValidation && !string.IsNullOrWhiteSpace(Ili2GpkgPath);
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $$"""
+
+    --------------------------------------------------------------------------
+    ilitools environment:
+    home directory:                   {{HomeDir ?? "unset"}}
+    cache directory:                  {{CacheDir ?? "unset"}}
+    model repository directory:       {{ModelRepositoryDir ?? "unset"}}
+    gpkg validation:                  {{(EnableGpkgValidation ? "enabled" : "disabled")}}
+    ilivalidator version:             {{IlivalidatorVersion ?? "unset"}}
+    ilivalidator initialized:         {{(IsIlivalidatorInitialized ? "yes" : "no")}}
+    ili2gpkg version:                 {{Ili2GpkgVersion ?? "unset"}}
+    ili2gpkg initialized:             {{(IsIli2GpkgInitialized ? "yes" : "no")}}
+    --------------------------------------------------------------------------
+
+    """;
+        }
     }
 }

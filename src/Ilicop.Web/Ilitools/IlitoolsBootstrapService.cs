@@ -57,6 +57,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
                 }
 
                 logger.LogInformation("Ilitools successfully initialized!");
+                logger.LogInformation(ilitoolsEnvironment.ToString());
             }
             catch (Exception ex)
             {

@@ -73,6 +73,7 @@ namespace Geowerkstatt.Ilicop.Web
                 {
                     HomeDir = cfg.GetValue<string>("ILITOOLS_HOME_DIR") ?? "/ilitools",
                     CacheDir = cfg.GetValue<string>("ILITOOLS_CACHE_DIR") ?? "/cache",
+                    ModelRepositoryDir = cfg.GetValue<string>("ILITOOLS_MODEL_REPOSITORY_DIR") ?? "/repository",
                     EnableGpkgValidation = cfg.GetValue<bool>("ENABLE_GPKG_VALIDATION"),
                 };
             });
