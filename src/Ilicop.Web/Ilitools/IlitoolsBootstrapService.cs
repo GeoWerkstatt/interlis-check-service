@@ -39,9 +39,11 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
 
             try
             {
-                // Set cache environment variable for ilitools
+                // Set environment variables for ilitools
                 Environment.SetEnvironmentVariable("ILI_CACHE", ilitoolsEnvironment.CacheDir);
                 logger.LogDebug("Set ILI_CACHE environment variable to: {IlitoolsCacheDir}", ilitoolsEnvironment.CacheDir);
+
+                ilitoolsEnvironment.TraceEnabled = configuration.GetValue<bool>("ILIVALIDATOR_ENABLE_TRACE");
 
                 // Bootstrap ilivalidator
                 await InitializeIlivalidatorAsync(cancellationToken);
@@ -91,15 +93,16 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
                 throw new InvalidOperationException($"Unable to determine ilivalidator version.");
             }
 
-            var installPath = await DownloadAndConfigureIlitoolAsync("ilivalidator", version, cancellationToken);
+            var installDir = await DownloadAndConfigureIlitoolAsync("ilivalidator", version, cancellationToken);
+            var jarPath = Path.Combine(installDir, $"ilivalidator-{version}.jar");
 
             ilitoolsEnvironment.IlivalidatorVersion = version;
-            ilitoolsEnvironment.IlivalidatorPath = installPath;
+            ilitoolsEnvironment.IlivalidatorPath = jarPath;
 
             Environment.SetEnvironmentVariable("ILIVALIDATOR_VERSION", version);
-            Environment.SetEnvironmentVariable("ILIVALIDATOR_PATH", installPath);
+            Environment.SetEnvironmentVariable("ILIVALIDATOR_PATH", jarPath);
 
-            logger.LogInformation("ilivalidator version {Version} initialized successfully.", version);
+            logger.LogInformation("ilivalidator version {Version} initialized successfully at {Path}", version, jarPath);
         }
 
         private async Task InitializeIli2GpkgAsync(CancellationToken cancellationToken)
@@ -122,28 +125,30 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
                 throw new InvalidOperationException($"Unable to determine ili2gpkg version.");
             }
 
-            var installPath = await DownloadAndConfigureIlitoolAsync("ili2gpkg", version, cancellationToken);
+            var installDir = await DownloadAndConfigureIlitoolAsync("ili2gpkg", version, cancellationToken);
+            var jarPath = Path.Combine(installDir, $"ili2gpkg-{version}.jar");
 
             ilitoolsEnvironment.Ili2GpkgVersion = version;
-            ilitoolsEnvironment.Ili2GpkgPath = installPath;
+            ilitoolsEnvironment.Ili2GpkgPath = jarPath;
 
             Environment.SetEnvironmentVariable("ILI2GPKG_VERSION", version);
-            Environment.SetEnvironmentVariable("ILI2GPKG_PATH", installPath);
+            Environment.SetEnvironmentVariable("ILI2GPKG_PATH", jarPath);
 
-            logger.LogInformation("ili2gpkg version {Version} initialized successfully.", version);
+            logger.LogInformation("ili2gpkg version {Version} initialized successfully at {Path}", version, jarPath);
         }
 
         /// <summary>
         /// Downloads and configures the specified ilitool.
         /// </summary>
-        /// <returns>The path to the isntallation directory of the the given ilitool (e.g. /ilitools/ilivalidator/1.14.9).</returns>
+        /// <returns>The path to the installation directory of the the given ilitool (e.g. /ilitools/ilivalidator/1.14.9).</returns>
         private async Task<string> DownloadAndConfigureIlitoolAsync(string ilitool, string version, CancellationToken cancellationToken)
         {
             // Exit if the tool is already installed and valid
             var installDir = Path.Combine(ilitoolsEnvironment.HomeDir, ilitool, version);
-            if (Directory.Exists(installDir))
+            var jarPath = Path.Combine(installDir, $"{ilitool}-{version}.jar");
+            if (Directory.Exists(installDir) && File.Exists(jarPath))
             {
-                logger.LogInformation("{Ilitool}-{Version} is already installed. Skipping download and configuration.", ilitool, version);
+                logger.LogInformation("{Ilitool}-{Version} is already installed at {Path}. Skipping download and configuration.", ilitool, version, jarPath);
                 return installDir;
             }
 
@@ -184,6 +189,12 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
                 // Extract the zip file
                 ZipFile.ExtractToDirectory(tempFilePath, installDir, overwriteFiles: true);
                 logger.LogDebug("Extracted {Ilitool} to {InstallDir}", ilitool, installDir);
+
+                // Verify the JAR file exists
+                if (!File.Exists(jarPath))
+                {
+                    throw new FileNotFoundException($"Expected JAR file not found after extraction: {jarPath}");
+                }
 
                 return installDir;
             }
