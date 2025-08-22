@@ -1,4 +1,4 @@
-﻿using Geowerkstatt.Ilicop.Web.Contracts;
+﻿using Geowerkstatt.Ilicop.Web.Ilitools;
 using Geowerkstatt.Ilicop.Web.XtfLog;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
@@ -27,6 +27,7 @@ namespace Geowerkstatt.Ilicop.Web
         private readonly ILogger<Validator> logger;
         private readonly IConfiguration configuration;
         private readonly IFileProvider fileProvider;
+        private readonly IlitoolsExecutor ilitoolsExecutor;
         private readonly JsonOptions jsonOptions;
 
         /// <inheritdoc/>
@@ -41,11 +42,12 @@ namespace Geowerkstatt.Ilicop.Web
         /// <summary>
         /// Initializes a new instance of the <see cref="Validator"/> class.
         /// </summary>
-        public Validator(ILogger<Validator> logger, IConfiguration configuration, IFileProvider fileProvider, IOptions<JsonOptions> jsonOptions)
+        public Validator(ILogger<Validator> logger, IConfiguration configuration, IFileProvider fileProvider, IOptions<JsonOptions> jsonOptions, IlitoolsExecutor ilitoolsExecutor)
         {
             this.logger = logger;
             this.configuration = configuration;
             this.fileProvider = fileProvider;
+            this.ilitoolsExecutor = ilitoolsExecutor;
             this.jsonOptions = jsonOptions.Value;
 
             this.fileProvider.Initialize(Id);
@@ -188,19 +190,28 @@ namespace Geowerkstatt.Ilicop.Web
         }
 
         /// <summary>
-        /// Asynchronously validates the<paramref name="transferFile"/>> with ilivalidator/ili2gpkg.
+        /// Asynchronously validates the <paramref name="transferFile"/>> with ilivalidator/ili2gpkg.
         /// </summary>
         private async Task ValidateAsync(string transferFile, CancellationToken cancellationToken)
         {
             logger.LogInformation("Validating transfer file <{TransferFile}> with ilivalidator/ili2gpkg", transferFile);
 
-            var command = GetIlivalidatorCommand(
-                configuration,
-                fileProvider.HomeDirectoryPathFormat,
-                transferFile,
-                GpkgModelNames);
+            var homeDirectory = fileProvider.HomeDirectoryPathFormat.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var transferFileNameWithoutExtension = Path.GetFileNameWithoutExtension(transferFile);
+            var logPath = Path.Combine(homeDirectory, $"{transferFileNameWithoutExtension}_log.log");
+            var xtfLogPath = Path.Combine(homeDirectory, $"{transferFileNameWithoutExtension}_log.xtf");
+            var transferFilePath = Path.Combine(homeDirectory, transferFile);
 
-            var exitCode = await ExecuteCommandAsync(configuration, command, cancellationToken).ConfigureAwait(false);
+            var request = new ValidationRequest
+            {
+                TransferFileName = transferFile,
+                TransferFilePath = transferFilePath,
+                LogFilePath = logPath,
+                XtfLogFilePath = xtfLogPath,
+                GpkgModelNames = GpkgModelNames,
+            };
+
+            var exitCode = await ilitoolsExecutor.ValidateAsync(request, cancellationToken).ConfigureAwait(false);
 
             await GenerateGeoJsonAsync().ConfigureAwait(false);
             if (exitCode != 0)

@@ -1,4 +1,6 @@
-﻿namespace Geowerkstatt.Ilicop.Web.Ilitools
+﻿using System.IO;
+
+namespace Geowerkstatt.Ilicop.Web.Ilitools
 {
     /// <summary>
     /// Runtime-populated metadata about installed ilitools.
@@ -47,6 +49,11 @@
         public string Ili2GpkgPath { get; set; }
 
         /// <summary>
+        /// Indicates whether the trace logging is enabled.
+        /// </summary>
+        public bool TraceEnabled { get; internal set; }
+
+        /// <summary>
         /// Indicates whether the ilivalidator tool is properly setup and initialized.
         /// </summary>
         public bool IsIlivalidatorInitialized => !string.IsNullOrWhiteSpace(IlivalidatorPath);
@@ -55,6 +62,11 @@
         /// Indicates whether the ili2gpkg tool is properly setup and initialized.
         /// </summary>
         public bool IsIli2GpkgInitialized => EnableGpkgValidation && !string.IsNullOrWhiteSpace(Ili2GpkgPath);
+
+        /// <summary>
+        /// Gets the plugins directory.
+        /// </summary>
+        public string PluginsDir => Path.Combine(HomeDir, "plugins");
 
         /// <inheritdoc/>
         public override string ToString()
@@ -71,6 +83,7 @@
     ilivalidator initialized:         {{(IsIlivalidatorInitialized ? "yes" : "no")}}
     ili2gpkg version:                 {{Ili2GpkgVersion ?? "unset"}}
     ili2gpkg initialized:             {{(IsIli2GpkgInitialized ? "yes" : "no")}}
+    trace messages enabled:           {{(TraceEnabled ? "yes" : "no")}}
     --------------------------------------------------------------------------
 
     """;
