@@ -62,7 +62,7 @@ namespace Geowerkstatt.Ilicop.Web
             // Unzip compressed file
             if (Path.GetExtension(transferFile) == ".zip")
             {
-                await UnzipCompressedFileAsync(transferFile).ConfigureAwait(false);
+                transferFile = await UnzipCompressedFileAsync(transferFile).ConfigureAwait(false);
             }
 
             // Read model names from GeoPackage
