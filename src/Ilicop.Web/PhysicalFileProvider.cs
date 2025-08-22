@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,9 +19,6 @@ namespace Geowerkstatt.Ilicop.Web
 
         /// <inheritdoc/>
         public DirectoryInfo HomeDirectory { get; private set; }
-
-        /// <inheritdoc/>
-        public string HomeDirectoryPath { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PhysicalFileProvider"/> at the given root directory path.
@@ -80,7 +76,6 @@ namespace Geowerkstatt.Ilicop.Web
 
             var rootDirectory = configuration.GetValue<string>(rootDirectoryEnvironmentKey).NormalizeUnixStylePath();
             HomeDirectory = new DirectoryInfo(rootDirectory).CreateSubdirectory(id.ToString());
-            HomeDirectoryPath = HomeDirectory.FullName;
 
             initialized = true;
         }

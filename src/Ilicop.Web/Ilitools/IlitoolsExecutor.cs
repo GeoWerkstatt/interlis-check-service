@@ -108,7 +108,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
         /// <summary>
         /// Creates the command for executing ilivalidator.
         /// </summary>
-        private string CreateIlivalidatorCommand(ValidationRequest request)
+        internal string CreateIlivalidatorCommand(ValidationRequest request)
         {
             var args = new List<string>
             {
@@ -139,7 +139,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
         /// <summary>
         /// Creates the command for executing ili2gpkg.
         /// </summary>
-        private string CreateIli2GpkgCommand(ValidationRequest request)
+        internal string CreateIli2GpkgCommand(ValidationRequest request)
         {
             var args = new List<string>
             {
@@ -163,7 +163,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
             return args.JoinNonEmpty(" ");
         }
 
-        private IEnumerable<string> GetCommonIlitoolsArguments(ValidationRequest request)
+        internal IEnumerable<string> GetCommonIlitoolsArguments(ValidationRequest request)
         {
             // Add common logging options
             yield return $"--log \"{request.LogFilePath}\"";
