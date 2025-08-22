@@ -133,6 +133,12 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
             // Add transfer file path (without specific parameter name)
             args.Add($"\"{request.TransferFilePath}\"");
 
+            // Add additional catalogue files if present
+            foreach (var cataloguePath in request.AdditionalCatalogueFilePaths)
+            {
+                args.Add($"\"{cataloguePath}\"");
+            }
+
             return args.JoinNonEmpty(" ");
         }
 

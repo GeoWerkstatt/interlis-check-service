@@ -5,6 +5,7 @@ using Moq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Geowerkstatt.Ilicop.Web.Ilitools
@@ -62,6 +63,16 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
             var command = ilitoolsExecutor.CreateIlivalidatorCommand(request);
 
             var expected = $"java -jar \"{ilitoolsEnvironment.IlivalidatorPath}\" --log \"{request.LogFilePath}\" --xtflog \"{request.XtfLogFilePath}\" --verbose \"{request.TransferFilePath}\"";
+            Assert.AreEqual(expected, command);
+        }
+
+        [TestMethod]
+        public void CreateIlivalidatorCommandWithCatalogueFiles()
+        {
+            var request = CreateValidationRequest("/test/path", "test.xtf", additionalCatalogueFilePaths: new List<string> { "additionalTestFile.xml" });
+            var command = ilitoolsExecutor.CreateIlivalidatorCommand(request);
+
+            var expected = $"java -jar \"{ilitoolsEnvironment.IlivalidatorPath}\" --log \"{request.LogFilePath}\" --xtflog \"{request.XtfLogFilePath}\" --verbose \"{request.TransferFilePath}\" \"additionalTestFile.xml\"";
             Assert.AreEqual(expected, command);
         }
 
@@ -133,7 +144,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
             StringAssert.DoesNotMatch(command, new Regex("--models"));
         }
 
-        private ValidationRequest CreateValidationRequest(string homeDirectory, string transferFile, string modelNames = null)
+        private ValidationRequest CreateValidationRequest(string homeDirectory, string transferFile, string modelNames = null, List<string> additionalCatalogueFilePaths = null)
         {
             homeDirectory = homeDirectory.NormalizeUnixStylePath();
             var transferFileNameWithoutExtension = Path.GetFileNameWithoutExtension(transferFile);
@@ -148,6 +159,7 @@ namespace Geowerkstatt.Ilicop.Web.Ilitools
                 LogFilePath = logPath,
                 XtfLogFilePath = xtfLogPath,
                 GpkgModelNames = modelNames,
+                AdditionalCatalogueFilePaths = additionalCatalogueFilePaths ?? new List<string>(),
             };
         }
     }

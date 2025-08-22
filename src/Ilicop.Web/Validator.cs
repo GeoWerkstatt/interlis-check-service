@@ -201,6 +201,10 @@ namespace Geowerkstatt.Ilicop.Web
             var logPath = Path.Combine(homeDirectory, $"{transferFileNameWithoutExtension}_log.log");
             var xtfLogPath = Path.Combine(homeDirectory, $"{transferFileNameWithoutExtension}_log.xtf");
             var transferFilePath = Path.Combine(homeDirectory, transferFile);
+            var additionalFiles = fileProvider.GetFiles()
+                .Where(file => Path.GetExtension(file).Equals(".xml", StringComparison.OrdinalIgnoreCase) && !file.Equals(transferFile, StringComparison.OrdinalIgnoreCase))
+                .Select(file => Path.Combine(homeDirectory, file))
+                .ToList();
 
             var request = new ValidationRequest
             {
@@ -209,6 +213,7 @@ namespace Geowerkstatt.Ilicop.Web
                 LogFilePath = logPath,
                 XtfLogFilePath = xtfLogPath,
                 GpkgModelNames = GpkgModelNames,
+                AdditionalCatalogueFilePaths = additionalFiles,
             };
 
             var exitCode = await ilitoolsExecutor.ValidateAsync(request, cancellationToken).ConfigureAwait(false);
