@@ -13,7 +13,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Geowerkstatt.Ilicop.Web.Services
+namespace Geowerkstatt.Ilicop.Ilitools
 {
     [TestClass]
     [DeploymentItem("testdata/mock.zip")]
